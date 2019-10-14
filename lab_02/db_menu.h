@@ -8,7 +8,7 @@
 #include "student_database.h"
 
 #define MENU_EXIT 0
-#define MAX_ACTION 9
+#define MAX_ACTION 12
 
 void menu_output();
 

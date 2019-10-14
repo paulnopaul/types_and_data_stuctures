@@ -261,20 +261,12 @@ double student_db_key_sys_qsort(student_database *db)
 
 double student_db_system_qsort_check_time(student_database db)
 {
-    clock_t start_sort, end_sort;
-    start_sort = clock();
-    qsort(db.keys, db.size, sizeof(key), (int(*)(const void*, const void*))key_cmp);
-    end_sort = clock();
-    return (double) (end_sort - start_sort) / CLOCKS_PER_SEC;
+    return student_db_sys_qsort(&db);
 }
 
 double student_db_key_system_qsort_check_time(student_database db)
 {
-    clock_t start_sort, end_sort;
-    start_sort = clock();
-    qsort(db.keys, db.size, sizeof(key), (int(*)(const void*, const void*))key_cmp);
-    end_sort = clock();
-    return (double) (end_sort - start_sort) / CLOCKS_PER_SEC;
+    return student_db_key_sys_qsort(&db);
 }
 
 double student_db_selection_check_time(student_database db)
@@ -285,4 +277,12 @@ double student_db_selection_check_time(student_database db)
 double student_db_key_selection_check_time(student_database db)
 {
     return student_db_key_sort(&db);
+}
+
+void student_db_sort_output(student_database db)
+{
+    printf("Системная быстрая сортировка таблицы (qsort): %lf сек\n", student_db_system_qsort_check_time(db));
+    printf("Системная быстрая сортировка массива ключей: %lf сек\n", student_db_key_system_qsort_check_time(db));
+    printf("Сортировка выбором таблицы: %lf сек\n", student_db_selection_check_time(db));
+    printf("Сортироыка выбором массива ключей: %lf сек\n", student_db_key_selection_check_time(db));
 }
