@@ -84,6 +84,9 @@ int student_file_output(FILE* f, student st);
 // вывод студента в f
 void student_console_output(FILE* f, student st);
 
+// сравнение студентов по ключу (средней оценке) (для сортировки)
+int student_key_cmp(const student *left, const student *right);
+
 
 
 #endif

@@ -82,4 +82,24 @@ int student_db_lab_file_read(student_database *db);
 // вывод таблицы по массиву ключей
 void student_db_key_output(student_database db);
 
+// сортировка массива студентов системной сортировкой
+double student_db_sys_qsort(student_database *db);
+
+int key_cmp(key* left, key* right);
+
+// сортировка массива ключей таблицы системной быстрой сортировкой
+double student_db_key_sys_qsort(student_database *db);
+
+// проверка времени сортировки таблицы системной быстрой сортировкой
+double student_db_system_qsort_check_time(student_database db);
+
+// проверка времени сортировки татблицы ключей системной быстрой сортировко
+double student_db_key_system_qsort_check_time(student_database db);
+
+// проверка времени сортировки таблицы сортировкой выбором
+double student_db_selection_check_time(student_database db);
+
+// проверка времени сортировки таблицы ключей сортировкой выбором
+double student_db_key_selection_check_time(student_database db);
+
 #endif

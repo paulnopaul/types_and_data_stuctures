@@ -175,7 +175,7 @@ int student_db_delete_input(student_database *db)
 {
     int index;
     printf("Input delete_index: ");
-    if (scanf("%d", &index) == 1 && ( index >= 0) && (index < db->size))
+    if (scanf("%d", &index) == 1 && (index >= 0) && (index < db->size))
     {
         student_db_delete(db, index);
         return OK;
@@ -235,7 +235,54 @@ int student_db_read_from_file_input(student_database *db)
     return error;
 }
 
+double student_db_sys_qsort(student_database *db)
+{
+    clock_t start_sort, end_sort;
+    start_sort = clock();
+    qsort(db->db, db->size, sizeof(student), (int (*)(const void *, const void *)) student_key_cmp);
+    end_sort = clock();
+    student_db_create_key_array(db);
+    return (double) (end_sort - start_sort) / CLOCKS_PER_SEC;
+}
 
+int key_cmp(key* left, key* right)
+{
+    return left->value > right->value;
+}
 
+double student_db_key_sys_qsort(student_database *db)
+{
+    clock_t start_sort, end_sort;
+    start_sort = clock();
+    qsort(db->keys, db->size, sizeof(key), (int(*)(const void*, const void*))key_cmp);
+    end_sort = clock();
+    return (double) (end_sort - start_sort) / CLOCKS_PER_SEC;
+}
 
+double student_db_system_qsort_check_time(student_database db)
+{
+    clock_t start_sort, end_sort;
+    start_sort = clock();
+    qsort(db.keys, db.size, sizeof(key), (int(*)(const void*, const void*))key_cmp);
+    end_sort = clock();
+    return (double) (end_sort - start_sort) / CLOCKS_PER_SEC;
+}
 
+double student_db_key_system_qsort_check_time(student_database db)
+{
+    clock_t start_sort, end_sort;
+    start_sort = clock();
+    qsort(db.keys, db.size, sizeof(key), (int(*)(const void*, const void*))key_cmp);
+    end_sort = clock();
+    return (double) (end_sort - start_sort) / CLOCKS_PER_SEC;
+}
+
+double student_db_selection_check_time(student_database db)
+{
+    return student_db_sort(&db);
+}
+
+double student_db_key_selection_check_time(student_database db)
+{
+    return student_db_key_sort(&db);
+}

@@ -261,7 +261,7 @@ int student_file_output(FILE *f, student st)
     return error;
 }
 
-int student_key_cmp(student left, student right)
+int student_key_cmp(const student *left, const student *right)
 {
-    return left.exam_mark > right.exam_mark;
+    return left->exam_mark > right->exam_mark;
 }
