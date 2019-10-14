@@ -1,0 +1,111 @@
+//
+// Created by Павел Чеклин on 07/10/2019.
+//
+
+#include "db_menu.h"
+
+#include <stdio.h>
+
+#include "errdef.h"
+
+void menu_output()
+{
+    printf("------------------------------------------------------------------------------------------\n"
+           "Программа для работы с базой данных студентов\n"
+           "Действия:\n"
+           "2 - Считать базу данных из файла file.student\n"
+           "3 - Считать базу данных из файла (по адресу)\n"
+           "4 - Записать базу данных в файл\n"
+           "5 - Добавить студента в конец базы данных\n"
+           "6 - Удалить студента из базы данных (по индексу)\n"
+           "7 - Отсортировать базу данных по средней оценке\n"
+           "8 - Отсортировать массив ключей\n"
+           "9 - Вывести таблицу в соотвествии с массивом ключей\n"
+           "*****************************************************\n\n"
+           "1 - Вывести базу данных\n"
+           "0 - Выход из программы (без сохранения в файл)\n"
+           "------------------------------------------------------------------------------------------\n"
+           "Введите действие: ");
+}
+
+int menu_act(student_database *db, int action)
+{
+    int error = OK;
+    switch (action)
+    {
+        case 0:
+            // выход из программы
+            error = MENU_EXIT;
+            break;
+        case 1:
+            // вывод базы данных
+            student_db_console_output(stdout, *db);
+            break;
+        case 2:
+            // считать из файла (дла лабораторной)
+            error = student_db_lab_file_read(db);
+            break;
+        case 3:
+            // Считать из пользовательского файла
+            error = student_db_read_from_file_input(db);
+            break;
+        case 4:
+            // Записать базу данных в файл
+            error = student_db_file_output_input(*db);
+            break;
+        case 5:
+            // Добавить студента в конец базы данных
+            error = student_db_add_input(db);
+            break;
+        case 6:
+            // Удалить студента по индексу
+            error = student_db_delete_input(db);
+            break;
+        case 7:
+            // Отсортировать базу данных по средней оценке
+            printf("Время сортировки = %lf\n", student_db_sort(db));
+            break;
+        case 8:
+            // Отсортировать массив ключей
+            printf("Время сортировки = %lf\n", student_db_key_sort(db));
+            break;
+        case 9:
+            // Вывод таблицы в соотвествии с массивом ключей
+            student_db_key_output(*db);
+            break;
+        default:
+            error = UNDEFINED_ACTION;
+    }
+    return error;
+}
+
+int menu_input_action()
+{
+    int action;
+    if (scanf("%d", &action) == 1 && action >= 0 && action <= MAX_ACTION)
+        return action;
+    return STUDENT_DB_ACTION_INPUT_ERROR;
+}
+
+int menu_start(student_database *db)
+{
+    int action = 1000;
+    int error = OK;
+    while (action != MENU_EXIT && action != STUDENT_DB_ACTION_INPUT_ERROR)
+    {
+        menu_output();
+        action = menu_input_action();
+        if (action != STUDENT_DB_ACTION_INPUT_ERROR)
+            error = menu_act(db, action);
+        if (error)
+            handle_error(error);
+    }
+    return 0;
+}
+
+void menu_main()
+{
+    student_database db;
+    db.size = 0;
+    menu_start(&db);
+}
