@@ -84,7 +84,7 @@ int student_console_input(FILE *f, student *st)
         error = STUDENT_INPUT_ERROR;
 
     if (!error && (fscanf(f, "%d", &st->age) == 1) && (st->age > 0) && (st->age < 130))
-        printf("Input exam mark: ");
+        printf("Input exam mark (from 0 to 5): ");
     else
         error = STUDENT_INPUT_ERROR;
 
@@ -102,10 +102,10 @@ int student_console_input(FILE *f, student *st)
                 error = STUDENT_INPUT_ERROR;
         }
         if (!error)
-            printf("Input house/dormitory number: ");
+            printf("Input house/dormitory number (from 1, only numbers): ");
 
         if (!error && (fscanf(f, "%d", &st->house_number) == 1) && (st->house_number > 0))
-            printf("Input room number: ");
+            printf("Input room number (from 1, only numbers): ");
         else
             error = STUDENT_INPUT_ERROR;
 
@@ -259,4 +259,9 @@ int student_file_output(FILE *f, student st)
     date_output(f, st.admission_date);
     fprintf(f, ",%d,%d\n", st.house_number, st.room_number);
     return error;
+}
+
+int student_key_cmp(student left, student right)
+{
+    return left.exam_mark > right.exam_mark;
 }
