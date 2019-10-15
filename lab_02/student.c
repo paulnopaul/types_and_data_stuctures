@@ -263,5 +263,5 @@ int student_file_output(FILE *f, student st)
 
 int student_key_cmp(const student *left, const student *right)
 {
-    return left->exam_mark > right->exam_mark;
+    return (int) (100000 * (left->exam_mark - right->exam_mark));
 }

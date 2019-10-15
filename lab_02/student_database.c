@@ -247,7 +247,7 @@ double student_db_sys_qsort(student_database *db)
 
 int key_cmp(key* left, key* right)
 {
-    return left->value > right->value;
+    return (int)(100000 * (left->value - right->value));
 }
 
 double student_db_key_sys_qsort(student_database *db)
