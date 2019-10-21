@@ -25,4 +25,6 @@ list_t list_add_head(list_t list, size_t elem);
 
 int list_size(list_t list);
 
+list_t list_calloc(size_t size);
+
 #endif

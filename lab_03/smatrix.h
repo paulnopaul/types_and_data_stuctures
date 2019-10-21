@@ -15,19 +15,32 @@
 
 typedef struct s_matr
 {
+    size_t rows;
+    size_t columns;
+
     int* a;
     int* ja;
     list_t ia;
+
 } s_matr;
 
 typedef s_matr *rare_matrix;
 
 // выделение памяти под разреженную матрицу
-int s_matr_alloc(rare_matrix m, size_t rows, size_t columns);
+rare_matrix s_matr_alloc(size_t rows, size_t columns);
 
+// ввод матрицы
+int s_matr_input(rare_matrix m);
+
+// сокращение матрицы
+int s_matr_resize(rare_matrix m);
 
 // полный ввод матрицы
 int s_matr_full_input(rare_matrix m);
+
+// вывод матрицы
+int s_matr_output(rare_matrix m);
+
 
 
 
