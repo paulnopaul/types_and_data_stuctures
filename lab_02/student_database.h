@@ -106,4 +106,7 @@ double student_db_key_selection_check_time(student_database db);
 // функция вывода времени различных сортировок
 void student_db_sort_output(student_database db);
 
+// вывести студентов указаного года поступления, живущих в общежитии
+void student_db_dormitory_year_output(student_database db);
+
 #endif

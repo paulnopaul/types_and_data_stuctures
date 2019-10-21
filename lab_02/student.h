@@ -60,10 +60,22 @@ typedef struct _student
     int age;
     double exam_mark;
     date admission_date;
-    str_t street; // if type is HOUSE
-    int house_number;
-    int room_number;
+    union
+    {
+        struct // если студент живет в доме
+        {
+            str_t street;
+            int house_number;
+            int room_number;
+        };
+        struct // если студент живет в общежитии
+        {
+            int dorm_number;
+            int dorm_room_number;
+        };
+    };
 } student;
+
 
 int my_getline(FILE *f, str_t s, char end_symbol);
 
@@ -86,7 +98,6 @@ void student_console_output(FILE* f, student st);
 
 // сравнение студентов по ключу (средней оценке) (для сортировки)
 int student_key_cmp(const student *left, const student *right);
-
 
 
 #endif

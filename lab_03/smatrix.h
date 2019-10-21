@@ -13,19 +13,21 @@
 #include <stdio.h>
 #include "linked_list.h"
 
-
-typedef struct
+typedef struct s_matr
 {
-    size_t size;
-    int *a;
-    int *ja;
-    linked_list ia;
+    int* a;
+    int* ja;
+    list_t ia;
+} s_matr;
 
-} smatrix;
+typedef s_matr *rare_matrix;
 
-// объявление матрицы
-int smatrix_malloc(smatrix *m, size_t size);
+// выделение памяти под разреженную матрицу
+int s_matr_alloc(rare_matrix m, size_t rows, size_t columns);
 
+
+// полный ввод матрицы
+int s_matr_full_input(rare_matrix m);
 
 
 

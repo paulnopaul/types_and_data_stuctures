@@ -8,24 +8,21 @@
 
 #include <stdio.h>
 
-typedef struct linked_list
+typedef struct node_t *list_t;
+typedef struct node_t
 {
-    struct linked_list *head;
-    struct linked_list *tail;
-    int elem;
-} linked_list;
+    size_t value;
+    list_t head;
+    list_t tail;
+} node_t;
 
-// linked list output
-void linked_list_output(linked_list *l);
 
-int linked_list_tail_add(linked_list *list, int elem);
+list_t list_init(list_t list, size_t elem);
 
-int linked_list_head_add(linked_list list, int elem);
+list_t list_add_tail(list_t list, size_t elem);
 
-int linked_list_create_from_array(linked_list *list, int* arr, size_t arr_size);
+list_t list_add_head(list_t list, size_t elem);
 
-int linked_list_init(linked_list *list, int elem);
-
-int linked_list_next(linked_list **list);
+int list_size(list_t list);
 
 #endif

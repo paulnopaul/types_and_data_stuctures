@@ -45,9 +45,11 @@ int student_db_create_file(FILE *f, student_database *db)
 
 void student_db_console_output(FILE *f, student_database db)
 {
-    printf("Output format: index, type, name, gender, age, exam_mark, admission_date, street (if house),"
-           " house_number, room_number\n");
+    printf("Формат вывода: номер, тип, имя, пол, возраст, оценка, дата поступления, улица (если живет в доме),"
+           " номер дома/общежития, номер комнаты\n");
     printf("------------------------------------------------------------------------------------------\n");
+    if (db.size == 0)
+        puts("Пустая таблица");
     for (int i = 0; i < db.size; ++i)
     {
         printf("%-3d ", i);
@@ -160,9 +162,11 @@ double student_db_sort(student_database *db)
 
 void student_db_key_output(student_database db)
 {
-    printf("Output format: index, type, name, gender, age, exam_mark, admission_date, street (if house),"
-           " house_number, room_number\n");
+    printf("Формат вывода: номер, тип, имя, пол, возраст, оценка, дата поступления, улица (если живет в доме),"
+           " номер дома/общежития, номер комнаты\n");
     printf("------------------------------------------------------------------------------------------\n");
+    if (db.size == 0)
+        puts("Пустая таблица");
     for (int i = 0; i < db.size; ++i)
     {
         printf("%-3d", db.keys[i].index);
@@ -174,7 +178,7 @@ void student_db_key_output(student_database db)
 int student_db_delete_input(student_database *db)
 {
     int index;
-    printf("Input delete_index: ");
+    printf("Введите номер: ");
     if (scanf("%d", &index) == 1 && (index >= 0) && (index < db->size))
     {
         student_db_delete(db, index);
@@ -187,7 +191,7 @@ int student_db_add_input(student_database *db)
 {
     int error = OK;
     student st;
-    puts("Student input");
+    puts("Ввод студента");
     error = student_console_input(stdin, &st);
     if (!error)
         student_db_add(db, st);
@@ -206,7 +210,7 @@ int student_db_file_output_input(student_database db)
 {
     char s[100];
     FILE *f;
-    printf("Input filename: ");
+    printf("Введите имя файла: ");
     scanf("%s", s);
     puts(s);
     f = fopen(s, "w");
@@ -224,7 +228,7 @@ int student_db_read_from_file_input(student_database *db)
     int error = OK;
     char s[100];
     FILE *f;
-    printf("Input filename: ");
+    printf("Введите имя файла: ");
     scanf("%s", s);
     f = fopen(s, "r");
     if (f)
@@ -285,4 +289,23 @@ void student_db_sort_output(student_database db)
     printf("Системная быстрая сортировка массива ключей: %lf сек\n", student_db_key_system_qsort_check_time(db));
     printf("Сортировка выбором таблицы: %lf сек\n", student_db_selection_check_time(db));
     printf("Сортироыка выбором массива ключей: %lf сек\n", student_db_key_selection_check_time(db));
+}
+
+void student_db_dormitory_year_output(student_database db)
+{
+    int year, count = 0;
+    printf("Введите год : ");
+    if (scanf("%d", &year) == 1 && year >= 1900 && year <= 2019)
+    {
+        printf("------------------------------------------------------------------------------------------\n");
+        for (size_t i = 0; i < db.size; ++i)
+            if (db.db[i].admission_date.year == year && db.db[i].type == DORMITORY)
+            {
+                student_console_output(stdout, db.db[i]);
+                count++;
+            }
+    }
+    if (!count)
+        puts("Нет подходящих студентов");
+    printf("------------------------------------------------------------------------------------------\n");
 }

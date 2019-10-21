@@ -9,30 +9,30 @@ void handle_error(int error)
         case 0:
             break;
         case 1:
-            puts("Student input error");
+            puts("\nStudent input error");
             break;
         case 2:
-            puts("Getline error");
+            puts("\nGetline error");
             break;
         case 3:
-            puts("Date input error");
+            puts("\nDate input error");
             break;
         case 4:
-            puts("File format error");
+            puts("\nFile format error");
             break;
         case 5:
-            puts("Student db overfill");
+            puts("\nStudent db overfill");
             break;
         case 6:
-            puts("Undefined action");
+            puts("\nUndefined action");
             break;
         case 7:
-            puts("Index input error");
+            puts("\nIndex input error");
             break;
         case 8:
-            puts("File open error");
+            puts("\nFile open error");
             break;
         default:
-            puts("Undefined error");
+            puts("\nUndefined error");
     }
 }
