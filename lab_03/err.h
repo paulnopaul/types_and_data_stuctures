@@ -20,5 +20,7 @@
 void err_output(int err);
 
 // smatrix errors
+#define MATRIX_SIZE_INPUT 5
+#define MATRIX_INPUT 6
 
 #endif //LAB_03_ERR_H

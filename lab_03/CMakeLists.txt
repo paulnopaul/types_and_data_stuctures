@@ -3,4 +3,4 @@ project(lab_03 C)
 
 set(CMAKE_C_STANDARD 99)
 
-add_executable(lab_03 main.c smatrix.c smatrix.h linked_list.c linked_list.h err.c err.h matrix.c matrix.h menu.c menu.h)
+add_executable(lab_03 main.c smatrix.c smatrix.h linked_list.c linked_list.h err.c err.h matrix.c matrix.h menu.c menu.h test.c test.h)
