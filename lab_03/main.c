@@ -45,28 +45,15 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "linked_list.h"
+#include "test.h"
 
 /*
-TODO: проверить очистку списка
-TODO: доделать ввод матрицы
+TODO: доделать ввод/вывод матрицы
  */
 
-void linked_list_test()
-{
-    list_t l = NULL;
-    clock_t start = clock(), end;
-    puts("CREATE");
-    for (size_t i = 0; i < 10; ++i)
-        l = list_add_tail(l, i);
-    puts("OUTPUT");
-    list_output(l);
-    puts("DELETE");
-    list_delete(l);
-}
 
 int main()
 {
-    linked_list_test();
+    smatrix_io_test();
     return 0;
 }

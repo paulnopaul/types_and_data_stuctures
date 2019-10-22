@@ -21,6 +21,7 @@ void linked_list_test()
         l = list_add_tail(l, i);
     puts("OUTPUT");
     list_output(l);
+    list_output(l);
     puts("DELETE");
     list_delete(l);
 }
@@ -31,3 +32,4 @@ void smatrix_io_test()
     s_matr_full_input(&m);
     s_matr_output(m);
 }
+

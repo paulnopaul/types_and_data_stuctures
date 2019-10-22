@@ -15,10 +15,12 @@
 
 typedef struct s_matr
 {
+    // source matrix sizes
     size_t rows;
     size_t columns;
-    size_t a_size; // a size is equal to ja size
 
+    // rare matrix params
+    size_t a_size; // a size is equal to ja size
     int *a;
     size_t *ja;
     list_t ia;
@@ -34,7 +36,7 @@ rare_matrix s_matr_alloc(size_t rows, size_t columns);
 int s_matr_input(rare_matrix m);
 
 // добавление элемента в разреженную матрицу (в конец)
-void s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem);
+int s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem);
 
 // сокращение матрицы
 int s_matr_resize(rare_matrix m);

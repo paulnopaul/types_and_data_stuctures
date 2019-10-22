@@ -23,13 +23,21 @@ rare_matrix s_matr_alloc(size_t rows, size_t columns)
     return NULL;
 }
 
-void s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem)
+int s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem)
 {
+    printf("Add elem: %ld %ld = %d\n", row, column, elem);
     int ia_size = list_size(m->ia);
-    if (ia_size < row)
-        list_add_tail(m->ia, (m->a_size)++);
-    m->a[m->a_size - 1] = elem;
-    m->ja[m->a_size - 1] = column;
+    printf("%d")
+    if ((long long)ia_size - 1 < (long long)row)
+        m->ia = list_add_tail(m->ia, (m->a_size)++);
+    if (m->ia)
+    {
+        m->a[m->a_size - 1] = elem;
+        m->ja[m->a_size - 1] = column;
+        return OK;
+    }
+    else
+        return MALLOC_ERROR;
 }
 
 /*
@@ -41,8 +49,9 @@ void s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem)
             если buf не 0:
                 добавить в конец разреженной матрицы элемент buf
         если строка нулевая:
-            добавить -1 в ia
+            добавить последний элемент ia в ia
  */
+
 int s_matr_input(rare_matrix m)
 {
     int err = OK, inp, zeros;
@@ -54,13 +63,13 @@ int s_matr_input(rare_matrix m)
         for (size_t j = 0; j < m->columns && !err; ++j)
             if ((inp = scanf("%d", &buf)) == 1 && buf != 0)
             {
-                s_matr_add_elem(m, i, j, buf);
+                err = s_matr_add_elem(m, i, j, buf);
                 zeros = 0;
             }
             else if (inp != 1)
                 err = MATRIX_INPUT;
         if (zeros)
-            list_add_tail(m->ia, list_tail(m->ia));
+            err = (m->ia = list_add_tail(m->ia, list_tail(m->ia))) ? OK : MALLOC_ERROR;
     }
     return err;
 }
@@ -82,26 +91,45 @@ int s_matr_resize(rare_matrix m)
 
 int s_matr_full_input(rare_matrix *m)
 {
+
     int err = OK;
     long long buf_r, buf_c;
     size_t rows, columns;
 
-    printf("Input rows and columns sizes: ");
-    if (scanf("%lld%lld", &buf_r, &buf_c) == 1 && (buf_r > 0) && (buf_c > 0))
+    printf("Input row and column count: ");
+    if (scanf("%lld%lld", &buf_r, &buf_c) == 2 && (buf_r > 0) && (buf_c > 0))
     {
+        printf("%lld %lld\n", buf_r, buf_c);
+        puts("ALLOCATION START"); // TEST
         rows = (size_t) buf_r;
         columns = (size_t) buf_c;
-        *m = s_matr_alloc(rows, columns);
+        err = (*m = s_matr_alloc(rows, columns)) ? OK : ALLOCATION_ERROR;
+        puts(!err ? "ALLOCATION COMPLETE" : "ALLOCATION FAILED"); // TEST
     }
     else
         err = MATRIX_SIZE_INPUT;
-
     if (!err)
+    {
+        puts("Input matrix");
         err = s_matr_input(*m);
+    }
 
     if (!err)
         err = s_matr_resize(*m);
-
     return err;
 }
 
+int s_matr_output(rare_matrix m)
+{
+    for (size_t i = 0; i < m->a_size; ++i)
+        printf("%d ", m->a[i]);
+    putchar('\n');
+
+    for (size_t i = 0; i < m->a_size; ++i)
+        printf("%ld ", m->ja[i]);
+    putchar('\n');
+
+    list_output(m->ia);
+
+    return OK;
+}

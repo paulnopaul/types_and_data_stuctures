@@ -16,11 +16,11 @@
 #define CALLOC_ERROR 3
 #define REALLOC_ERROR 4
 
-
-void err_output(int err);
-
 // smatrix errors
 #define MATRIX_SIZE_INPUT 5
 #define MATRIX_INPUT 6
+#define ALLOCATION_ERROR 7
+
+void err_output(int err);
 
 #endif //LAB_03_ERR_H
