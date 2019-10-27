@@ -1,18 +1,19 @@
 CC=gcc
 CFLAGS=-std=c99 -Wall -Werror
-app.exe: errdef.o student.o db_menu.o main.o student_database.o date.o 
+app.exe: menu.o smatrix.o err.o main.o linked_list.o test.o matrix.o 
 	gcc -std=c99 -Wall -Werror -o $@ $^
-errdef.o: errdef.c 
+menu.o: menu.c 
 	gcc -std=c99 -Wall -Werror -c $^
-student.o: student.c 
+smatrix.o: smatrix.c 
 	gcc -std=c99 -Wall -Werror -c $^
-db_menu.o: db_menu.c 
+err.o: err.c 
 	gcc -std=c99 -Wall -Werror -c $^
 main.o: main.c 
 	gcc -std=c99 -Wall -Werror -c $^
-student_database.o: student_database.c 
+linked_list.o: linked_list.c 
 	gcc -std=c99 -Wall -Werror -c $^
-date.o: date.c 
+test.o: test.c 
 	gcc -std=c99 -Wall -Werror -c $^
-clean:
-	rm *.o *.exe
+matrix.o: matrix.c 
+	gcc -std=c99 -Wall -Werror -c $^
+clean:	rm *.o *.exe

@@ -27,7 +27,6 @@ int s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem)
 {
     printf("Add elem: %ld %ld = %d\n", row, column, elem);
     int ia_size = list_size(m->ia);
-    printf("%d")
     if ((long long)ia_size - 1 < (long long)row)
         m->ia = list_add_tail(m->ia, (m->a_size)++);
     if (m->ia)

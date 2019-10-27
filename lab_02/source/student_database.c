@@ -63,7 +63,6 @@ int student_db_add(student_database *db, student to_add)
     int error = (db->size >= MAX_DB_SIZE) * STUDENT_DB_OVERFILL;
     if (!error)
     {
-        student st;
         db->db[db->size] = to_add;
         db->keys[db->size].index = db->size;
         db->keys[db->size].value = to_add.exam_mark;
