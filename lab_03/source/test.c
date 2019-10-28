@@ -17,11 +17,11 @@ void linked_list_test()
 {
     list_t l = NULL;
     puts("CREATE");
-    for (size_t i = 0; i < 10; ++i)
+    for (size_t i = 0; i < 8; ++i)
         l = list_add_tail(l, i);
     puts("OUTPUT");
     list_output(l);
-    list_output(l);
+    printf("List size = %d\n", list_size(l));
     puts("DELETE");
     list_delete(l);
 }

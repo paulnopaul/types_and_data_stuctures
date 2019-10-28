@@ -8,9 +8,9 @@
 
 rare_matrix s_matr_alloc(size_t rows, size_t columns)
 {
-    rare_matrix buf = (rare_matrix) malloc(sizeof(s_matr));
-    int *buf_a = (int *) malloc(rows * columns * sizeof(int));
-    size_t *buf_ja = (size_t *) malloc(rows * columns * sizeof(size_t));
+    rare_matrix buf = (rare_matrix)malloc(sizeof(s_matr));
+    int *buf_a = (int *)malloc(rows * columns * sizeof(int));
+    size_t *buf_ja = (size_t *)malloc(rows * columns * sizeof(size_t));
 
     if (buf && buf_a && buf_ja)
     {
@@ -25,8 +25,9 @@ rare_matrix s_matr_alloc(size_t rows, size_t columns)
 
 int s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem)
 {
-    printf("Add elem: %ld %ld = %d\n", row, column, elem);
+    // printf("Add elem: %ld %ld = %d\n", row, column, elem);
     int ia_size = list_size(m->ia);
+    printf("ia_size = %d\n", ia_size);
     if ((long long)ia_size - 1 < (long long)row)
         m->ia = list_add_tail(m->ia, (m->a_size)++);
     if (m->ia)
@@ -75,8 +76,8 @@ int s_matr_input(rare_matrix m)
 
 int s_matr_resize(rare_matrix m)
 {
-    int *new_a = (int *) realloc(m->a, m->a_size * sizeof(int));
-    size_t *new_ja = (size_t *) realloc(m->ja, m->a_size * sizeof(size_t));
+    int *new_a = (int *)realloc(m->a, m->a_size * sizeof(int));
+    size_t *new_ja = (size_t *)realloc(m->ja, m->a_size * sizeof(size_t));
 
     if (new_a && new_ja)
     {
@@ -100,8 +101,8 @@ int s_matr_full_input(rare_matrix *m)
     {
         printf("%lld %lld\n", buf_r, buf_c);
         puts("ALLOCATION START"); // TEST
-        rows = (size_t) buf_r;
-        columns = (size_t) buf_c;
+        rows = (size_t)buf_r;
+        columns = (size_t)buf_c;
         err = (*m = s_matr_alloc(rows, columns)) ? OK : ALLOCATION_ERROR;
         puts(!err ? "ALLOCATION COMPLETE" : "ALLOCATION FAILED"); // TEST
     }

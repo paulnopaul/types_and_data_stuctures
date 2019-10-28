@@ -51,7 +51,6 @@
 TODO: доделать ввод/вывод матрицы
  */
 
-
 int main()
 {
     smatrix_io_test();

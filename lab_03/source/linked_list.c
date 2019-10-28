@@ -6,10 +6,9 @@
 
 #include "err.h"
 
-
 list_t list_init(list_t list, size_t elem)
 {
-    list_t buf = (list_t) malloc(sizeof(node_t));
+    list_t buf = (list_t)malloc(sizeof(node_t));
     if (buf)
     {
         buf->value = elem;
@@ -50,10 +49,17 @@ list_t list_add_head(list_t list, size_t elem)
     return buf;
 }
 
-
 int list_size(list_t list)
 {
-    return OK;
+    list_t buf = list;
+    int count = 0;
+    if (buf)
+    {
+        count = 1;
+        for (; buf->next; buf = buf->next)
+            count++;
+    }
+    return count;
 }
 
 void list_delete(list_t list)
@@ -82,7 +88,7 @@ void list_output(list_t list)
             printf("%ld ", buf->value);
         putchar('\n');
     }
-            //printf("%p %p %p: %ld\n", buf, buf->prev, buf->next, buf->value);
+    //printf("%p %p %p: %ld\n", buf, buf->prev, buf->next, buf->value);
 }
 
 int list_tail(list_t list)
