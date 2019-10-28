@@ -5,7 +5,7 @@ CC = "gcc"
 CFLAGS = "-std=c99 -Wall -Werror"
 MAINTARG = "app.exe"
 MAINSOURCE = "main.c"
-CLEAN = '''clean:\trm *.o *.exe'''
+CLEAN = '''clean:\n\trm *.o *.exe'''
 
 
 def makefile_write_targ(file, targ, sources):
@@ -26,10 +26,6 @@ def makefile_write_app(file, targ, sources):
     
 
 makefile = open("./source/Makefile", "w")
-
-makefile.write('CC=' + CC + '\n')
-makefile.write('CFLAGS=' + CFLAGS + '\n')
-
 source_list = os.listdir('./source')
 object_sources = list(map(lambda x: x[:x.find('.')] + '.o', filter(lambda x: x[-2:] == '.c', source_list)))
 
@@ -42,4 +38,3 @@ for file in source_list:
 makefile.write(CLEAN)
 
 makefile.close();
-

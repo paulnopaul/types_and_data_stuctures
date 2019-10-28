@@ -1,5 +1,3 @@
-CC=gcc
-CFLAGS=-std=c99 -Wall -Werror
 app.exe: menu.o smatrix.o err.o main.o linked_list.o test.o matrix.o 
 	gcc -std=c99 -Wall -Werror -o $@ $^
 menu.o: menu.c 
@@ -16,4 +14,5 @@ test.o: test.c
 	gcc -std=c99 -Wall -Werror -c $^
 matrix.o: matrix.c 
 	gcc -std=c99 -Wall -Werror -c $^
-clean:	rm *.o *.exe
+clean:
+	rm *.o *.exe

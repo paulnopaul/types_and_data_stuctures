@@ -4,7 +4,7 @@
         {
             "label": "run python",
             "type": "shell",
-            "command": "python3 .vscode/pymake.py; cd source; make",
+            "command": "python3 .vscode/pymake.py; cd source; make; ./app.exe",
             "group": {
                 "kind": "build",
                 "isDefault": true
