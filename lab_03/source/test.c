@@ -29,7 +29,8 @@ void linked_list_test()
 void smatrix_io_test()
 {
     rare_matrix m;
+    puts("INPUT");
     s_matr_full_input(&m);
+    puts("OUTPUT");
     s_matr_output(m);
 }
-

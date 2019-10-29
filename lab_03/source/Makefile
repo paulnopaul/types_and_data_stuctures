@@ -1,18 +1,17 @@
-app.exe: menu.o smatrix.o err.o main.o linked_list.o test.o matrix.o 
-	gcc -std=c99 -Wall -Werror -o $@ $^
-menu.o: menu.c 
-	gcc -std=c99 -Wall -Werror -c $^
-smatrix.o: smatrix.c 
-	gcc -std=c99 -Wall -Werror -c $^
-err.o: err.c 
-	gcc -std=c99 -Wall -Werror -c $^
-main.o: main.c 
-	gcc -std=c99 -Wall -Werror -c $^
-linked_list.o: linked_list.c 
-	gcc -std=c99 -Wall -Werror -c $^
-test.o: test.c 
-	gcc -std=c99 -Wall -Werror -c $^
-matrix.o: matrix.c 
-	gcc -std=c99 -Wall -Werror -c $^
+BUILDDIR := ../bin
+SOURCEDIR := .
+MAINTARGET := app.exe
+TESTTARGET := test.exe
+CC := gcc
+CFLAGS := -std=c99 -Wall -Werror -pedantic -g3
+SOURCES := $(wildcard $(SOURCEDIR)/*.c)
+OBJECTS := $(patsubst $(SOURCEDIR)/%.o,$(BUILDDIR)/%.o,$(SOURCES:.c=.o))
+
+$(BUILDDIR)/$(MAINTARGET): $(OBJECTS)
+	$(CC) -o $@ $^
+
+$(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
+	$(CC) $< $(CFLAGS) -c -o $@
+
 clean:
-	rm *.o *.exe
+	-rm $(BUILDDIR)/$(TARGET) $(OBJECTS)

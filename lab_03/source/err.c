@@ -25,7 +25,5 @@ void err_output(int err)
         case MATRIX_INPUT:
             puts("Matrix input error");
             break;
-        default:
-            puts("Undefuned error");
     }
 }

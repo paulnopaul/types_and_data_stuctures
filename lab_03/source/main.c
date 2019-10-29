@@ -45,7 +45,8 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "test.h"
+// #include "test.h"
+#include "menu.h"
 
 /*
 TODO: доделать ввод/вывод матрицы
@@ -53,6 +54,6 @@ TODO: доделать ввод/вывод матрицы
 
 int main()
 {
-    smatrix_io_test();
+    menu_mainloop();
     return 0;
 }

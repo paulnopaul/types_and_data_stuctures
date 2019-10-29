@@ -21,6 +21,10 @@
 #define MATRIX_INPUT 6
 #define ALLOCATION_ERROR 7
 
+// menu
+#define MENU_EXIT 8
+#define MENU_
+
 void err_output(int err);
 
 #endif //LAB_03_ERR_H

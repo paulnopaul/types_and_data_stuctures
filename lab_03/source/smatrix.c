@@ -27,9 +27,11 @@ int s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem)
 {
     // printf("Add elem: %ld %ld = %d\n", row, column, elem);
     int ia_size = list_size(m->ia);
-    printf("ia_size = %d\n", ia_size);
-    if ((long long)ia_size - 1 < (long long)row)
-        m->ia = list_add_tail(m->ia, (m->a_size)++);
+    // printf("ia_size = %d    row = %d\n", ia_size, (int)row);
+
+    if ((long long)ia_size <= (long long)row)
+        m->ia = list_add_tail(m->ia, m->a_size);
+    m->a_size++;
     if (m->ia)
     {
         m->a[m->a_size - 1] = elem;
@@ -71,6 +73,7 @@ int s_matr_input(rare_matrix m)
         if (zeros)
             err = (m->ia = list_add_tail(m->ia, list_tail(m->ia))) ? OK : MALLOC_ERROR;
     }
+    m->ia = list_add_tail(m->ia, m->a_size + 1);
     return err;
 }
 
@@ -99,7 +102,6 @@ int s_matr_full_input(rare_matrix *m)
     printf("Input row and column count: ");
     if (scanf("%lld%lld", &buf_r, &buf_c) == 2 && (buf_r > 0) && (buf_c > 0))
     {
-        printf("%lld %lld\n", buf_r, buf_c);
         puts("ALLOCATION START"); // TEST
         rows = (size_t)buf_r;
         columns = (size_t)buf_c;

@@ -4,29 +4,11 @@
         {
             "label": "run python",
             "type": "shell",
-            "command": "python3 .vscode/pymake.py; cd source; make; ./app.exe",
+            "command": "cd source; make; ../bin/app.exe",
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-        },
-        {
-            "type": "shell",
-            "label": "gcc build active file",
-            "command": "/usr/bin/gcc",
-            "args": [
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
-            "options": {
-                "cwd": "/usr/bin"
-            },
-            "problemMatcher": [
-                "$gcc"
-            ],
-            "group": "build"
         },
         {
             "type": "shell",
