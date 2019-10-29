@@ -1,18 +1,17 @@
-CC=gcc
-CFLAGS=-std=c99 -Wall -Werror
-app.exe: errdef.o student.o db_menu.o main.o student_database.o date.o 
-	gcc -std=c99 -Wall -Werror -o $@ $^
-errdef.o: errdef.c 
-	gcc -std=c99 -Wall -Werror -c $^
-student.o: student.c 
-	gcc -std=c99 -Wall -Werror -c $^
-db_menu.o: db_menu.c 
-	gcc -std=c99 -Wall -Werror -c $^
-main.o: main.c 
-	gcc -std=c99 -Wall -Werror -c $^
-student_database.o: student_database.c 
-	gcc -std=c99 -Wall -Werror -c $^
-date.o: date.c 
-	gcc -std=c99 -Wall -Werror -c $^
+BUILDDIR := ../bin
+SOURCEDIR := .
+MAINTARGET := app.exe
+TESTTARGET := test.exe
+CC := gcc
+CFLAGS := -std=c99 -Wall -Werror -g3
+SOURCES := $(wildcard $(SOURCEDIR)/*.c)
+OBJECTS := $(patsubst $(SOURCEDIR)/%.o,$(BUILDDIR)/%.o,$(SOURCES:.c=.o))
+
+$(BUILDDIR)/$(MAINTARGET): $(OBJECTS)
+	$(CC) -o $@ $^
+
+$(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
+	$(CC) $< $(CFLAGS) -c -o $@
+
 clean:
-	rm *.o *.exe
+	-rm $(BUILDDIR)/$(TARGET) $(OBJECTS)

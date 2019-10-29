@@ -35,7 +35,14 @@ void print_menu()
 
 int handle_action(int action)
 {
-	
+	switch (action)
+	{
+	case 'q':
+		return MENU_EXIT;
+		break;
+	default:
+		return MENU_UNDEFINED;
+	}
 }
 
 int menu_mainloop()

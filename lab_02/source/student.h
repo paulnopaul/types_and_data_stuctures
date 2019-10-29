@@ -62,13 +62,13 @@ typedef struct _student
     date admission_date;
     union
     {
-        struct // если студент живет в доме
+        struct// если студент живет в доме
         {
             str_t street;
             int house_number;
             int room_number;
         };
-        struct // если студент живет в общежитии
+        struct// если студент живет в общежитии
         {
             int dorm_number;
             int dorm_room_number;

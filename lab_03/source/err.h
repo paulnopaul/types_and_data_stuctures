@@ -23,7 +23,7 @@
 
 // menu
 #define MENU_EXIT 8
-#define MENU_
+#define MENU_UNDEFINED 9
 
 void err_output(int err);
 
