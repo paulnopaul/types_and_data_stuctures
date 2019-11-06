@@ -14,13 +14,11 @@ int menu_mainloop();
 // information ouput actions
 void print_menu();
 
-void print_task();
+void print_info();
 
-
+// main actions
 int handle_action(int action);
 
 int input_action(int *action);
-
-
 
 #endif //LAB_03_MENU_H
