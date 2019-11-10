@@ -10,6 +10,9 @@ void handle_error(const int err)
 		break;
 	case EMPTY_STACK:
 		break;
+	case STACK_UNDEFINED_MODE:
+		puts("Undefined mode");
+
 	default:
 		break;
 	}

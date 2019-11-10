@@ -16,6 +16,7 @@
 
 // menu errors
 #define MENU_UNDEFINED_ACTION 2
+#define STACK_UNDEFINED_MODE 4
 
 
 

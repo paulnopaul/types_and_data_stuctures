@@ -49,12 +49,14 @@ int menu_mainloop()
 	lstack_t lstack = NULL;
 	astack_t astack = NULL;
 	int stack_mode = LSTACK_MODE;
-	while (err == OK)
+	while (err != MENU_EXIT)
 	{
 		menu_print_menu(stack_mode);
+		fflush(stdin);
 		err = menu_read_action(&action);
 		if (err == OK)
 			err = menu_handle_action(action, &lstack, &astack, &stack_mode);
+		handle_error(err);
 	}
 	return err;
 }
@@ -62,38 +64,44 @@ int menu_mainloop()
 int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode)
 {
 	int err = OK;
-	int type;
+	long buf;
 	switch (action)
 	{
 	case 0:
 		err = MENU_EXIT;
 		break;
-	case 1: 
-		// Вывод меню
-		menu_print_info();
-		fflush(stdin);
-		for (; getchar() != '\n';);
+	case 1:
+		err = menu_info();
 		break;
-	case 2:
-		// Смена типа стека
-		if (scanf("%d", &type) == 1)
-		{
-			if (type == 1)
-				*mode = ASTACK_MODE;
-			else if (type == 2)
-				*mode = LSTACK_MODE;
-		}
+	case 2: // Смена типа стека
+		err = menu_stack_chmode(mode);
 		break;
-	case 3:
+	case 3: // Добавление элемента
+		if (*mode == ASTACK_MODE)
+			err = menu_input_astack_element(astack);
+		else if (*mode == LSTACK_MODE)
+			err = menu_input_lstack_element(lstack);
 		break;
 	case 4:
-		// TODO
+		if (*mode == ASTACK_MODE)
+			err = menu_delete_astack_element(astack);
+		else if (*mode == LSTACK_MODE)
+			err = menu_delete_lstack_element(lstack);
 		break;
 	case 5:
+		if (*mode == ASTACK_MODE)
+			err = menu_output_astack_state(astack);
+		else if (*mode == LSTACK_MODE)
+			err = menu_output_lstack_state(lstack);
 		break;
 	case 6:
+		if (*mode == ASTACK_MODE)
+			err = menu_output_astack_decreasing(astack);
+		else if (*mode == LSTACK_MODE)
+			err = menu_output_astack_decreasing(lstack);
 		break;
-	case 7:
+	case 7: // TODO Вывести список освобожденных адресов стека в списке
+		err = menu_output_lstack_freed(lstack);
 		break;
 	default:
 		err = MENU_UNDEFINED_ACTION;
@@ -101,10 +109,10 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode
 	return err;
 }
 
-int menu_read_action(int* action)
+int menu_read_action(int *action)
 {
 	if (scanf("%d", action) == 1)
 		return OK;
-	else 
+	else
 		return ACTION_INPUT_ERROR;
 }
