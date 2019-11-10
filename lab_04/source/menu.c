@@ -10,12 +10,12 @@
 void menu_print_menu(int mode)
 {
 	printf("\n\n\n**********************************************************************************\n\n"
-		   "Программа для работы со стеком\n"
+		   "Программа для работы со стеком\n\n"
 		   "Текущий стек: ");
 	if (mode == ASTACK_MODE)
-		puts("cтек, хранящийся в массиве");
-	if (mode = LSTACK_MODE)
-		puts("стек, хранящийся в списке");
+		puts("cтек, хранящийся в массиве\n");
+	if (mode == LSTACK_MODE)
+		puts("стек, хранящийся в списке\n");
 	printf("Возможные действия:\n\n"
 		   "2 - Выбрать тип стека\n" // ввод
 		   "3 - Добавить элемент\n"
@@ -38,7 +38,9 @@ void menu_print_info()
 		   "Данная программа производит операции со стеком целых чисел, такие как: добавление,\n"
 		   "удаление элементов, вывод серий убывающих последовательностей и текущего состояния стека\n"
 		   "Формат ввода (при добавлении элемента): целое число от −1 000 000 000  до 1 000 000 000\n"
-		   "Максимальный размер стека - 1000 элементов\n");
+		   "Максимальный размер стека - 1000 элементов\n\n"
+		   "****************************************************\n\n"
+		   "Любой символ + Enter - выход в главное меню: ");
 }
 
 int menu_mainloop()
@@ -54,25 +56,40 @@ int menu_mainloop()
 		if (err == OK)
 			err = menu_handle_action(action, &lstack, &astack, &stack_mode);
 	}
+	return err;
 }
 
-int menu_hanlde_action(int action, lstack_t *lstack, astack_t *astack, int *mode)
+int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode)
 {
 	int err = OK;
+	int type;
 	switch (action)
 	{
 	case 0:
 		err = MENU_EXIT;
 		break;
+	case 1: 
+		// Вывод меню
+		menu_print_info();
+		fflush(stdin);
+		for (; getchar() != '\n';);
+		break;
 	case 2:
-		menu_print_info(*mode);
+		// Смена типа стека
+		if (scanf("%d", &type) == 1)
+		{
+			if (type == 1)
+				*mode = ASTACK_MODE;
+			else if (type == 2)
+				*mode = LSTACK_MODE;
+		}
 		break;
 	case 3:
 		break;
 	case 4:
+		// TODO
 		break;
 	case 5:
-		// TODO
 		break;
 	case 6:
 		break;
@@ -82,4 +99,12 @@ int menu_hanlde_action(int action, lstack_t *lstack, astack_t *astack, int *mode
 		err = MENU_UNDEFINED_ACTION;
 	}
 	return err;
+}
+
+int menu_read_action(int* action)
+{
+	if (scanf("%d", action) == 1)
+		return OK;
+	else 
+		return ACTION_INPUT_ERROR;
 }

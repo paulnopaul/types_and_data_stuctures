@@ -20,6 +20,6 @@ lstack_t lstack_pop(lstack_t stack, long *elem);
 
 lstack_t lstack_delete(lstack_t stack);
 
-lstack_t lstack_print(lstack_t stack);
+void lstack_print(lstack_t stack);
 
 #endif

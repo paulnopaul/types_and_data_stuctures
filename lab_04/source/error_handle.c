@@ -1,5 +1,7 @@
 #include "error_handle.h"
 
+#include <stdio.h>
+
 void handle_error(const int err)
 {
 	switch (err)
@@ -9,6 +11,6 @@ void handle_error(const int err)
 	case EMPTY_STACK:
 		break;
 	default:
-		printf("Undefined error");
+		break;
 	}
 }

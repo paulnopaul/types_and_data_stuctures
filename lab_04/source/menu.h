@@ -22,7 +22,7 @@ void menu_print_info();
 // main_actions
 int menu_read_action(int* action);
 
-int menu_hanlde_action(int action, lstack_t *lstack, astack_t *astack, int *mode);
+int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode);
 
 // 
 

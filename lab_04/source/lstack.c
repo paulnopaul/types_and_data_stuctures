@@ -51,9 +51,9 @@ lstack_t lstack_delete(lstack_t stack)
 	return NULL;
 }
 
-lstack_t lstack_print(lstack_t stack)
+void lstack_print(lstack_t stack)
 {
 	for (; stack->next; stack = stack->next)
-		printf("%d ", stack->elem);
+		printf("%ld ", stack->elem);
 	printf("\n");
 }

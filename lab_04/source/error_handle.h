@@ -7,6 +7,7 @@
 #define OK 0
 
 // input errors
+#define ACTION_INPUT_ERROR 3
 
 // memory errors
 
