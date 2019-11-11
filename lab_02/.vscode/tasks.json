@@ -1,20 +1,15 @@
 {
     "version": "2.0.0",
+    "_runner": "terminal",
     "tasks": [
         {
-            "label": "run python",
+            "label": "Build and Run",
             "type": "shell",
-            "command": "cd source; make; ../bin/app.exe",
+            "command": "terminal -e bash ${workspaceFolder}/.vscode/build.sh",
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
-        },
-        {
-            "type": "shell",
-            "label": "my multifile project run",
-            "command": "${fileDirname}/../source/app.exe",
-            "group": "build",
+            },
             "problemMatcher": [
                 "$gcc"
             ]

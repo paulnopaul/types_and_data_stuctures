@@ -5,19 +5,11 @@
             "label": "run python",
             "type": "shell",
             "command": "cd source; make; ../bin/app.exe",
+            "externalConsole": true,
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
-        },
-        {
-            "type": "shell",
-            "label": "my multifile project run",
-            "command": "${fileDirname}/../source/app.exe",
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-			]
         }
     ]
 }

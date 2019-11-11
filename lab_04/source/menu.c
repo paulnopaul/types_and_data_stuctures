@@ -147,14 +147,20 @@ int menu_info()
 	menu_print_info();
 	for(;getchar() != '\n';);
 	return OK;
-}
+}r
 
 // stack actions 
-
+// TODO Correct gn
 int menu_input_lstack_element(lstack_t *lstack)
 {
 	long temp;
 	printf("Input element: ");
+	if (scanf("%ld", &temp) == 1)
+	{
+		*lstack = lstack_push(*lstack, temp);
+		if (!(*lstack))
+			return STACK_ELEM_ALLOCATION_ERROR;
+	}
 	return OK; // TODO 
 }
 

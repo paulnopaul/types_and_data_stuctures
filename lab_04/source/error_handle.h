@@ -8,9 +8,10 @@
 
 // input errors
 #define ACTION_INPUT_ERROR 3
-#define INT_INPUT_ERROR 4
+#define INT_INPUT_ERROR 5
 
 // memory errors
+#define STACK_ELEM_ALLOCATION_ERROR 6
 
 // stack errors
 #define EMPTY_STACK 1
