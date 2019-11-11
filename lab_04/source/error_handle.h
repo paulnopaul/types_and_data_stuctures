@@ -8,6 +8,7 @@
 
 // input errors
 #define ACTION_INPUT_ERROR 3
+#define INT_INPUT_ERROR 4
 
 // memory errors
 

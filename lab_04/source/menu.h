@@ -33,9 +33,9 @@ Structure of menu action function
 
 // menu additional actoins
 
-int menu_stack_chmode(int *mode);
+int menu_stack_chmode(int *mode); // TODO
 
-int menu_info();
+int menu_info(); // TODO 
 
 // stack actions 
 

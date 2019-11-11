@@ -40,7 +40,7 @@ void menu_print_info()
 		   "Формат ввода (при добавлении элемента): целое число от −1 000 000 000  до 1 000 000 000\n"
 		   "Максимальный размер стека - 1000 элементов\n\n"
 		   "****************************************************\n\n"
-		   "Любой символ + Enter - выход в главное меню: ");
+		   "Enter - выход в главное меню: ");
 }
 
 int menu_mainloop()
@@ -64,7 +64,6 @@ int menu_mainloop()
 int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode)
 {
 	int err = OK;
-	long buf;
 	switch (action)
 	{
 	case 0:
@@ -98,9 +97,9 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode
 		if (*mode == ASTACK_MODE)
 			err = menu_output_astack_decreasing(astack);
 		else if (*mode == LSTACK_MODE)
-			err = menu_output_astack_decreasing(lstack);
+			err = menu_output_lstack_decreasing(lstack);
 		break;
-	case 7: // TODO Вывести список освобожденных адресов стека в списке
+	case 7: 
 		err = menu_output_lstack_freed(lstack);
 		break;
 	default:
@@ -116,3 +115,61 @@ int menu_read_action(int *action)
 	else
 		return ACTION_INPUT_ERROR;
 }
+
+
+// menu additional actoins
+
+int menu_stack_chmode(int *mode)
+{
+	int temp = 0;
+	printf("Current stack: ");
+	if (*mode == ASTACK_MODE)
+		printf("array stack");
+	else 
+		printf("linked list stack");
+	printf("\n\n***********************************************"
+		   "Stack variants:\n"
+		   "1 - list stack\n"
+		   "2 - array stack\n\n"
+		   "Choose stack: ");
+	if (scanf("%d", &temp) == 1 && temp == 1)
+		*mode = LSTACK_MODE;
+	else if (temp == 2)
+		*mode = ASTACK_MODE;
+	else
+		return INT_INPUT_ERROR;
+	return OK;
+} 
+
+int menu_info()
+{
+	int temp;
+	menu_print_info();
+	for(;getchar() != '\n';);
+	return OK;
+}
+
+// stack actions 
+
+int menu_input_lstack_element(lstack_t *lstack)
+{
+	long temp;
+	printf("Input element: ");
+	return OK; // TODO 
+}
+
+int menu_input_astack_element(astack_t *astack); // TODO
+
+int menu_delete_lstack_element(lstack_t *lstack); // TODO
+
+int menu_delete_astack_element(astack_t *astack); // TODO 
+
+int menu_output_lstack_state(lstack_t *lstack); // TODO
+
+int menu_output_astack_state(astack_t *astack); // TODO
+
+int menu_output_lstack_decreasing(lstack_t *lstack); // TODO 
+
+int menu_output_astack_decreasing(astack_t *astack); // TODO
+
+int menu_output_lstack_freed(lstack_t *lstack); // TODO
