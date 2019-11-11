@@ -150,7 +150,6 @@ int menu_info()
 }r
 
 // stack actions 
-// TODO Correct gn
 int menu_input_lstack_element(lstack_t *lstack)
 {
 	long temp;
@@ -161,12 +160,29 @@ int menu_input_lstack_element(lstack_t *lstack)
 		if (!(*lstack))
 			return STACK_ELEM_ALLOCATION_ERROR;
 	}
-	return OK; // TODO 
+	return OK; 
 }
 
-int menu_input_astack_element(astack_t *astack); // TODO
+int menu_input_astack_element(astack_t *astack)
+{
+	long temp;
+	printf("Input element: ");
+	if (scanf("%ld", &temp) == 1)
+	{
+		*astack = lstack_push(*astack, temp);
+		if (!(*astack))
+			return STACK_ELEM_ALLOCATION_ERROR;
+	}
+	return OK;
+}
 
-int menu_delete_lstack_element(lstack_t *lstack); // TODO
+int menu_delete_lstack_element(lstack_t *lstack)
+{
+	long buf;
+	*lstack = lstack_pop(*lstack, &buf);
+	if (!*lstack)
+		return EMPTY_STACK;
+}
 
 int menu_delete_astack_element(astack_t *astack); // TODO 
 
