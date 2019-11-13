@@ -33,28 +33,28 @@ Structure of menu action function
 
 // menu additional actoins
 
-int menu_stack_chmode(int *mode); // TODO
+int menu_stack_chmode(int *mode); 
 
-int menu_info(); // TODO 
+int menu_info(); 
 
 // stack actions 
 
-int menu_input_lstack_element(lstack_t *lstack); // TODO
+int menu_input_lstack_element(lstack_t *lstack); 
 
-int menu_input_astack_element(astack_t *astack); // TODO
+int menu_input_astack_element(astack_t *astack); 
 
-int menu_delete_lstack_element(lstack_t *lstack); // TODO
+int menu_delete_lstack_element(lstack_t *lstack); 
 
-int menu_delete_astack_element(astack_t *astack); // TODO 
+int menu_delete_astack_element(astack_t *astack); 
 
-int menu_output_lstack_state(lstack_t *lstack); // TODO
+int menu_output_lstack_state(lstack_t *lstack); 
 
-int menu_output_astack_state(astack_t *astack); // TODO
+int menu_output_astack_state(astack_t *astack); 
 
-int menu_output_lstack_decreasing(lstack_t *lstack); // TODO 
+int menu_output_lstack_decreasing(lstack_t *lstack); 
 
-int menu_output_astack_decreasing(astack_t *astack); // TODO
+int menu_output_astack_decreasing(astack_t *astack); 
 
-int menu_output_lstack_freed(lstack_t *lstack); // TODO
+int menu_output_lstack_freed(lstack_t *lstack); 
 
 #endif

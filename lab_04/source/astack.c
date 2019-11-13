@@ -28,11 +28,13 @@ astack_t astack_push(astack_t stack, long elem)
 	return NULL;
 }
 
-astack_t astack_pop(astack_t stack, long elem)
+astack_t astack_pop(astack_t stack, long *elem)
 {
-	long *new_nodes = realloc(stack->nodes, --stack->size);
+	long *new_nodes = realloc(stack->nodes, (stack->size - 1) * sizeof(long));
+	*elem = stack->nodes[stack->size - 1];
 	if (new_nodes)
 	{
+		stack->size--;
 		stack->nodes = new_nodes;
 		return stack;
 	}

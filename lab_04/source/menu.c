@@ -147,7 +147,7 @@ int menu_info()
 	menu_print_info();
 	for(;getchar() != '\n';);
 	return OK;
-}r
+}
 
 // stack actions 
 int menu_input_lstack_element(lstack_t *lstack)
@@ -180,18 +180,77 @@ int menu_delete_lstack_element(lstack_t *lstack)
 {
 	long buf;
 	*lstack = lstack_pop(*lstack, &buf);
+	printf("Был удален элемент %ld\n", buf);
 	if (!*lstack)
 		return EMPTY_STACK;
+	return OK;
 }
 
-int menu_delete_astack_element(astack_t *astack); // TODO 
+int menu_delete_astack_element(astack_t *astack) 
+{
+	long buf;
+	*astack = astack_pop(*astack, &buf);
+	printf("Был удален элемент %ld\n", buf);
+	if (!*astack)
+		return EMPTY_STACK;
+	return OK;
+}
 
-int menu_output_lstack_state(lstack_t *lstack); // TODO
+int menu_output_lstack_state(lstack_t *lstack)
+{
+	lstack_print(*lstack);
+	return OK;
+}
 
-int menu_output_astack_state(astack_t *astack); // TODO
+int menu_output_astack_state(astack_t *astack)
+{
+	astack_print(*astack);
+	return OK;
+}
 
-int menu_output_lstack_decreasing(lstack_t *lstack); // TODO 
+int menu_output_lstack_decreasing(lstack_t lstack)
+{
+	lstack_t prev = lstack;
+	lstack_t cur = lstack->next;
+	int decreasing = 0;
+	for (; cur; cur = cur->next, prev = prev->next)
+	{
+		if (prev->elem > cur->elem)
+		{
+			if (!decreasing)
+				printf("%ld", prev);
+			printf("%ld", cur);
+		}
+		else
+		{
+			if (decreasing)
+				putchar('\n');
+			decreasing = 0;
+		}
+	}
+	return OK; 
+}
 
-int menu_output_astack_decreasing(astack_t *astack); // TODO
+int menu_output_astack_decreasing(astack_t astack)
+{
+	int decreasing = 0;
+	for (int i = 0; i < astack->size - 1; ++i)
+	{
+		if (astack->nodes[i] > astack->nodes[i + 1])
+		{
+			if (!decreasing)
+				printf("%ld ", astack->nodes[i + 1]);
+			printf("%ld ", astack->nodes[i + 1]);
+			decreasing = 1;
+		}
+		else
+		{
+			if (decreasing)
+				putchar('\n');
+			decreasing = 0;
+		}
+	}
+	return OK;
+}
 
-int menu_output_lstack_freed(lstack_t *lstack); // TODO
+int menu_output_lstack_freed(lstack_t *lstack); // TODO добавить возможность просмотра
