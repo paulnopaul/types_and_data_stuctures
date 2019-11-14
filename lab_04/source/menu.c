@@ -143,7 +143,6 @@ int menu_stack_chmode(int *mode)
 
 int menu_info()
 {
-	int temp;
 	menu_print_info();
 	for(;getchar() != '\n';);
 	return OK;

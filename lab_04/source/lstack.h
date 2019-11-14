@@ -10,16 +10,15 @@ typedef struct node_t
 	long elem;
 } node_t;
 
-lstack_t create_lstack(long num);
+int lstack_init(lstack_t *stack, long elem);
 
-lstack_t lstack_init(lstack_t stack, long num);
+int lstack_push(lstack_t *stack, long elem);
 
-lstack_t lstack_push(lstack_t stack, long num);
+int lstack_pop(lstack_t *stack, long *elem, lstack_t *freed);
 
-lstack_t lstack_pop(lstack_t stack, long *elem);
+void lstack_print(lstack_t *stack);
 
-lstack_t lstack_delete(lstack_t stack);
+int lstack_print_decreasing(lstack_t *stack);
 
-void lstack_print(lstack_t stack);
-
+int lstack_delete(lstack_t *stack);
 #endif

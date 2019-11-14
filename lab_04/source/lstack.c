@@ -5,55 +5,78 @@
 
 #include "error_handle.h"
 
-lstack_t create_lstack(long num)
+
+int lstack_init(lstack_t *stack, long elem)
 {
-	lstack_t new_stack = (lstack_t)malloc(sizeof(node_t));
-	if (new_stack)
+	int err = OK;
+	if (*stack)
+		free(*stack);
+	*stack = malloc(sizeof(node_t));
+	if (*stack)
 	{
-		new_stack->next = NULL;
-		new_stack->elem = num;
+		(*stack)->elem = elem;
+		(*stack)->next = NULL;
 	}
-	return new_stack;
+	else
+		err = MALLOC_ERROR;
+	return err;
 }
 
-lstack_t lstack_init(lstack_t stack, long num)
+int lstack_push(lstack_t *stack, long elem)
 {
-	if (!stack)
-		free(stack);
-	stack = create_lstack(num);
-	return stack;
-}
-
-lstack_t lstack_push(lstack_t stack, long num)
-{
-	lstack_t new_node = create_lstack(num);
+	int err = OK;
+	lstack_t new_node = malloc(sizeof(node_t));
 	if (new_node)
-		new_node->next = stack;
-	return new_node;
-}
-
-lstack_t lstack_pop(lstack_t stack, long *elem)
-{
-	lstack_t new_stack = stack->next;
-	*elem = stack->elem;
-	free(stack);
-	return new_stack;
-}
-
-lstack_t lstack_delete(lstack_t stack)
-{
-	lstack_t next;
-	for (; stack; stack = next)
 	{
-		next = stack->next;
-		free(stack);
+		new_node->next = *stack;
+		new_node->elem = elem;
+		*stack = new_node;
 	}
-	return NULL;
+	else
+		err = MALLOC_ERROR;
+	return err;
 }
 
-void lstack_print(lstack_t stack)
+int lstack_pop(lstack_t *stack, long *elem, lstack_t *freed)
 {
-	for (; stack->next; stack = stack->next)
-		printf("%ld ", stack->elem);
-	printf("\n");
+	int err = OK;
+	lstack_t buf = NULL;
+	if (*stack)
+	{
+		*elem = (*stack)->elem;
+
+		buf = *stack;
+		if ((*stack)->next);
+			*stack = (*stack)->next;
+		*freed = buf;
+		free(buf);
+	}
+	else
+		err = EMPTY_STACK;
+	return err;
+}
+
+void lstack_print(lstack_t *stack)
+{
+	long elem = 0;
+	int err = lstack_pop(stack, &elem);
+	if (err == EMPTY_STACK)
+		puts("Empty stack");
+	do
+	{
+		printf("%ld ", elem);
+		err = lstack_pop(stack, &elem);
+	} while (!err);
+	printf("\n");;
+}
+
+int lstack_print_decreasing(lstack_t *stack);
+
+int lstack_delete(lstack_t *stack)
+{
+	int err = OK, buf = 0;
+	lstack_t lbuf = NULL;
+	while (!err)
+		err = lstack_pop(stack, buf, &lbuf);
+	return err;
 }
