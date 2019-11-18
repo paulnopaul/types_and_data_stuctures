@@ -6,6 +6,7 @@
 #include "lstack.h"
 #include "astack.h"
 #include "error_handle.h"
+#include "pointer_array.h"
 
 void menu_print_menu(int mode)
 {
@@ -45,23 +46,33 @@ void menu_print_info()
 
 int menu_mainloop()
 {
+	// VARIALBLES
 	int err = OK, action;
+
 	lstack_t lstack = NULL;
 	astack_t astack = NULL;
+
 	int stack_mode = LSTACK_MODE;
+
+	size_t p_arr_size;
+	void **p_arr = NULL;
+
+	// MAINLOOP
 	while (err != MENU_EXIT)
 	{
 		menu_print_menu(stack_mode);
 		fflush(stdin);
 		err = menu_read_action(&action);
 		if (err == OK)
-			err = menu_handle_action(action, &lstack, &astack, &stack_mode);
+			err = menu_handle_action(action, &lstack, &astack, 
+									 &stack_mode, &p_arr, &p_arr_size);
 		handle_error(err);
 	}
 	return err;
 }
 
-int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode)
+int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, 
+                       int *mode, void ***p_arr, size_t *p_arr_size)
 {
 	int err = OK;
 	switch (action)
@@ -85,7 +96,7 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode
 		if (*mode == ASTACK_MODE)
 			err = menu_delete_astack_element(astack);
 		else if (*mode == LSTACK_MODE)
-			err = menu_delete_lstack_element(lstack);
+			err = menu_delete_lstack_element(lstack, p_arr, p_arr_size);
 		break;
 	case 5:
 		if (*mode == ASTACK_MODE)
@@ -100,7 +111,7 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode
 			err = menu_output_lstack_decreasing(lstack);
 		break;
 	case 7: 
-		err = menu_output_lstack_freed(lstack);
+		err = menu_output_lstack_freed((lstack_t *) p_arr, *p_arr_size);
 		break;
 	default:
 		err = MENU_UNDEFINED_ACTION;
@@ -148,98 +159,86 @@ int menu_info()
 	return OK;
 }
 
+// stack actions
+
 // stack actions 
+
 int menu_input_lstack_element(lstack_t *lstack)
 {
-	int err = OK;
-	long temp;
-	printf("Input element: ");
-	if (scanf("%ld", &temp) == 1)
-		err = lstack_push(lstack, temp);
-	return err;
+	long buf;
+	printf("Введите целое число: ");
+	if (scanf("%ld", &buf) == 1)
+		return lstack_push(lstack, buf);
+	else
+		return INT_INPUT_ERROR;
 }
 
 int menu_input_astack_element(astack_t *astack)
 {
-	long temp;
-	printf("Input element: ");
-	if (scanf("%ld", &temp) == 1)
-	{
-		*astack = lstack_push(*astack, temp);
-		if (!(*astack))
-			return STACK_ELEM_ALLOCATION_ERROR;
-	}
-	return OK;
+	long buf;
+	printf("Введите целое число: ");
+	if (scanf("%ld", &buf) == 1)
+		return astack_push(astack, buf);
+	else
+		return INT_INPUT_ERROR;
 }
 
-int menu_delete_lstack_element(lstack_t *lstack)
+int menu_delete_lstack_element(lstack_t *lstack, void ***p_arr, size_t *size)
 {
 	int err = OK;
-
-	long buf;
-	lstack_t freed_mem;
-
-	err = lstack_pop(lstack, &buf, &freed_mem);
-	printf("Был удален элемент %ld\n", buf);
+	long elem;
+	lstack_t freed;
+	puts("Удаление элемента");
+	if (!(err = lstack_pop(lstack, &elem, &freed)))
+	{
+		printf("Был удален элемент %p со значением %ld\n", (void *) freed, elem);
+		err = p_arr_push_back(p_arr, size, (void *) freed);
+	}
 	return err;
 }
 
-int menu_delete_astack_element(astack_t *astack) 
+int menu_delete_astack_element(astack_t *astack)
 {
-	long buf;
-	*astack = astack_pop(*astack, &buf);
-	printf("Был удален элемент %ld\n", buf);
-	if (!*astack)
-		return EMPTY_STACK;
-	return OK;
+	int err = OK;
+	long elem;
+	puts("Удаление элемента");
+	if (!(err = astack_pop(astack, &elem)))
+		printf("Был удален элемент со значением %ld\n", elem);
+	return err;
 }
 
 int menu_output_lstack_state(lstack_t *lstack)
 {
-	int err = OK;
-	err = lstack_print(lstack);
-	return err;
+	puts("Вывод стека");
+	return lstack_print(lstack);
 }
 
 int menu_output_astack_state(astack_t *astack)
 {
-	astack_print(*astack);
-	return OK;
+	puts("Вывод стека");
+	return astack_print(astack);
 }
 
 int menu_output_lstack_decreasing(lstack_t *lstack)
 {
-	int err = OK;
-	err = lstack_print_decreasing(lstack);
-	return OK; 
+	puts("Вывод убывающих подпоследовательностей стека");
+	return lstack_print_decreasing(lstack);
 }
 
 int menu_output_astack_decreasing(astack_t *astack)
 {
-	int decreasing = 0;
-	for (int i = 0; i < astack->size - 1; ++i)
-	{
-		if (astack->nodes[i] > astack->nodes[i + 1])
-		{
-			if (!decreasing)
-				printf("%ld ", astack->nodes[i + 1]);
-			printf("%ld ", astack->nodes[i + 1]);
-			decreasing = 1;
-		}
-		else
-		{
-			if (decreasing)
-				putchar('\n');
-			decreasing = 0;
-		}
-	}
-	return OK;
+	puts("Вывод убывающих подпоследовательностей стека");
+	return astack_print_decreasing(astack);
 }
 
 int menu_output_lstack_freed(lstack_t *freed_arr, size_t size)
 {
-	for (size_t i = 0; i < size; ++i)
-		printf("%p", (void *) freed_arr[i]);
+	puts("Вывод освобожденных адресов");
+	if (size == 0)
+		puts("Адреса не освобождались");
+	else 
+		for (size_t i = 0; i < size; ++i)
+			printf("%p ", (void *) freed_arr[i]);
 	puts("");
 	return OK;
 }

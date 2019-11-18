@@ -25,7 +25,8 @@ int menu_mainloop();
 
 int menu_read_action(int* action);
 
-int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, int *mode);
+int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, 
+                       int *mode, void ***p_arr, size_t *p_arr_size);
 
 /*
 Structure of menu action function
@@ -46,7 +47,7 @@ int menu_input_lstack_element(lstack_t *lstack);
 
 int menu_input_astack_element(astack_t *astack); 
 
-int menu_delete_lstack_element(lstack_t *lstack); 
+int menu_delete_lstack_element(lstack_t *lstack, void ***p_arr, size_t *size); 
 
 int menu_delete_astack_element(astack_t *astack); 
 
@@ -59,5 +60,8 @@ int menu_output_lstack_decreasing(lstack_t *lstack);
 int menu_output_astack_decreasing(astack_t *astack); 
 
 int menu_output_lstack_freed(lstack_t *freed_arr, size_t size);
+
+// freed array actions
+
 
 #endif

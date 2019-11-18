@@ -47,8 +47,10 @@ int lstack_pop(lstack_t *stack, long *elem, lstack_t *freed)
 		*elem = (*stack)->elem;
 
 		buf = *stack;
-		if ((*stack)->next);
+		if ((*stack)->next)
 			*stack = (*stack)->next;
+		else
+			*stack = NULL;
 		*freed = buf;
 		free(buf);
 	}
