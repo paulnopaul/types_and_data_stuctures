@@ -10,7 +10,7 @@
 
 void menu_print_menu(int mode)
 {
-	printf("\n\n\n**********************************************************************************\n\n"
+	printf("\n\n\n***********************************************\n\n"
 		   "Программа для работы со стеком\n\n"
 		   "Текущий стек: ");
 	if (mode == ASTACK_MODE)
@@ -22,12 +22,13 @@ void menu_print_menu(int mode)
 		   "3 - Добавить элемент\n"
 		   "4 - Удалить элемент\n\n"
 		   "5 - Вывести текущее состояние\n" // вывод
-		   "6 - Вывести убывающие серии последовательности целых чисел\n"
-		   "7 - Вывести список освобожденных адресов\n\n"
-		   "**********************************************************************************\n\n"
+		   "6 - Вывести убывающие серии последовательности целых чисел\n");
+	if (mode == LSTACK_MODE)
+		printf("7 - Вывести список освобожденных адресов\n\n");
+	printf("***********************************************\n\n"
 		   "0 - Выход из программы\n"
 		   "1 - Вывести информацию о программе\n\n"
-		   "**********************************************************************************\n\n"
+		   "***********************************************\n\n"
 		   "Введите действие: ");
 }
 
@@ -54,12 +55,13 @@ int menu_mainloop()
 
 	int stack_mode = LSTACK_MODE;
 
-	size_t p_arr_size;
+	size_t p_arr_size = 0;
 	void **p_arr = NULL;
 
 	// MAINLOOP
 	while (err != MENU_EXIT)
 	{
+		system("clear");
 		menu_print_menu(stack_mode);
 		fflush(stdin);
 		err = menu_read_action(&action);
@@ -68,6 +70,9 @@ int menu_mainloop()
 									 &stack_mode, &p_arr, &p_arr_size);
 		handle_error(err);
 	}
+
+	astack_clean(&astack);
+	lstack_delete(&lstack);
 	return err;
 }
 
@@ -111,7 +116,8 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack,
 			err = menu_output_lstack_decreasing(lstack);
 		break;
 	case 7: 
-		err = menu_output_lstack_freed((lstack_t *) p_arr, *p_arr_size);
+		if (*mode == LSTACK_MODE)
+			err = menu_output_lstack_freed((lstack_t *) p_arr, *p_arr_size);
 		break;
 	default:
 		err = MENU_UNDEFINED_ACTION;
@@ -122,7 +128,10 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack,
 int menu_read_action(int *action)
 {
 	if (scanf("%d", action) == 1)
+	{
+		for (;getchar() != '\n';);
 		return OK;
+	}
 	else
 		return ACTION_INPUT_ERROR;
 }
@@ -133,16 +142,16 @@ int menu_read_action(int *action)
 int menu_stack_chmode(int *mode)
 {
 	int temp = 0;
-	printf("Current stack: ");
+	printf("Текущий стек: ");
 	if (*mode == ASTACK_MODE)
-		printf("array stack");
+		printf("стек, хранящийся в массиве");
 	else 
-		printf("linked list stack");
-	printf("\n\n***********************************************"
-		   "Stack variants:\n"
-		   "1 - list stack\n"
-		   "2 - array stack\n\n"
-		   "Choose stack: ");
+		printf("стек, хранящийся в списке");
+	printf("\n\n***********************************************\n"
+		   "Варианты:\n"
+		   "1 - список\n"
+		   "2 - массив\n\n"
+		   "Выберите режим: ");
 	if (scanf("%d", &temp) == 1 && temp == 1)
 		*mode = LSTACK_MODE;
 	else if (temp == 2)

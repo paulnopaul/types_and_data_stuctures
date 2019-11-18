@@ -20,11 +20,9 @@ tscheklin@gmail.com
 
 
 #include "menu.h"
-#include "stdio.h"
-#include "stdlib.h"
-#include "limits.h"
 #include "error_handle.h"
 
+#include "pointer_array.h"
 
 int main()
 {
@@ -33,3 +31,4 @@ int main()
 	handle_error(err);
 	return 0;
 }
+

@@ -43,5 +43,8 @@ int p_arr_push_back(void ***arr, size_t *size, void* pointer)
         else
             err = REALLOC_ERROR;
     }
+
+    if (!err)
+        printf("ADDED %p = %p\n", pointer, (*arr)[*size - 1]);
     return err;
 }

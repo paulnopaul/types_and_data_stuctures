@@ -11,8 +11,20 @@ void handle_error(const int err)
 	case EMPTY_STACK:
 		break;
 	case STACK_UNDEFINED_MODE:
-		puts("Undefined mode");
-
+		puts("Неизвестный режим");
+		break;
+	case MALLOC_ERROR:
+		puts("Ошибка выделения памяти");
+		break;
+	case REALLOC_ERROR:
+		puts("Ошибка переопределения памяти");
+		break;
+	case MENU_UNDEFINED_ACTION:
+		puts("Неизвестное действие в меню");
+		break;
+	case INT_INPUT_ERROR: 
+		puts("Ошибка ввода числа");
+		break;
 	default:
 		break;
 	}
