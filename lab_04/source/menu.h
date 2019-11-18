@@ -1,8 +1,11 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
+#include <stdio.h>
+
 #include "lstack.h"
 #include "astack.h"
+
 
 // menu codes (NOT ERROR CODES)
 #define MENU_EXIT 100
@@ -55,6 +58,6 @@ int menu_output_lstack_decreasing(lstack_t *lstack);
 
 int menu_output_astack_decreasing(astack_t *astack); 
 
-int menu_output_lstack_freed(lstack_t *lstack); 
+int menu_output_lstack_freed(lstack_t *freed_arr, size_t size);
 
 #endif

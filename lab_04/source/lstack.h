@@ -16,7 +16,7 @@ int lstack_push(lstack_t *stack, long elem);
 
 int lstack_pop(lstack_t *stack, long *elem, lstack_t *freed);
 
-void lstack_print(lstack_t *stack);
+int lstack_print(lstack_t *stack);
 
 int lstack_print_decreasing(lstack_t *stack);
 

@@ -12,6 +12,7 @@
 
 // memory errors
 #define MALLOC_ERROR 3
+#define REALLOC_ERROR 7
 
 // stack errors
 #define EMPTY_STACK 4

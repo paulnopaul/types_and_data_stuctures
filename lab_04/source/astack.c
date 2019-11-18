@@ -5,27 +5,40 @@
 
 #include "error_handle.h"
 
-astack_t astack_create()
+int astack_create(astack_t *stack, long elem)
 {
-	astack_t new_stack = (astack_t)malloc(sizeof(node_arr));
-	if (new_stack)
+	int err = OK;
+	astack_t new_stack = (astack_t) malloc(sizeof(node_arr));
+	if (new_stack) 
 	{
-		new_stack->size = 0;
-		new_stack->nodes = NULL;
+		new_stack->nodes = (long *) malloc(sizeof(long));
+		if (new_stack->nodes)
+		{
+			new_stack->nodes[0] = elem;
+			new_stack->size = 1;
+			*stack = new_stack;
+		}
+		else 
+			err = MALLOC_ERROR;
+		
 	}
-	return new_stack;
+	else
+		err = MALLOC_ERROR;
+	return err;
 }
 
-astack_t astack_push(astack_t stack, long elem)
+int astack_push(astack_t *stack, long elem)
 {
-	long *new_nodes = realloc(stack->nodes, ++stack->size);
+	int err = OK;
+	long *new_nodes = realloc((*stack)->nodes, (*stack)->size + 1);
 	if (new_nodes)
 	{
-		new_nodes[stack->size - 1] = elem;
-		stack->nodes = new_nodes;
-		return stack;
+		new_nodes[(*stack)->size - 1] = elem;
+		(*stack)->nodes = new_nodes;
 	}
-	return NULL;
+	else
+		err = REALLOC_ERROR;
+	return err;
 }
 
 astack_t astack_pop(astack_t stack, long *elem)

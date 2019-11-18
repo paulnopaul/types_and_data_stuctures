@@ -151,15 +151,12 @@ int menu_info()
 // stack actions 
 int menu_input_lstack_element(lstack_t *lstack)
 {
+	int err = OK;
 	long temp;
 	printf("Input element: ");
 	if (scanf("%ld", &temp) == 1)
-	{
-		*lstack = lstack_push(*lstack, temp);
-		if (!(*lstack))
-			return STACK_ELEM_ALLOCATION_ERROR;
-	}
-	return OK; 
+		err = lstack_push(lstack, temp);
+	return err;
 }
 
 int menu_input_astack_element(astack_t *astack)
@@ -177,12 +174,14 @@ int menu_input_astack_element(astack_t *astack)
 
 int menu_delete_lstack_element(lstack_t *lstack)
 {
+	int err = OK;
+
 	long buf;
-	*lstack = lstack_pop(*lstack, &buf);
+	lstack_t freed_mem;
+
+	err = lstack_pop(lstack, &buf, &freed_mem);
 	printf("Был удален элемент %ld\n", buf);
-	if (!*lstack)
-		return EMPTY_STACK;
-	return OK;
+	return err;
 }
 
 int menu_delete_astack_element(astack_t *astack) 
@@ -197,8 +196,9 @@ int menu_delete_astack_element(astack_t *astack)
 
 int menu_output_lstack_state(lstack_t *lstack)
 {
-	lstack_print(*lstack);
-	return OK;
+	int err = OK;
+	err = lstack_print(lstack);
+	return err;
 }
 
 int menu_output_astack_state(astack_t *astack)
@@ -207,30 +207,14 @@ int menu_output_astack_state(astack_t *astack)
 	return OK;
 }
 
-int menu_output_lstack_decreasing(lstack_t lstack)
+int menu_output_lstack_decreasing(lstack_t *lstack)
 {
-	lstack_t prev = lstack;
-	lstack_t cur = lstack->next;
-	int decreasing = 0;
-	for (; cur; cur = cur->next, prev = prev->next)
-	{
-		if (prev->elem > cur->elem)
-		{
-			if (!decreasing)
-				printf("%ld", prev);
-			printf("%ld", cur);
-		}
-		else
-		{
-			if (decreasing)
-				putchar('\n');
-			decreasing = 0;
-		}
-	}
+	int err = OK;
+	err = lstack_print_decreasing(lstack);
 	return OK; 
 }
 
-int menu_output_astack_decreasing(astack_t astack)
+int menu_output_astack_decreasing(astack_t *astack)
 {
 	int decreasing = 0;
 	for (int i = 0; i < astack->size - 1; ++i)
@@ -252,4 +236,10 @@ int menu_output_astack_decreasing(astack_t astack)
 	return OK;
 }
 
-int menu_output_lstack_freed(lstack_t *lstack); // TODO добавить возможность просмотра
+int menu_output_lstack_freed(lstack_t *freed_arr, size_t size)
+{
+	for (size_t i = 0; i < size; ++i)
+		printf("%p", (void *) freed_arr[i]);
+	puts("");
+	return OK;
+}
