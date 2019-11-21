@@ -32,7 +32,7 @@ int astack_push(astack_t *stack, long elem)
 	int err = OK;
 	if (*stack)
 	{
-		long *new_nodes = (long *) realloc((*stack)->nodes, (*stack)->size + 1);
+		long *new_nodes = (long *) realloc((*stack)->nodes, sizeof(long) * ((*stack)->size + 1));
 		if (new_nodes)
 		{
 			new_nodes[(*stack)->size - 1] = elem;
@@ -53,17 +53,24 @@ int astack_pop(astack_t *stack, long *elem)
 	int err = OK;
 	if (*stack)
 	{
-		long *new_nodes = (long *) realloc ((*stack)->nodes, (*stack)->size - 1);
-		if (new_nodes)
+		if ((*stack)->size == 1)
 		{
-			*elem = (*stack)->nodes[(*stack)->size - 1];
-			(*stack)->nodes = new_nodes;
-			--(*stack)->size;
-			if ((*stack)->size == 0)
-				*stack = NULL;
+			free((*stack)->nodes);
+			(*stack)->nodes = NULL;
+			(*stack)->size = 0;
 		}
+		else if ((*stack)->size == 0)
+			err = EMPTY_STACK;
 		else 
-			err = REALLOC_ERROR;
+		{
+			long * new_nodes = realloc((*stack)->nodes, ((*stack)->size - 1) * sizeof(long));
+			if (new_nodes)
+			{
+				--(*stack)->size;
+				*elem = (*stack)->nodes[(*stack)->size];
+				(*stack)->nodes = new_nodes;
+			}
+		}
 	}
 	else 
 		err = EMPTY_STACK;
@@ -110,6 +117,9 @@ int astack_print_decreasing(astack_t *stack)
 	int err = OK, start = 1, stack_not_empty = 0;
 	long elem, prev = LONG_MIN;
 	astack_t new_stack = NULL;
+
+	if (!(*stack)->size)
+		puts("Empty stack");
 
 	while(!(err = astack_pop(stack, &elem)))
 	{

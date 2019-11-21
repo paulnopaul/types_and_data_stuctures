@@ -16,6 +16,7 @@
 
 // stack errors
 #define EMPTY_STACK 4
+#define STACK_OVERFLOW 8
 
 // menu errors
 #define MENU_UNDEFINED_ACTION 5

@@ -68,6 +68,9 @@ int lstack_print(lstack_t *stack)
 	
 	// read and output elements from stack and push them to buffer stack
 	// (because of stack it gets reverse)
+	if (!*stack)
+		puts("Empty stack");
+		
 	while (!err && *stack)
 	{
 		err = lstack_pop(stack, &elem, &free_buf);
@@ -92,19 +95,24 @@ int lstack_print(lstack_t *stack)
 
 int lstack_print_decreasing(lstack_t *stack)
 {
-	long elem, prev = LONG_MIN;
+	long elem, prev = LONG_MAX;
 	int err = OK, start = 1;
 	lstack_t new_stack = NULL;
 	lstack_t free_buf;
 
-	// read and output elements from stack and push them to buffer stack
-	// (because of stack it gets reverse)
-	while (!err && *stack)
+	while (!err && new_stack)
 	{
 		err = lstack_pop(stack, &elem, &free_buf);
 		if (!err)
+			err = lstack_push(&new_stack, elem);
+	}
+
+	while (!err && *stack)
+	{
+		err = lstack_pop(&new_stack, &elem, &free_buf);
+		if (!err)
 		{
-			if (prev > elem)
+			if (prev < elem)
 			{
 				if (start)
 				{
@@ -116,28 +124,26 @@ int lstack_print_decreasing(lstack_t *stack)
 			else
 				start = 1;
 			prev = elem;
-			err = lstack_push(&new_stack, elem);
+			err = lstack_push(stack, elem);
 		}
 	}
 	printf("\n");
-
-	// push elements to source stack (for cancelling reverse)
-	while (!err && new_stack)
-	{
-		err = lstack_pop(&new_stack, &elem, &free_buf);
-		if (!err)
-			err = lstack_push(stack, elem);
-	}
 
 	return err;
 }
 
 int lstack_delete(lstack_t *stack)
 {
-	int err = OK;
+	int err;
 	long buf = 0;
 	lstack_t lbuf = NULL;
-	while (!err)
-		err = lstack_pop(stack, &buf, &lbuf);
+	err = lstack_pop(stack, &buf, &lbuf);
+	if (!err)
+	{
+		while (!err)
+			err = lstack_pop(stack, &buf, &lbuf);
+		if (err == EMPTY_STACK)
+			err = OK;
+	}
 	return err;
 }

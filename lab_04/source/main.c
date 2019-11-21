@@ -24,6 +24,10 @@ tscheklin@gmail.com
 
 #include "pointer_array.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+
 int main()
 {
 	int err;
@@ -31,4 +35,3 @@ int main()
 	handle_error(err);
 	return 0;
 }
-

@@ -19,6 +19,9 @@ void menu_print_menu(int mode);
 
 void menu_print_info();
 
+void menu_wait_for_enter();
+
+
 // menu main actions
 
 int menu_mainloop();
@@ -26,7 +29,8 @@ int menu_mainloop();
 int menu_read_action(int* action);
 
 int menu_handle_action(int action, lstack_t *lstack, astack_t *astack, 
-                       int *mode, void ***p_arr, size_t *p_arr_size);
+                       int *mode, void ***p_arr, size_t *p_arr_size,
+                       size_t *lstack_size, size_t *astack_size);
 
 /*
 Structure of menu action function
@@ -61,7 +65,9 @@ int menu_output_astack_decreasing(astack_t *astack);
 
 int menu_output_lstack_freed(lstack_t *freed_arr, size_t size);
 
-// freed array actions
+int menu_delete_lstack(lstack_t *lstack, void ***p_arr, size_t *p_arr_size);
 
+int menu_delete_astack(astack_t *astack);
 
+int menu_test_time();
 #endif

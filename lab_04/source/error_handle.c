@@ -9,6 +9,7 @@ void handle_error(const int err)
 	case OK:
 		break;
 	case EMPTY_STACK:
+		puts("Пустой стек");
 		break;
 	case STACK_UNDEFINED_MODE:
 		puts("Неизвестный режим");
@@ -25,6 +26,11 @@ void handle_error(const int err)
 	case INT_INPUT_ERROR: 
 		puts("Ошибка ввода числа");
 		break;
+	case STACK_OVERFLOW:
+		puts("Переполнение стека");
+		break;
+	case ACTION_INPUT_ERROR:
+		puts("Ошибка ввода действия");
 	default:
 		break;
 	}

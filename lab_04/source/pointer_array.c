@@ -43,8 +43,20 @@ int p_arr_push_back(void ***arr, size_t *size, void* pointer)
         else
             err = REALLOC_ERROR;
     }
-
-    if (!err)
-        printf("ADDED %p = %p\n", pointer, (*arr)[*size - 1]);
     return err;
+}
+
+int p_arr_delete(void ***arr, size_t *size)
+{
+    free(*arr);
+    *size = 0;
+    return OK;
+}
+
+int p_arr_output(void **arr, size_t size)
+{
+    for (int i = 0; i < size; ++i)
+        printf("%p ", arr[i]);
+    puts("");
+    return OK;
 }
