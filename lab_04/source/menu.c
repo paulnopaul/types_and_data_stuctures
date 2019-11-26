@@ -12,7 +12,8 @@
 
 void menu_print_menu(int mode)
 {
-	printf("Программа для работы со стеком\n\n"
+	printf("Программа для работы со стеком \n\n"
+		   "Информация о формате ввода находится в информации о программе\n\n"
 		   "Текущий стек: ");
 	if (mode == ASTACK_MODE)
 		puts("cтек, хранящийся в массиве\n");
@@ -25,7 +26,7 @@ void menu_print_menu(int mode)
 		   "5 - Вывести текущее состояние\n" // вывод
 		   "6 - Вывести убывающие серии последовательности целых чисел в обратном порядке\n"
 		   "7 - Очистить стек\n"
-		   "8 - Проверить время выполнения действий со стеком\n");
+		   "8 - Проверить время выполнения действий со стеком\n\n");
 		   
 	if (mode == LSTACK_MODE)
 		printf("9 - Вывести список освобожденных адресов\n\n");
@@ -37,9 +38,9 @@ void menu_print_menu(int mode)
 void menu_print_info()
 {
 	printf("Программа для работы со стеком\n"
-		   "Автор - Чеклин Павел, ИУ7-32Б\n"
+		   "Автор - Чеклин Павел, ИУ7-32Б\n\n"
 		   "Данная программа производит операции со стеком целых чисел, такие как: добавление,\n"
-		   "удаление элементов, вывод серий убывающих последовательностей и текущего состояния стека\n"
+		   "удаление элементов, вывод серий убывающих последовательностей и текущего состояния стека\n\n"
 		   "Формат ввода (при добавлении элемента): целое число от −1 000 000 000  до 1 000 000 000\n");
 	puts("Максимальный размер стека - 1000 элементов\n\n");
 }
@@ -106,7 +107,7 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack,
 	case 3: // Добавление элемента
 		if (*mode == ASTACK_MODE)
 		{
-			if (*lstack_size < 100000)
+			if (*lstack_size < 1000)
 				err = menu_input_astack_element(astack);
 			else 
 				err = STACK_OVERFLOW;
@@ -117,7 +118,7 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack,
 		}
 		else if (*mode == LSTACK_MODE)
 		{
-			if (*lstack_size < 100000)
+			if (*lstack_size < 1000)
 				err = menu_input_lstack_element(lstack);
 			else
 				err = STACK_OVERFLOW;
@@ -187,7 +188,7 @@ int menu_handle_action(int action, lstack_t *lstack, astack_t *astack,
 			menu_wait_for_enter();
 	break;
 	default:
-		err = MENU_UNDEFINED_ACTION;
+		err = ACTION_INPUT_ERROR;
 	}
 	return err;
 }
@@ -197,12 +198,15 @@ int menu_read_action(int *action)
 	if (scanf("%d", action) == 1)
 		return OK;
 	else
+	{
+		getchar();
 		return ACTION_INPUT_ERROR;
+	}
 }
 
 void menu_wait_for_enter()
 {
-	printf("Нажмите любую клавишу\n");
+	printf("\nНажмите любую Enter\n");
 	getchar();
 	getchar();
 }
@@ -217,9 +221,8 @@ int menu_stack_chmode(int *mode)
 	if (*mode == ASTACK_MODE)
 		printf("стек, хранящийся в массиве");
 	else 
-		printf("стек, хранящийся в списке");
-	printf("\n\n***********************************************\n"
-		   "Варианты:\n"
+		printf("стек, хранящийся в списке\n\n");
+	printf("Варианты:\n"
 		   "1 - список\n"
 		   "2 - массив\n\n"
 		   "Выберите режим: ");
@@ -256,7 +259,10 @@ int menu_input_lstack_element(lstack_t *lstack)
 			err = INT_INPUT_ERROR;
 	}
 	else
+	{
+		for (; getchar() != '\n';)
 		err = INT_INPUT_ERROR;
+	}
 
 	if (!err)
 		printf("\nБыл добавлен элемент %ld\n", buf);
@@ -274,14 +280,15 @@ int menu_input_astack_element(astack_t *astack)
 	if (scanf("%ld", &buf) == 1)
 	{
 		if (buf >= -1000000000 && buf <= 1000000000)
-		{
 			err =  astack_push(astack, buf);
-		}
 		else 
 			err = INT_INPUT_ERROR;
 	}
 	else
+	{
+		for (; getchar() != '\n';)
 		err = INT_INPUT_ERROR;
+	}
 
 	if (!err)
 		printf("\nБыл добавлен элемент %ld\n", buf);
@@ -326,7 +333,7 @@ int menu_output_astack_state(astack_t *astack)
 
 int menu_output_lstack_decreasing(lstack_t *lstack)
 {
-	puts("Вывод убывающих подпоследовательностей стека\n");
+	puts("Вывод убывающих подпоследовательностей стека в обратном порядке\n");
 	return lstack_print_decreasing(lstack);
 }
 

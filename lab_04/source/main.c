@@ -21,6 +21,7 @@ tscheklin@gmail.com
 
 #include "menu.h"
 #include "error_handle.h"
+#include "astack.h"
 
 #include "pointer_array.h"
 

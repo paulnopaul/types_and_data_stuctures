@@ -8,16 +8,21 @@
 
 int astack_create(astack_t *stack, long elem)
 {
+	if (*stack)
+		free(*stack);
+	
 	int err = OK;
+
 	astack_t new_stack = (astack_t) malloc(sizeof(node_arr));
 	if (new_stack) 
 	{
-		new_stack->nodes = (long *) malloc(sizeof(long));
+		(*stack) = new_stack;
+
+		(*stack)->nodes = (long *) malloc(sizeof(long));
 		if (new_stack->nodes)
 		{
-			new_stack->nodes[0] = elem;
-			new_stack->size = 1;
-			*stack = new_stack;
+			(*stack)->nodes[0] = elem;
+			(*stack)->size = 1;
 		}
 		else 
 			err = MALLOC_ERROR;
@@ -35,7 +40,7 @@ int astack_push(astack_t *stack, long elem)
 		long *new_nodes = (long *) realloc((*stack)->nodes, sizeof(long) * ((*stack)->size + 1));
 		if (new_nodes)
 		{
-			new_nodes[(*stack)->size - 1] = elem;
+			new_nodes[(*stack)->size] = elem;
 			(*stack)->nodes = new_nodes;
 			++(*stack)->size;
 		}
@@ -55,6 +60,7 @@ int astack_pop(astack_t *stack, long *elem)
 	{
 		if ((*stack)->size == 1)
 		{
+			*elem = (*stack)->nodes[0];
 			free((*stack)->nodes);
 			(*stack)->nodes = NULL;
 			(*stack)->size = 0;
@@ -74,6 +80,7 @@ int astack_pop(astack_t *stack, long *elem)
 	}
 	else 
 		err = EMPTY_STACK;
+
 	return err;
 }
 
@@ -88,45 +95,68 @@ int astack_clean(astack_t *stack)
 
 int astack_print(astack_t *stack)
 {
-	int err = OK, stack_not_empty = 0;
 	long elem;
+	int err = OK;
+	int empty = 1;
 	astack_t new_stack = NULL;
-
-	while(!(err = astack_pop(stack, &elem)))
-	{
-		// err = astack_pop(stack, &elem);
-		stack_not_empty = 1;
-		
-		printf("%ld ", elem);
-		err = astack_push(&new_stack, elem);
-	}
 	
-	while (!(err = astack_pop(&new_stack, &elem)))
+	// read and output elements from stack and push them to buffer stack
+	// (because of stack it gets reverse)
+	if (!*stack)
+		puts("Empty stack");
+		
+	while (!err && *stack)
 	{
-		// err = astack_pop(&new_stack, &elem);
-		err = astack_push(stack, elem);
+		err = astack_pop(stack, &elem);
+		if (!err)
+		{
+			printf("%ld ", elem);
+			err = astack_push(&new_stack, elem);
+			empty = 0;
+		}
+	}
+	printf("\n");
+	// push elements to source stack to make order like source
+	if (!empty && err == EMPTY_STACK)
+		err = OK;
+	while (!err && new_stack)
+	{
+		err = astack_pop(&new_stack, &elem);
+		if (!err)
+			err = astack_push(stack, elem);
 	}
 
-	if (stack_not_empty && err == EMPTY_STACK)
-		err = OK;
+	
+
 	return err;
 }
 
 int astack_print_decreasing(astack_t *stack)
 {
-	int err = OK, start = 1, stack_not_empty = 0;
-	long elem, prev = LONG_MIN;
+	
+	long elem, prev = LONG_MAX;
+	int err = OK, start = 1, empty = 1;
 	astack_t new_stack = NULL;
 
-	if (!(*stack)->size)
-		puts("Empty stack");
-
-	while(!(err = astack_pop(stack, &elem)))
+	while (!err && *stack)
 	{
-		// err = astack_pop(stack, &elem);
-		stack_not_empty = 1;
+		err = astack_pop(stack, &elem);
+		if (!err)
+		{
+			err = astack_push(&new_stack, elem);
+			empty = 0;
+		}
+	}
 
-		if (prev > elem)
+	if (!empty && err == EMPTY_STACK)
+		err = OK;
+
+	while (!err && new_stack)
+	{
+		err = astack_pop(&new_stack, &elem);
+		if (!err)
+		{
+			if (prev < elem)
 			{
 				if (start)
 				{
@@ -137,17 +167,14 @@ int astack_print_decreasing(astack_t *stack)
 			}
 			else
 				start = 1;
-		prev  = elem;
-		err = astack_push(&new_stack, elem);
+			prev = elem;
+			err = astack_push(stack, elem);
+		}
 	}
-
-	while (!(err = astack_pop(&new_stack, &elem)))
-	{
-		// err = astack_pop(&new_stack, &elem);
-		err = astack_push(stack, elem);
-	}
-
-	if (stack_not_empty && err == EMPTY_STACK)
+	
+	printf("\n");
+	if (!empty && err == EMPTY_STACK)
 		err = OK;
+
 	return err;
 }
