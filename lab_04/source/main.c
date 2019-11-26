@@ -36,3 +36,20 @@ int main()
 	handle_error(err);
 	return 0;
 }
+
+int m()
+{
+	astack_t a = NULL;
+	puts("PUSH 1000");
+	for (int i = 0; i < 1000; ++i)
+	{	
+		if (a)
+			printf("%ld %d\n",a->size, i);
+		else 
+			printf("0 %d\n", i);
+		astack_push(&a, i);
+	}
+	puts("CLEAN");
+	astack_clean(&a);
+	return 0;
+}

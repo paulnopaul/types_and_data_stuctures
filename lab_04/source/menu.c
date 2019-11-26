@@ -42,7 +42,7 @@ void menu_print_info()
 		   "Данная программа производит операции со стеком целых чисел, такие как: добавление,\n"
 		   "удаление элементов, вывод серий убывающих последовательностей и текущего состояния стека\n\n"
 		   "Формат ввода (при добавлении элемента): целое число от −1 000 000 000  до 1 000 000 000\n");
-	puts("Максимальный размер стека - 1000 элементов\n\n");
+	// puts("Максимальный размер стека - 1000 элементов\n\n");
 }
 
 int menu_mainloop()
@@ -339,7 +339,7 @@ int menu_output_lstack_decreasing(lstack_t *lstack)
 
 int menu_output_astack_decreasing(astack_t *astack)
 {
-	puts("Вывод убывающих подпоследовательностей стека\n");
+	puts("Вывод убывающих подпоследовательностей стека в обратном порядке\n");
 	return astack_print_decreasing(astack);
 }
 
@@ -360,7 +360,7 @@ int menu_delete_lstack(lstack_t *lstack, void ***p_arr, size_t *p_arr_size)
 	long buf;
 	lstack_t freed;
 
-	puts("Удаление стека");
+	puts("Удаление стека\n");
 	err = lstack_pop(lstack, &buf, &freed);
 	if (!err)
 	{
@@ -371,8 +371,11 @@ int menu_delete_lstack(lstack_t *lstack, void ***p_arr, size_t *p_arr_size)
 			err = OK;
 	}
 
-	if (!err)
+	if (err == EMPTY_STACK)
+	{
 		puts("Стек успешно удален");
+		err = OK;
+	}
 	return err;
 }
 
@@ -381,8 +384,11 @@ int menu_delete_astack(astack_t *astack)
 	puts("Удаление стека");
 	int err = OK;
 	err = astack_clean(astack);
-	if (!err)
+	if (err == EMPTY_STACK)
+	{
 		puts("Стек успешно удален");
+		err = OK;
+	}
 	return err;
 }
 
@@ -408,7 +414,7 @@ int menu_test_time()
 	// number of stack elements;
 	long elem_count;
 	printf("Введите количество элементов: ");
-	if (!(scanf("%ld", &elem_count) == 1 && elem_count > 0 && elem_count < 100000))
+	if (!(scanf("%ld", &elem_count) == 1 && elem_count > 0))
 		err = INT_INPUT_ERROR;
 	
 	if (!err)

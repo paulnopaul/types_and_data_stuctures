@@ -18,7 +18,7 @@ int astack_create(astack_t *stack, long elem)
 	{
 		(*stack) = new_stack;
 
-		(*stack)->nodes = (long *) malloc(sizeof(long));
+		(*stack)->nodes = (long *) malloc(1000 * sizeof(long));
 		if (new_stack->nodes)
 		{
 			(*stack)->nodes[0] = elem;
@@ -37,15 +37,26 @@ int astack_push(astack_t *stack, long elem)
 	int err = OK;
 	if (*stack)
 	{
-		long *new_nodes = (long *) realloc((*stack)->nodes, sizeof(long) * ((*stack)->size + 1));
-		if (new_nodes)
+		if ((*stack)->size % 1000 == 0)
 		{
-			new_nodes[(*stack)->size] = elem;
-			(*stack)->nodes = new_nodes;
-			++(*stack)->size;
+			// printf("ALLOCATE NEW %ld\n", sizeof(long) * (1 + (*stack)->size / 100));
+			long *new_nodes = (long *) realloc((*stack)->nodes, sizeof(long) * 1000 * (1 + (*stack)->size / 1000));
+			if (new_nodes)
+			{
+				// printf("%p\n", (void *)(new_nodes + (*stack)->size));
+
+				(*stack)->nodes = new_nodes;
+				(*stack)->nodes[(*stack)->size] = elem;
+				++(*stack)->size;
+			}
+			else
+				err = REALLOC_ERROR;
 		}
 		else
-			err = REALLOC_ERROR;
+		{
+			(*stack)->nodes[(*stack)->size] = elem;
+			++(*stack)->size;
+		}
 	}
 	else
 		err = astack_create(stack, elem);
@@ -67,15 +78,24 @@ int astack_pop(astack_t *stack, long *elem)
 		}
 		else if ((*stack)->size == 0)
 			err = EMPTY_STACK;
-		else 
+		else if ((*stack)->size % 1000 == 1)
 		{
-			long * new_nodes = realloc((*stack)->nodes, ((*stack)->size - 1) * sizeof(long));
+			// puts("REALLOC");
+			// printf("%ld\n", ((*stack)->size / 100));
+
+			*elem = (*stack)->nodes[(*stack)->size - 1];
+
+			long * new_nodes = (long *) realloc((*stack)->nodes, 1000 * ((*stack)->size / 1000) * sizeof(long));
 			if (new_nodes)
 			{
 				--(*stack)->size;
-				*elem = (*stack)->nodes[(*stack)->size];
 				(*stack)->nodes = new_nodes;
 			}
+		}
+		else 
+		{
+			--(*stack)->size;
+			*elem = (*stack)->nodes[(*stack)->size];
 		}
 	}
 	else 
@@ -90,6 +110,8 @@ int astack_clean(astack_t *stack)
 	long buf;
 	while (!err)
 		err = astack_pop(stack, &buf);
+	free(*stack);
+	*stack = NULL;
 	return err;
 }
 
@@ -126,7 +148,8 @@ int astack_print(astack_t *stack)
 			err = astack_push(stack, elem);
 	}
 
-	
+	if (!empty && err == EMPTY_STACK)
+		err = OK;
 
 	return err;
 }
@@ -143,19 +166,6 @@ int astack_print_decreasing(astack_t *stack)
 		err = astack_pop(stack, &elem);
 		if (!err)
 		{
-			err = astack_push(&new_stack, elem);
-			empty = 0;
-		}
-	}
-
-	if (!empty && err == EMPTY_STACK)
-		err = OK;
-
-	while (!err && new_stack)
-	{
-		err = astack_pop(&new_stack, &elem);
-		if (!err)
-		{
 			if (prev < elem)
 			{
 				if (start)
@@ -168,11 +178,24 @@ int astack_print_decreasing(astack_t *stack)
 			else
 				start = 1;
 			prev = elem;
-			err = astack_push(stack, elem);
+			err = astack_push(&new_stack, elem);
 		}
 	}
-	
 	printf("\n");
+
+	if (!empty && err == EMPTY_STACK)
+		err = OK;
+	
+	while (!err && new_stack)
+	{
+		err = astack_pop(&new_stack, &elem);
+		if (!err)
+		{
+			err = astack_push(stack, elem);
+			empty = 0;
+		}
+	}
+
 	if (!empty && err == EMPTY_STACK)
 		err = OK;
 

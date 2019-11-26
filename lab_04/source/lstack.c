@@ -61,6 +61,7 @@ int lstack_pop(lstack_t *stack, long *elem, lstack_t *freed)
 
 int lstack_print(lstack_t *stack)
 {
+	/*
 	long elem;
 	int err = OK;
 	lstack_t new_stack = NULL;
@@ -91,6 +92,16 @@ int lstack_print(lstack_t *stack)
 	}
 
 	return err;
+	*/
+	lstack_t new_stack = *stack;
+	if (!(*stack))
+		return EMPTY_STACK;
+	while (new_stack)
+	{
+		printf("%p: %ld\n", (void *)new_stack, new_stack->elem);
+		new_stack = new_stack->next;
+	}
+	return OK;
 }
 
 int lstack_print_decreasing(lstack_t *stack)
@@ -105,19 +116,6 @@ int lstack_print_decreasing(lstack_t *stack)
 		err = lstack_pop(stack, &elem, &free_buf);
 		if (!err)
 		{
-			err = lstack_push(&new_stack, elem);
-			empty = 0;
-		}
-	}
-
-	if (!empty && err == EMPTY_STACK)
-		err = OK;
-
-	while (!err && new_stack)
-	{
-		err = lstack_pop(&new_stack, &elem, &free_buf);
-		if (!err)
-		{
 			if (prev < elem)
 			{
 				if (start)
@@ -130,10 +128,24 @@ int lstack_print_decreasing(lstack_t *stack)
 			else
 				start = 1;
 			prev = elem;
-			err = lstack_push(stack, elem);
+			err = lstack_push(&new_stack, elem);
 		}
 	}
 	printf("\n");
+
+	if (!empty && err == EMPTY_STACK)
+		err = OK;
+	
+	while (!err && new_stack)
+	{
+		err = lstack_pop(&new_stack, &elem, &free_buf);
+		if (!err)
+		{
+			err = lstack_push(stack, elem);
+			empty = 0;
+		}
+	}
+
 	if (!empty && err == EMPTY_STACK)
 		err = OK;
 
