@@ -4,20 +4,22 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define QUEUE_SIZE 2000
+#define QUEUE_SIZE 20
 
 typedef struct aqueue 
 {
-    int arr[QUEUE_SIZE];
+    int arr[QUEUE_SIZE + 1];
     int pout, pin;
-} aqueue_struct;
+} aqueue;
 
-typedef aqueue_struct *aqueue_t;
+typedef aqueue *aqueue_t;
 
 int aqueue_init(aqueue_t queue);
 
 int aqueue_push(aqueue_t queue, int elem);
 
 int aqueue_pop(aqueue_t queue, int *dest);
+
+int aqueue_print(aqueue queue);
 
 #endif

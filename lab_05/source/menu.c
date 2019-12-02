@@ -2,5 +2,6 @@
 
 int mainloop()
 {
-    
+    int err = 0;
+    return err;
 }

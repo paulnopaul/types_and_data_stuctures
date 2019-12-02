@@ -7,7 +7,7 @@
 стороны (с головы). Принципе работы очереди: первым пришел - первым
 вышел.
 
-Моделировать простейшую линейную очередь моно на основе вектора
+Моделировать простейшую линейную очередь можно на основе вектора
 или на основе списка
 В один и тот же момент одна заявка может придти в очередь, а 
 другая - начать обрабатываться или выйти из системы.
@@ -41,8 +41,60 @@
 */
 #include <stdio.h>
 
+#include "aqueue.h"
+#include "lqueue.h"
+
+
+void aqueue_test()
+{
+    puts("Array queue test");
+    aqueue a;
+    int buf, size = 20;
+    aqueue_init(&a);
+
+    for (int i = 0; i < size; ++i)
+        aqueue_push(&a, i);
+
+    aqueue_print(a);
+    
+    for (int i = 0; i < 10; ++i)
+        aqueue_pop(&a, &buf);
+    
+    aqueue_print(a);
+
+    for (int i = 0; i < 10; ++i)
+        aqueue_push(&a, i + 20);
+
+    aqueue_print(a);
+}
+
+void lqueue_test()
+{
+    puts("List queue test");
+    lqueue a;
+    int buf, size = 20;
+    lqueue_init(&a);
+
+    for (int i = 0; i < size; ++i)
+        lqueue_push(&a, i);
+
+    lqueue_print(a);
+    
+    for (int i = 0; i < 10; ++i)
+        lqueue_pop(&a, &buf);
+    
+    lqueue_print(a);
+
+    for (int i = 0; i < 10; ++i)
+        lqueue_push(&a, i + 20);
+
+    lqueue_print(a);
+    lqueue_delete(&a);
+}
+
 int main()
 {
-    puts("Hello");       
+    aqueue_test(); 
+    lqueue_test();   
     return 0;
 }

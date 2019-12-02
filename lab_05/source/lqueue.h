@@ -6,7 +6,7 @@ typedef struct node_t *list_t;
 struct node_t
 {
     int elem; 
-    list_t *next;
+    list_t next;
 };
 
 typedef struct lqueue
@@ -14,17 +14,18 @@ typedef struct lqueue
     list_t list;
     list_t pin; // указатель на последний элемент list
     // pout - нулевой список
-} lqueue_struct;
+} lqueue;
 
-typedef lqueue_struct *lqueue_t;
+typedef lqueue *lqueue_t;
 
 int lqueue_init(lqueue_t queue);
 
 int lqueue_push(lqueue_t queue, int elem);
 
-int lqueue_pop(lqueue_t queue, int elem);
+int lqueue_pop(lqueue_t queue, int *elem);
 
 int lqueue_delete(lqueue_t queue);
 
+int lqueue_print(lqueue queue);
 
 #endif

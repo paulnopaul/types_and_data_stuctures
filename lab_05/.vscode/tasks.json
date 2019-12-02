@@ -4,11 +4,19 @@
         {
             "label": "Make and run C",
             "type": "shell",
-            "command": "cd source; make; ./app.exe", // ../bin/app.exe",
+            "command": "cd source; make; ../bin/app.exe",
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "problemMatcher": [
+                "$gcc"
+            ]
+        },
+        {
+            "label": "Build C",
+            "type": "shell",
+            "command": "cd source; make;"
         }
     ]
 }
