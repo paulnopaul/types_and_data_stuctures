@@ -40,32 +40,27 @@
 
 */
 #include <stdio.h>
+#include <time.h>
 
 #include "aqueue.h"
 #include "lqueue.h"
+#include "service_line.h"
 
 
 void aqueue_test()
 {
-    puts("Array queue test");
     aqueue a;
-    int buf, size = 20;
+    int buf;
     aqueue_init(&a);
-
-    for (int i = 0; i < size; ++i)
-        aqueue_push(&a, i);
-
-    aqueue_print(a);
-    
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < QUEUE_SIZE * 2; ++i)
+    {
+        printf("%d %d\n", a.pin, a.pout);
+        aqueue_push(&a, 123);
+        aqueue_print(a);
         aqueue_pop(&a, &buf);
-    
-    aqueue_print(a);
-
-    for (int i = 0; i < 10; ++i)
-        aqueue_push(&a, i + 20);
-
-    aqueue_print(a);
+        aqueue_print(a);
+        puts("");
+    }
 }
 
 void lqueue_test()
@@ -92,9 +87,29 @@ void lqueue_test()
     lqueue_delete(&a);
 }
 
+void test_direction_choice()
+{
+    int p1c = 0, p2c = 0;
+    srand(time(NULL));
+    for (int i = 0; i < 100000; ++i)
+        if (direction_choice(0.3, 0.7) == 1)
+            p1c++;
+        else
+            p2c++;
+    printf("%f %f\n", (float)p1c / (float)(p1c + p2c), (float)p2c / (float)(p1c + p2c));
+}
+
+void test_line()
+{
+    aqueue q1, q2;
+    line(&q1, &q2);
+}
+
 int main()
 {
     aqueue_test(); 
-    lqueue_test();   
+    // lqueue_test();   
+    // test_direction_choice();
+    // test_line();
     return 0;
 }

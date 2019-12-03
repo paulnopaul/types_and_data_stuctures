@@ -28,9 +28,11 @@ int aqueue_pop(aqueue_t queue, int *dest)
     if (queue->pin == queue->pout)
         return EMPTY_QUEUE;
     
+    if (queue->pout == QUEUE_SIZE)
+        queue->pout = 0;
     *dest = queue->arr[queue->pout];
     queue->arr[queue->pout] = 0;
-    queue->pout = (queue->pout + 1) % QUEUE_SIZE;
+    queue->pout = (queue->pout + 1) % (QUEUE_SIZE + 1);
     return SUCCESS;
 }
 
