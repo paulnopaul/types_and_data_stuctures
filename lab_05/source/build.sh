@@ -2,4 +2,6 @@ echo Hello;
 cd ./source;
 make clean;
 make;
-xterm -e 'pwd;valgrind ../bin/app.exe; read';
+../bin/app.exe > ../bin/res.txt
+echo DONE
+# xterm -e 'pwd;valgrind ../bin/app.exe; read';

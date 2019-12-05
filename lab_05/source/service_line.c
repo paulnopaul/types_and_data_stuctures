@@ -4,17 +4,119 @@
 
 int aqueue_line()
 {
-    clock_t a1, a2;
+    clock_t a1, a2; 
+    double a1_time = generate_time(0, 6), a2_time = generate_time(1, 8); // a1 from 0 to 6, a2 from 1 to 8
     aqueue q1, q2;
-    srand(time(NULL));
+    // srand(time(NULL)); // TODO когда заработает
     int err = SUCCESS;
+    int q1_request, q2_request;
+    int a1_handling = 1, a2_handling = 0; // флаг работы обрабатывающих автоматов
+
+
+    int q1_size = 99, q2_size = 0;
     int second_requests = 0;
 
     aqueue_line_start(&q1, &q2);
 
-    while (second_requests < SECOND_REQUEST_COUNT)
+    aqueue_print(q1);
+    puts("\n\nSTART\n\n");
+
+    aqueue_pop(&q1, &q1_request);
+    a1 = clock();
+    while ((second_requests < SECOND_REQUEST_COUNT) && (a1_handling || a2_handling))
     {
-        
+        // проверка времени выполняется только в случае работы автомата
+        // обработка действий первой очереди и автомата
+        if (a1_handling)
+        {
+            if ((double)(clock() - a1) / CLOCKS_PER_SEC > a1_time)
+            {
+                printf("----Handle %d; time = %lf\n", q1_request, (double)(clock() - a1) / CLOCKS_PER_SEC);
+                aqueue_print(q1);
+                aqueue_print(q2);
+
+                // отправка запроса после его обработки автоматом
+                switch (direction_choice(0.3, 0.7)) // выбор направления движения заявки
+                {
+                case 1:
+                    puts("Goes to q2");
+
+                    a1_handling = 0; // прекращение работы автомата
+                    
+                    aqueue_push(&q2, q1_request);
+                    ++q2_size;
+
+
+                    if (q2_size == 1) // если заявка добавилась в пустую очередь
+                    {
+                        aqueue_pop(&q2, &q2_request);
+                        --q2_size;
+                        a2_handling = 1;
+                        a2_time = generate_time(1, 8);
+                        a2 = clock();
+                    }
+                    break;
+                case 2:
+                    puts("Goes to q1");
+
+                    a1_handling = 0; // прекращение работы автомата
+
+                    aqueue_push(&q1, q1_request);
+                    ++q1_size;
+                    if (q1_size == 1)
+                    {
+                        aqueue_pop(&q1, &q1_request); // если заявка добавилась в пустую очередь
+                        --q1_size;
+                        a1_handling = 1;
+                        a1_time = generate_time(0, 6);
+                        a1 = clock();
+                    }
+                    break; 
+                }
+
+                puts("\n\n"); 
+                
+                // направление заявки из первой очереди в автомат
+                if (q1_size > 0)
+                {
+                    a1_time = generate_time(0, 6);
+                    aqueue_pop(&q1, &q1_request);
+                    --q1_size;
+                    a1_handling = 1;
+                    a1_time = generate_time(0, 6);
+                    a1 = clock();
+                }
+            }
+        }
+
+
+        // обработка действий второй очереди и автомата
+        if (a2_handling)
+        {
+            if ((double)(clock() - a2) / CLOCKS_PER_SEC > a2_time)
+            {
+                printf("++++Handle %d (second auto); time = %lf\n", q2_request, (double)(clock() - a2) / CLOCKS_PER_SEC);
+                aqueue_print(q1);
+                aqueue_print(q2);
+                puts("\n\n");
+
+                a2_handling = 0; // прекращение работы автомата
+
+                ++second_requests; 
+                // направление обработанной заявки в первую очередь
+                aqueue_push(&q1, q2_request);
+
+                --q2_size;
+                // направление заявки из второй очереди в автомат
+                if (q2_size > 0)
+                {
+                    aqueue_pop(&q2, &q2_request);
+                    a2_time = generate_time(1, 8);
+                    a2_handling = 1;
+                    a2_time = clock();
+                }
+            }
+        }
     }
     return err;
 }
@@ -24,102 +126,14 @@ int aqueue_line_start(aqueue_t q1, aqueue_t q2)
     aqueue_init(q1);
     aqueue_init(q2);
     for (int i = 0; i < REQUEST_COUNT; ++i)
-        aqueue_push(q1, i);
+        aqueue_push(q1, i + 100);
     return REQUEST_COUNT;
 }
 
-int aqueue_line_round(aqueue_t q1, aqueue_t q2, int *second_requests)
+int aqueue_line_handle_line(aqueue_t q1, aqueue_t q2, int *second_requests)
 {
-    int request;
-    int auto_1[] = {0, 6}, auto_2[] = {1, 8};
-
-    aqueue_pop(q1, &request);
-
-    handle_request(request, auto_1[0], auto_2[1]);
-
-    switch (direction_choice(0.3, 0.7))
-    {
-        case 1:
-            aqueue_push(q2, request);
-            aqueue_pop(q2, &request);
-            handle_request(request, auto_2[0], auto_2[1]);
-            ++(*second_requests);
-
-            if (*second_requests % 100 == 0)
-            {
-                printf("%d passed through\n", *second_requests);
-                puts("Q1:");
-                aqueue_print(*q1);
-            }
-        case 2:
-            aqueue_push(q1, request);
-            break;
-        default:
-            puts("WHAT");
-    }
     return SUCCESS;
 }
-
-int lqueue_line()
-{
-    lqueue q1, q2;
-    srand(time(NULL));
-    int err = SUCCESS;
-    int second_requests = 0;
-    lqueue_init(&q1);
-    lqueue_init(&q2);
-
-    for(int i = 0; !err && i < REQUEST_COUNT; ++i)
-        err = lqueue_push(&q1, i);
-    if (!err)
-    {
-        puts("Q1 start");
-        lqueue_print(q1);
-        while (second_requests < SECOND_REQUEST_COUNT)
-            err = lqueue_line_round(&q1, &q2, &second_requests);
-        lqueue_delete(&q1);
-        lqueue_delete(&q2);
-    }
-    return err;
-}
-
-int lqueue_line_round(lqueue_t q1, lqueue_t q2, int *second_requests)
-{
-    int err = SUCCESS;
-    int request;
-    int auto_1[] = {0, 6}, auto_2[] = {1, 8};
-
-    lqueue_pop(q1, &request);
-
-    handle_request(request, auto_1[0], auto_2[1]);
-
-    switch (direction_choice(0.3, 0.7))
-    {
-        case 1:
-            err = lqueue_push(q2, request);
-            if (!err)
-            {
-                lqueue_pop(q2, &request);
-                handle_request(request, auto_2[0], auto_2[1]);
-                ++(*second_requests);
-
-                if (*second_requests % 100 == 0)
-                {
-                    printf("%d passed through\n", *second_requests);
-                    puts("Q1:");
-                    lqueue_print(*q1);
-                }
-            }
-        case 2:
-            if (!err)
-                lqueue_push(q1, request);
-            break;
-        default:
-            puts("WHAT");
-    }
-    return err;
-}
-
 
 int direction_choice(double right_p, double down_p)
 {
@@ -129,4 +143,9 @@ int direction_choice(double right_p, double down_p)
         return 1;
     else
         return 2;
+}
+
+double generate_time(int start_units, int end_units)
+{
+    return (double)((rand() % (end_units - start_units + 1)) + start_units) / TIME_UNIT;
 }

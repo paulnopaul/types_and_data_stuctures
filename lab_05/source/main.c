@@ -95,7 +95,6 @@ void test_direction_choice()
 void test_line()
 {
     aqueue_line();
-    lqueue_line();
 }
 
 int main()
