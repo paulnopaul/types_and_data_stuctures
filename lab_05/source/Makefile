@@ -13,4 +13,4 @@ $(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
 	$(CC) $< $(CFLAGS) -c -o $@
 
 clean:
-	-rm $(BUILDDIR)/$(MAINTARGET) $(OBJECTS)
+	rm $(BUILDDIR)/$(MAINTARGET) $(OBJECTS)

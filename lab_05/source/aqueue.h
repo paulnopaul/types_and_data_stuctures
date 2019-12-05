@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#define QUEUE_SIZE 10
+#define QUEUE_SIZE 101
 
 typedef struct aqueue 
 {

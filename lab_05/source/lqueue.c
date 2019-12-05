@@ -21,7 +21,6 @@ int lqueue_push(lqueue_t queue, int elem)
     
     new_node->elem = elem;
     new_node->next = NULL;
-
     if (queue->pin)
         queue->pin->next = new_node;
     queue->pin = new_node;
@@ -34,13 +33,15 @@ int lqueue_push(lqueue_t queue, int elem)
 int lqueue_pop(lqueue_t queue, int *elem)
 {
     list_t buf;
-    if (!queue->list)
+    if (!(queue->list))
         return EMPTY_LIST;
     
     *elem = queue->list->elem;
 
     buf = queue->list;
     queue->list = queue->list->next;
+    if (!queue->list)
+        queue->pin = NULL;
     free(buf);
 
     return 0;
@@ -56,6 +57,8 @@ int lqueue_delete(lqueue_t queue)
 int lqueue_print(lqueue queue)
 {
     list_t buf = queue.list;
+    if (!buf)
+        puts("Empty");
     while (buf)
     {
         printf("%d ", buf->elem);

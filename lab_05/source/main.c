@@ -4,7 +4,7 @@
 
 Очередь - последовательный сисок переменной длины, выключение в
 который идет с одной стороны (с хвоста), а исключение - с другой 
-стороны (с головы). Принципе работы очереди: первым пришел - первым
+стороны (с головы). Принципе рабKоты очереди: первым пришел - первым
 вышел.
 
 Моделировать простейшую линейную очередь можно на основе вектора
@@ -67,22 +67,15 @@ void lqueue_test()
 {
     puts("List queue test");
     lqueue a;
-    int buf, size = 20;
+    int buf;
     lqueue_init(&a);
-
-    for (int i = 0; i < size; ++i)
+    for (int i = 0; i < 10; ++i)
+    {
+        puts("PUSH");
         lqueue_push(&a, i);
-
-    lqueue_print(a);
-    
-    for (int i = 0; i < 10; ++i)
+        puts("POP");
         lqueue_pop(&a, &buf);
-    
-    lqueue_print(a);
-
-    for (int i = 0; i < 10; ++i)
-        lqueue_push(&a, i + 20);
-
+    }
     lqueue_print(a);
     lqueue_delete(&a);
 }
@@ -101,15 +94,15 @@ void test_direction_choice()
 
 void test_line()
 {
-    aqueue q1, q2;
-    line(&q1, &q2);
+    aqueue_line();
+    lqueue_line();
 }
 
 int main()
 {
-    aqueue_test(); 
+    // aqueue_test(); 
     // lqueue_test();   
     // test_direction_choice();
-    // test_line();
+    test_line();
     return 0;
 }

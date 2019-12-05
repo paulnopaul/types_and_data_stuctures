@@ -16,9 +16,13 @@
 
 
 // first handle 0-6 time units
-int line(aqueue_t q1, aqueue_t q2);
+int aqueue_line();
 
-void handle_request(int request, int time_min, int time_max);
+int aqueue_line_start(aqueue_t q1, aqueue_t q2);
+
+int aqueue_line_handle_line(aqueue_t q1, aqueue_t q2, int *second_requests);
+
+int lqueue_line();
 
 // выбор направления заявки 
 // 1 - при переходе во 2 очередь
