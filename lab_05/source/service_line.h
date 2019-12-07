@@ -10,8 +10,8 @@
 #include "aqueue.h"
 #include "err.h"
 
-#define REQUEST_COUNT 100
-#define SECOND_REQUEST_COUNT 1000
+#define REQUEST_COUNT 10
+#define SECOND_REQUEST_COUNT 200
 #define TIME_UNIT 1000 // 1 / TIME_UNIT seconds
 
 
@@ -20,7 +20,9 @@ int aqueue_line();
 
 int aqueue_line_start(aqueue_t q1, aqueue_t q2);
 
-int aqueue_line_handle_line(aqueue_t q1, aqueue_t q2, int *second_requests);
+int lqueue_line();
+
+int lqueue_line_start(lqueue_t q1, lqueue_t q2);
 
 // int lqueue_line();
 
