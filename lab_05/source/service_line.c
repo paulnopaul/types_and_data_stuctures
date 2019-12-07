@@ -18,6 +18,7 @@ int aqueue_line()
 
     aqueue_line_start(&q1, &q2);
 
+    puts("Source queue");
     aqueue_print(q1);
     puts("\n\nSTART\n\n");
 
@@ -31,15 +32,14 @@ int aqueue_line()
         {
             if ((double)(clock() - a1) / CLOCKS_PER_SEC > a1_time)
             {
-                printf("----Handle %d; time = %lf\n", q1_request, (double)(clock() - a1) / CLOCKS_PER_SEC);
-                aqueue_print(q1);
-                aqueue_print(q2);
+                // printf("----Handle %d; time = %lf\n", q1_request, (double)(clock() - a1) / CLOCKS_PER_SEC);
+                // aqueue_print(q1);
+                // aqueue_print(q2);
 
                 // отправка запроса после его обработки автоматом
                 switch (direction_choice(0.3, 0.7)) // выбор направления движения заявки
                 {
                 case 1:
-                    puts("Goes to q2");
 
                     a1_handling = 0; // прекращение работы автомата
                     
@@ -47,7 +47,7 @@ int aqueue_line()
                     ++q2_size;
 
 
-                    if (q2_size == 1) // если заявка добавилась в пустую очередь
+                    if (!a2_handling && q2_size == 1) // если заявка добавилась в пустую очередь
                     {
                         aqueue_pop(&q2, &q2_request);
                         --q2_size;
@@ -57,24 +57,13 @@ int aqueue_line()
                     }
                     break;
                 case 2:
-                    puts("Goes to q1");
 
                     a1_handling = 0; // прекращение работы автомата
 
                     aqueue_push(&q1, q1_request);
                     ++q1_size;
-                    if (q1_size == 1)
-                    {
-                        aqueue_pop(&q1, &q1_request); // если заявка добавилась в пустую очередь
-                        --q1_size;
-                        a1_handling = 1;
-                        a1_time = generate_time(0, 6);
-                        a1 = clock();
-                    }
                     break; 
                 }
-
-                puts("\n\n"); 
                 
                 // направление заявки из первой очереди в автомат
                 if (q1_size > 0)
@@ -95,10 +84,9 @@ int aqueue_line()
         {
             if ((double)(clock() - a2) / CLOCKS_PER_SEC > a2_time)
             {
-                printf("++++Handle %d (second auto); time = %lf\n", q2_request, (double)(clock() - a2) / CLOCKS_PER_SEC);
-                aqueue_print(q1);
-                aqueue_print(q2);
-                puts("\n\n");
+                // printf("++++Handle %d (second auto); time = %lf\n", q2_request, (double)(clock() - a2) / CLOCKS_PER_SEC);
+                // aqueue_print(q1);
+                // aqueue_print(q2);
 
                 a2_handling = 0; // прекращение работы автомата
 
@@ -106,14 +94,25 @@ int aqueue_line()
                 // направление обработанной заявки в первую очередь
                 aqueue_push(&q1, q2_request);
 
-                --q2_size;
+                if (second_requests % 100 == 0)
+                {
+                    printf("%d requests passed through second automat\n", second_requests);
+                    puts("First queue");
+                    aqueue_print(q1);
+                    puts("Secon queue");
+                    aqueue_print(q2);
+                    puts("\n\n");
+                }
+
+                
                 // направление заявки из второй очереди в автомат
                 if (q2_size > 0)
                 {
+                    --q2_size;
                     aqueue_pop(&q2, &q2_request);
                     a2_time = generate_time(1, 8);
                     a2_handling = 1;
-                    a2_time = clock();
+                    a2 = clock();
                 }
             }
         }
