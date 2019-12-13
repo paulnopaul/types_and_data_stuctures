@@ -10,9 +10,9 @@
 #include "aqueue.h"
 #include "err.h"
 
-#define REQUEST_COUNT 10
-#define SECOND_REQUEST_COUNT 100
-#define SECOND_REQUEST_STEP 10
+#define REQUEST_COUNT 100
+#define SECOND_REQUEST_COUNT 1000
+#define SECOND_REQUEST_STEP 100
 #define TIME_UNIT 1000 // 1 / TIME_UNIT seconds
 
 
@@ -34,6 +34,8 @@ int direction_choice(double right_p, double down_p);
 
 double generate_time(int start_units, int end_units);
 
-void expected_time_print();
+void lqueue_expected_time();
+
+void aqueue_expected_time();
 
 #endif

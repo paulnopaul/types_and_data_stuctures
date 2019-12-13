@@ -111,11 +111,7 @@ void rand_test()
 
 int main()
 {
-    // aqueue_test(); 
-    // lqueue_test();
-    // test_direction_choice();
-    // test_line();
-    // rand_test();
-    menu_mainloop();
+    lqueue_line();
+    // menu_mainloop();
     return 0;
 }

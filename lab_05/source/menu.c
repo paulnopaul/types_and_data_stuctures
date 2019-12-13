@@ -16,7 +16,7 @@ void menu_print_menu()
            "2 - Run service system with linked list queue\n"
            "3 - Run service system with array queue\n"
            "4 - Run both systems\n"
-           "\n\n\n0 - Exit program\n");
+           "\n\n0 - Exit program\n\n");
     printf("Input command: ");
 }
 
@@ -31,6 +31,18 @@ int read_action(int *action)
 ОА2 каждых 100 заявок информацию о текущей и средней длине каждой очереди, а в конце процесса - общее время моделирования, 
 пользователя выдачу на экран адресов элементов очереди при удалении и добавлении элементов. Проследить, возникает ли 
 ри этом фрагментация памяти.
+
+
+8
+7
+6 
+8
+
+7.25
+
+1) 8
+2) (8 + 7) / 2 = 7.5
+
 */
 
 int handle_action(int action)
@@ -64,11 +76,10 @@ void put_error(const char *errname)
 
 void wait_to_clean()
 {
-    for (; getchar() == '\n';)
+    for (; getchar() != '\n';)
         ;
     puts("Press Enter to continue:");
-    for (; getchar() == '\n';)
-        ;
+    for (; getchar() != '\n';);
 }
 
 int menu_mainloop()
@@ -82,7 +93,7 @@ int menu_mainloop()
         if (read_action(&action))
         {
             system("clear");
-            handle_action(action);
+            code = handle_action(action);
         }
         else
             put_error("Wrong action");

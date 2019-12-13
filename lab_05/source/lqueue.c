@@ -68,7 +68,43 @@ int lqueue_print(lqueue queue)
     return SUCCESS;
 }
 
+void lqueue_print_memory(lqueue queue)
+{
+    list_t buf = queue.list;
+    if (!buf)
+        puts("Empty");
+    while (buf)
+    {
+        printf("%d %p\n", buf->elem, (void *)buf);
+        buf = buf->next;
+    }
+    puts("");
+}
+
 void lqueue_check_memory() // TODO check_memory
 {
-    puts("Memory check");
+    lqueue l;
+    int buf;
+    puts("Memory fragmentation check");
+    lqueue_init(&l);
+    puts("Add 100 elements");
+    puts("Queue");
+    for (int i = 0; i < 100; ++i)
+    {
+        lqueue_push(&l, i + 100);
+    }
+    puts("Delete 50 elements");
+    lqueue_print_memory(l);
+    for (int i = 0; i < 50; ++i)
+    {
+        lqueue_pop(&l, &buf);
+    }
+    puts("Add 100 elements");
+    puts("Queue: ");
+    for (int i = 0; i < 100; ++i)
+    {
+        lqueue_push(&l, i + 200);
+    }
+    lqueue_print_memory(l);
+    lqueue_delete(&l);
 }

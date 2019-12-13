@@ -28,6 +28,8 @@ int lqueue_delete(lqueue_t queue);
 
 int lqueue_print(lqueue queue);
 
+void lqueue_print_memory(lqueue queue);
+
 void lqueue_check_memory();
 
 #endif
