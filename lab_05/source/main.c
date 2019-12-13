@@ -45,6 +45,7 @@
 #include "aqueue.h"
 #include "lqueue.h"
 #include "service_line.h"
+#include "menu.h"
 
 
 void aqueue_test()
@@ -94,15 +95,27 @@ void test_direction_choice()
 
 void test_line()
 {
-    aqueue_line();
-    // lqueue_line();
+    // aqueue_line();
+    lqueue_line();
+}
+
+void rand_test()
+{
+    double time_sum = 0;
+    srand(time(NULL));
+    int time_count = 2000;
+    for (int i = 0; i < time_count; ++i)
+        time_sum += generate_time(1, 10);
+    printf("%lf", time_sum / time_count);
 }
 
 int main()
 {
     // aqueue_test(); 
-    // lqueue_test();   
+    // lqueue_test();
     // test_direction_choice();
-    test_line();
+    // test_line();
+    // rand_test();
+    menu_mainloop();
     return 0;
 }

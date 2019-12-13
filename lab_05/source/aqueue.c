@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 #include "err.h"
 
@@ -15,7 +16,7 @@ int aqueue_push(aqueue_t queue, int elem)
 {
     if ((queue->pin + 1) % (QUEUE_SIZE + 1) == queue->pout)
         return QUEUE_OVERFLOW;
-    
+
     if (queue->pin == QUEUE_SIZE)
         queue->pin = 0;
     queue->arr[queue->pin] = elem;
@@ -27,7 +28,7 @@ int aqueue_pop(aqueue_t queue, int *dest)
 {
     if (queue->pin == queue->pout)
         return EMPTY_QUEUE;
-    
+
     if (queue->pout == QUEUE_SIZE)
         queue->pout = 0;
     *dest = queue->arr[queue->pout];
@@ -52,4 +53,38 @@ int aqueue_print(aqueue queue)
         printf("Empty queue");
     puts("");
     return SUCCESS;
+}
+
+double mid_push_time(int count)
+{
+    clock_t start;
+    double full_time = 0;
+    int buf;
+    aqueue q;
+    aqueue_init(&q);
+    for (int i = 0; i < count; ++i)
+    {
+        start = clock();
+        aqueue_push(&q, i);
+        full_time += (double)(clock() - start) / CLOCKS_PER_SEC;
+        aqueue_pop(&q, &buf);
+    }
+    return full_time / count;
+}
+
+double mid_pop_time(int count)
+{
+    clock_t start;
+    double full_time = 0;
+    int buf;
+    aqueue q;
+    aqueue_init(&q);
+    for (int i = 0; i < count; ++i)
+    {
+        aqueue_push(&q, i);
+        start = clock();
+        aqueue_pop(&q, &buf);
+        full_time += (double)(clock() - start) / CLOCKS_PER_SEC;
+    }
+    return full_time / count;
 }

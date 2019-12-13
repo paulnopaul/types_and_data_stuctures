@@ -6,7 +6,7 @@
 
 #define QUEUE_SIZE 1000
 
-typedef struct aqueue 
+typedef struct aqueue
 {
     int arr[QUEUE_SIZE + 1];
     int pout, pin;
@@ -21,5 +21,9 @@ int aqueue_push(aqueue_t queue, int elem);
 int aqueue_pop(aqueue_t queue, int *dest);
 
 int aqueue_print(aqueue queue);
+
+double mid_push_time(int count);
+
+double mid_pop_time(int count);
 
 #endif

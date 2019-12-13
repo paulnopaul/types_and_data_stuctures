@@ -18,7 +18,7 @@ int lqueue_push(lqueue_t queue, int elem)
     list_t new_node = (list_t)malloc(sizeof(struct node_t));
     if (!new_node)
         return MALLOC_ERROR;
-    
+
     new_node->elem = elem;
     new_node->next = NULL;
     if (queue->pin)
@@ -66,4 +66,9 @@ int lqueue_print(lqueue queue)
     }
     puts("");
     return SUCCESS;
+}
+
+void lqueue_check_memory() // TODO check_memory
+{
+    puts("Memory check");
 }

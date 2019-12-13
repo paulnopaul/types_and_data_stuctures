@@ -1,15 +1,18 @@
 #ifndef _MENU_H_
 #define _MENU_H_
 
-void menu_print_info();
+#define MENU_EXIT 10
 
 void menu_print_menu();
 
-int read_action();
+int read_action(int *action);
 
 int handle_action(int action);
 
-int mainloop();
+void put_error(const char *errname);
 
+void wait_to_clean();
+
+int menu_mainloop();
 
 #endif
