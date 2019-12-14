@@ -5,6 +5,7 @@
 #include "menu.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "err.h"
 
@@ -35,7 +36,7 @@ void print_menu()
 
 void print_info()
 {
-	"\n\n\n**********************************************************************************\n\n"
+	printf("\n\n\n**********************************************************************************\n\n"
 		   "Программа для выполнения действия с разреженными матрицами\n"
 		   "Возможные действия:\n\n"
 		   "Ввод:\n"
@@ -73,6 +74,7 @@ int handle_action(int action)
 	default:
 		return MENU_UNDEFINED;
 	}
+	return EXIT_SUCCESS;
 }
 
 int menu_mainloop()

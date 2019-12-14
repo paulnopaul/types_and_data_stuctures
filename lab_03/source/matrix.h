@@ -12,6 +12,18 @@ typedef struct
     int **matrix;
 } matrix;
 
-int matrix_create;
+int matrix_init(matrix *m);
+
+int matrix_allocate(matrix *m);
+
+int matrix_input(matrix *m);
+
+void matrix_output(matrix m);
+
+int matrix_matrix_input(matrix *m);
+
+int matrix_product(matrix m1, matrix m2, matrix *res);
+
+int matrix_delete(matrix *m);
 
 #endif //LAB_03_MATRIX_H

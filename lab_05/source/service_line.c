@@ -154,6 +154,8 @@ int lqueue_line()
 {
     clock_t a1, a2; 
     clock_t full_time;
+    clock_t current_a2_downtime;
+    double a2_downtime = 0;
     double a1_time = generate_time(0, 6), a2_time = generate_time(1, 8); // a1 from 0 to 6, a2 from 1 to 8
     lqueue q1, q2;
     // srand(time(NULL)); // TODO когда заработает
@@ -175,7 +177,7 @@ int lqueue_line()
     puts("\n\nSTART\n\n");
 
     lqueue_pop(&q1, &q1_request);
-    a1 = full_time = clock();
+    a1 = full_time = current_a2_downtime = clock();
     while ((second_requests < SECOND_REQUEST_COUNT) && (a1_handling || a2_handling))
     {
         // проверка времени выполняется только в случае работы автомата
@@ -214,6 +216,9 @@ int lqueue_line()
                         a2_handling = 1;
                         a2_time = generate_time(1, 8);
                         a2 = clock();
+
+                        a2_downtime += (double)(clock() - current_a2_downtime) / CLOCKS_PER_SEC; // обновление времени простоя 
+                        // второго автомата
                     }
                     break;
                 case 2:
@@ -271,8 +276,8 @@ int lqueue_line()
                 {
                     printf("%d requests passed through second automat\n", second_requests);
                     printf("First queue size = %d\nSecond queue size = %d\n", q1_size, q2_size);
-                    printf("First queue mean size: %.5lf\n", q1_mid_size);
-                    printf("Second queue mean size: %.5lf\n", q2_mid_size);
+                    printf("First queue mean size: %.2lf\n", q1_mid_size);
+                    printf("Second queue mean size: %.2lf\n", q2_mid_size);
                     // lqueue_print(q1);
                     // lqueue_print(q2);
                     puts("\n\n");
@@ -290,12 +295,21 @@ int lqueue_line()
                     a2_time = generate_time(1, 8);
                     a2_handling = 1;
                     a2 = clock();
+
+                    a2_downtime += (double)(clock() - current_a2_downtime) / CLOCKS_PER_SEC; // обновление времнеи простоя
+                    // второго автомата
                 }
+                else if (!a2_handling)
+                    current_a2_downtime = clock(); // начало времени простоя вторго автомата
             }
         }
     }
+    
+    // Вывод итоговой информации работы системы обслуживания
     printf("Full time: %lf\n", (double) (clock() - full_time) / CLOCKS_PER_SEC);
+    printf("Second automat downtime: %lf\n", a2_downtime);
     printf("First automat was activated %d times\n\n", first_requests);
+
     lqueue_delete(&q1);
     lqueue_delete(&q2);
     return err;

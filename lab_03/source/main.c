@@ -47,13 +47,49 @@
 
 // #include "test.h"
 #include "menu.h"
+#include "matrix.h"
+#include "smatrix.h"
 
 /*
 TODO: доделать ввод/вывод матрицы
  */
 
+void matrix_test()
+{
+    matrix m1, m2, res;
+    matrix_init(&m1);
+    matrix_init(&m2);
+    matrix_init(&res);
+
+    puts("m1");
+    matrix_input(&m1);
+    puts("m2");
+    matrix_input(&m2);
+
+    matrix_output(m1);
+    matrix_output(m2);
+
+    matrix_product(m1, m2, &res);
+    matrix_output(res);
+
+    matrix_delete(&m1);
+    matrix_delete(&m2);
+    matrix_delete(&res);
+}
+
+void smatrix_test()
+{
+    s_matr m;
+    s_matr_init(&m);
+    s_matr_input(&m);
+    s_matr_output(&m);
+    s_matr_delete(&m);
+}
+
 int main()
 {
-    menu_mainloop();
+    // menu_mainloop();
+    // matrix_test();
+    smatrix_test();
     return 0;
 }

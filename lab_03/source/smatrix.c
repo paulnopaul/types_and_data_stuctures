@@ -6,6 +6,7 @@
 #include "linked_list.h"
 #include "err.h"
 
+
 rare_matrix s_matr_alloc(size_t rows, size_t columns)
 {
     rare_matrix buf = (rare_matrix)malloc(sizeof(s_matr));
