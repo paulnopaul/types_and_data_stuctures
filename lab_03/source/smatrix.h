@@ -16,36 +16,39 @@
 typedef struct s_matr
 {
     // source matrix sizes
-    size_t rows;
-    size_t columns;
+    int rows;
+    int columns;
 
     // rare matrix params
-    size_t a_size; // a size is equal to ja size
+    size_t a_size; // a size is equal to ja size 
     int *a;
     size_t *ja;
     list_t ia;
 
 } s_matr;
 
-typedef s_matr *rare_matrix;
+void s_matr_init(s_matr *m);
 
 // выделение памяти под разреженную матрицу
-rare_matrix s_matr_alloc(size_t rows, size_t columns);
+// s_matr *s_matr_alloc(size_t rows, size_t columns);
+int s_matr_alloc(s_matr *m);
 
 // ввод матрицы
-int s_matr_input(rare_matrix m);
+int s_matr_matrix_input(s_matr * m);
 
 // добавление элемента в разреженную матрицу (в конец)
-int s_matr_add_elem(rare_matrix m, size_t row, size_t column, int elem);
+int s_matr_add_elem(s_matr * m, size_t row, size_t column, int elem);
 
 // сокращение матрицы
-int s_matr_resize(rare_matrix m);
+int s_matr_resize(s_matr * m);
 
 // полный ввод матрицы
-int s_matr_full_input(rare_matrix *m);
+int s_matr_input(s_matr *m);
 
 // вывод матрицы
-int s_matr_output(rare_matrix m);
+int s_matr_output(s_matr *m);
+
+void s_matr_delete(s_matr *m);
 
 
 #endif

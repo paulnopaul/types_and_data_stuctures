@@ -50,10 +50,6 @@
 #include "matrix.h"
 #include "smatrix.h"
 
-/*
-TODO: доделать ввод/вывод матрицы
- */
-
 void matrix_test()
 {
     matrix m1, m2, res;
