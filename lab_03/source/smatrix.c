@@ -14,7 +14,7 @@ void s_matr_init(s_matr *m)
     m->a_size = 0;
     m->a = NULL;
     m->ja = NULL;
-    list_init(m->ia, 0);
+    m->ia = NULL;
 }
 
 
@@ -42,30 +42,10 @@ int s_matr_alloc(s_matr *m)
     m->a = (int *)malloc(m->rows * m->columns * sizeof(int));
     if (!m->a)
         return EXIT_FAILURE;
-    m->ja = (size_t *)malloc(m->rows * m->columns * sizeof(int));
+    m->ja = (size_t *)malloc(m->rows * m->columns * sizeof(size_t));
     if (!m->a)
         return EXIT_FAILURE;
     return EXIT_SUCCESS;
-}
-
-
-int s_matr_add_elem(s_matr * m, size_t row, size_t column, int elem)
-{
-    // printf("Add elem: %ld %ld = %d\n", row, column, elem);
-    int ia_size = list_size(m->ia);
-    // printf("ia_size = %d    row = %d\n", ia_size, (int)row);
-
-    if ((long long)ia_size <= (long long)row)
-        m->ia = list_add_tail(m->ia, m->a_size);
-    m->a_size++;
-    if (m->ia)
-    {
-        m->a[m->a_size - 1] = elem;
-        m->ja[m->a_size - 1] = column;
-        return OK;
-    }
-    else
-        return MALLOC_ERROR;
 }
 
 /*
@@ -78,11 +58,11 @@ int s_matr_add_elem(s_matr * m, size_t row, size_t column, int elem)
                 добавить в конец разреженной матрицы элемент buf
         если строка нулевая:
             добавить последний элемент ia в ia
+    добавить количество ненулевых строк в ia
  */
-
 int s_matr_matrix_input(s_matr * m)
 {
-    int buf, zero_row = 1;
+    int buf, zero_row, zero_row_count = 0;
     puts("Input matrix");
     for (int i = 0; i < m->rows; ++i)
     {
@@ -94,15 +74,98 @@ int s_matr_matrix_input(s_matr * m)
 
             if (buf != 0)
             {
-                if (s_matr_add_elem(m, i, j, buf) == EXIT_FAILURE)
+                if (s_matr_add_elem(m, i, j, buf, zero_row) == EXIT_FAILURE)
                     return EXIT_FAILURE;
                 zero_row = 0;
             }
         }
         if (zero_row)
-            if (s_matr_add_elem(m, i, 1, buf) == EXIT_FAILURE) // TODO добавить стобца
-                return EXIT_FAILURE; // TODO переделать ввод чтобы все работало
+            zero_row_count++;
+        if (!zero_row && zero_row_count)
+        {
+            for (int j = 0; j < zero_row_count; ++j)
+                if (!(m->ia = list_double_tail(m->ia)))
+                    return EXIT_FAILURE;
+            zero_row_count = 0;
+        }
     }
+    if (!(m->ia = list_push_back(m->ia, m->a_size)))
+        return EXIT_FAILURE;
+    return EXIT_SUCCESS;
+}
+
+int s_matr_add_elem(s_matr *m, int row, int column, int elem, int new_row)
+{
+    if (new_row)
+        if (!((m->ia = list_push_back(m->ia, m->a_size))))
+            return EXIT_FAILURE;
+
+    m->a[m->a_size] = elem;
+    m->ja[m->a_size] = column;
+    ++m->a_size;
+    return EXIT_SUCCESS;
+}
+
+int s_matr_matrix_column_production (s_matr matrix, s_matr column, s_matr *res)
+{
+    list_t matr_ia, col_ia;
+    int column_index; // текущий номер элемента в колонке (для упрощения работы)
+    int buf_sum, i;
+    if (matrix.columns != column.rows || column.columns != 1)
+        return EXIT_FAILURE;
+
+    res->rows = matrix.rows;
+    res->columns = 1;
+    matr_ia = matrix.ia;
+    col_ia = column.ia;
+
+    if (s_matr_alloc(res) == EXIT_FAILURE)
+        return EXIT_FAILURE;
+    
+    while (matr_ia->next)
+    {
+        col_ia = column.ia;
+        i = matr_ia->value;
+        buf_sum = 0; // буфер для суммы произведений элементов столбца и строки
+        column_index = 0;
+
+        while (i < matr_ia->next->value && col_ia->next)
+        {
+            // если оба соотвествуюших элемента ненулевые, то увеличиваем элемент новой матрицы
+            // на произведение элемента вектора-столбца и элемента матрицы
+            if (col_ia->value != col_ia->next->value && column_index == matrix.ja[i])
+            {
+                buf_sum += column.a[col_ia->value] * matrix.a[i];
+                ++i;
+                col_ia = col_ia->next;
+                column_index++;
+            }
+
+            if (col_ia->next && i < matrix.a_size)
+            {
+                // берем следующий индекс вектора-стобца, если текущий нулевой или меньше 
+                // текущего индекса строки матрицы
+                if (col_ia->value == col_ia->next->value || column_index < matrix.ja[i])
+                {
+                    col_ia = col_ia->next;
+                    ++column_index;
+                }
+
+                // берем следущий индекс вектора-столбца, если текущий меньше
+                // текущего индекса строки матрицы
+                if (column_index > matrix.ja[i])
+                    ++i;
+            }
+        }
+
+        if (buf_sum != 0)
+            s_matr_add_elem(res, 1, 0, buf_sum, 1);
+
+        // слеудующая строка матрицы
+        matr_ia = matr_ia->next;     
+    }
+    if (s_matr_resize(res) == EXIT_FAILURE)
+        return EXIT_FAILURE;
     return EXIT_SUCCESS;
 }
 
@@ -111,13 +174,10 @@ int s_matr_resize(s_matr * m)
     int *new_a = (int *)realloc(m->a, m->a_size * sizeof(int));
     size_t *new_ja = (size_t *)realloc(m->ja, m->a_size * sizeof(size_t));
 
-    if (new_a && new_ja)
-    {
-        m->a = new_a;
-        m->ja = new_ja;
-    }
-    else
-        return REALLOC_ERROR;
+    if (!(new_a && new_ja))
+        return EXIT_FAILURE;
+    m->a = new_a;
+    m->ja = new_ja;
     return OK;
 }
 
@@ -133,8 +193,9 @@ int s_matr_input(s_matr *m)
     
     if (s_matr_alloc(m) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    
     if (s_matr_matrix_input(m) == EXIT_FAILURE)
+        return EXIT_FAILURE;
+    if (s_matr_resize(m) == EXIT_FAILURE)
         return EXIT_FAILURE;
 
     return EXIT_SUCCESS;
@@ -160,6 +221,5 @@ void s_matr_delete(s_matr *m)
     free(m->a);
     free(m->ja);
     list_delete(m->ia);
-
     s_matr_init(m);
 }

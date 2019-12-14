@@ -12,12 +12,8 @@
         },
         {
             "type": "shell",
-            "label": "my multifile project run",
-            "command": "${fileDirname}/../source/app.exe",
-            "group": "build",
-            "problemMatcher": [
-                "$gcc"
-            ]
+            "label": "gcc build active file",
+            "command": "cd source; make;"
         }
     ]
 }

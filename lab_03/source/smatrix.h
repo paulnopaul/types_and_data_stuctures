@@ -37,10 +37,13 @@ int s_matr_alloc(s_matr *m);
 int s_matr_matrix_input(s_matr * m);
 
 // добавление элемента в разреженную матрицу (в конец)
-int s_matr_add_elem(s_matr * m, size_t row, size_t column, int elem);
+int s_matr_add_elem(s_matr * m, int row, int column, int elem, int new_row);
 
 // сокращение матрицы
 int s_matr_resize(s_matr * m);
+
+// произведение матрицы на вектор-столбец
+int s_matr_matrix_column_production (s_matr matrix, s_matr column, s_matr *res);
 
 // полный ввод матрицы
 int s_matr_input(s_matr *m);
@@ -49,6 +52,7 @@ int s_matr_input(s_matr *m);
 int s_matr_output(s_matr *m);
 
 void s_matr_delete(s_matr *m);
+
 
 
 #endif

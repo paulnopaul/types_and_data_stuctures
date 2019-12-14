@@ -17,24 +17,14 @@ typedef struct node_t
 } node_t;
 
 
-list_t list_init(list_t list, size_t elem);
+list_t list_create(size_t elem);
 
-list_t list_last(list_t list);
-
-list_t list_add_tail(list_t list, size_t val);
-
-list_t list_add_head(list_t list, size_t elem);
-
-int list_size(list_t list);
-
-list_t list_calloc(size_t size);
-
-int list_tail(list_t list);
-
-void list_delete(list_t list);
+list_t list_push_back(list_t list, size_t val);
 
 void list_output(list_t list);
 
+list_t list_double_tail(list_t list);
 
+list_t list_delete(list_t list);
 
 #endif

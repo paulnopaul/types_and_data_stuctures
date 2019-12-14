@@ -6,92 +6,87 @@
 
 #include "err.h"
 
-list_t list_init(list_t list, size_t elem)
+list_t list_create(size_t elem)
 {
-    list_t buf = (list_t)malloc(sizeof(node_t));
-    if (buf)
+    list_t new_list = (list_t)malloc(sizeof(node_t));
+    if (new_list)
     {
-        buf->value = elem;
-        buf->prev = NULL;
-        buf->next = list;
+        new_list->prev = NULL;
+        new_list->next = NULL;
+        new_list->value = elem;
     }
-    return buf;
+    return new_list;
 }
 
-list_t list_last(list_t list)
+list_t list_push_back(list_t list, size_t val)
 {
+    // printf("Adding %ld, list: \n", val);
+    // list_output(list);
+    list_t buf;
+    list_t new_node = list_create(val);
     if (!list)
-        return NULL;
-    while (list->next)
-        list = list->next;
+        return new_node;
+
+    // puts("Start Going to end");
+    buf = list;
+    while (buf->next)
+        buf = buf->next;
+    // puts("End going to end");
+
+    buf->next = new_node;
+    if (new_node)
+        new_node->prev = buf;
     return list;
-}
-
-list_t list_add_tail(list_t list, size_t val)
-{
-    list_t buf = list_init(NULL, val);
-
-    if (!buf)
-        return NULL;
-    if (!list)
-        return buf;
-
-    list_t cur = list_last(list);
-    buf->prev = cur;
-    cur->next = buf;
-
-    return list;
-}
-
-list_t list_add_head(list_t list, size_t elem)
-{
-    list_t buf = list_init(list, elem);
-    return buf;
-}
-
-int list_size(list_t list)
-{
-    list_t buf = list;
-    int count = 0;
-    if (buf)
-    {
-        count = 1;
-        for (; buf->next; buf = buf->next)
-            count++;
-    }
-    return count;
-}
-
-void list_delete(list_t list)
-{
-    if (list)
-    {
-        list_t buf = list;
-        int count = 1;
-        while (buf->next)
-        {
-            buf = buf->next;
-            free(buf->prev);
-            count++;
-        }
-        free(buf);
-        printf("%d freed\n", count);
-    }
 }
 
 void list_output(list_t list)
 {
-    list_t buf = list;
-    if (buf)
+    list_t buf;
+    if (!list)
     {
-        for (; buf; buf = buf->next)
-            printf("%ld ", buf->value);
-        putchar('\n');
+        puts("Empty");
+        return;
     }
+    buf = list;
+    while(buf)
+    {
+        printf("%ld ", buf->value);
+        buf = buf->next;
+    }
+    printf("\n");
     //printf("%p %p %p: %ld\n", buf, buf->prev, buf->next, buf->value);
 }
 
-int list_tail(list_t list)
+list_t list_double_tail(list_t list)
 {
-    return OK;
+    list_t buf;
+    list_t new_node;
+    if (!list)
+        return list_create(0);
+
+    buf = list;
+    while (buf->next)
+        buf = buf->next;
+
+    new_node = list_create(buf->value);
+    buf->next = new_node;
+
+    if (new_node)
+        new_node->prev = buf;
+
+    return list;
+}
+
+list_t list_delete(list_t list)
+{
+    if (!list)
+        return NULL;
+
+    while (list->next)
+    {
+        list = list->next;
+        free(list->prev);
+    }
+    free(list);
+    return NULL;
 }
