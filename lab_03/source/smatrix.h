@@ -43,7 +43,10 @@ int s_matr_add_elem(s_matr * m, int row, int column, int elem, int new_row);
 int s_matr_resize(s_matr * m);
 
 // произведение матрицы на вектор-столбец
-int s_matr_matrix_column_production (s_matr matrix, s_matr column, s_matr *res);
+int s_matr_matrix_column_production (s_matr matrix, s_matr vector, s_matr *res);
+
+// долго писал, удалять жалко(((((
+int s_matr_column_prod (s_matr matrix, s_matr column, s_matr *res);
 
 // полный ввод матрицы
 int s_matr_input(s_matr *m);
