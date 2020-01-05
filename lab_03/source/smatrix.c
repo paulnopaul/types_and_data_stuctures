@@ -111,115 +111,72 @@ int s_matr_add_elem(s_matr *m, int row, int column, int elem, int new_row)
     return EXIT_SUCCESS;
 }
 
+// умножение матрицы на вектор-стобец (вектор-стобец хрнавится как вертикальный
+// столбец матрицы)
 int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
 {
-    list_t matr_ia, col_ia;
-    int column_index; // текущий номер элемента в колонке (для упрощения работы)
-    int buf_sum, i;
-    if (matrix.columns != column.rows || column.columns != 1)
-        return EXIT_FAILURE;
-
-    res->rows = matrix.rows;
-    res->columns = 1;
-    matr_ia = matrix.ia;
-    col_ia = column.ia;
-
-    if (s_matr_alloc(res) == EXIT_FAILURE)
-        return EXIT_FAILURE;
-
-    while (matr_ia->next)
+    list_t mlist = matrix.ia, clist;
+    int icstart, icend, imstart, imend;
+    int im, ic;
+    int buf;
+    while (mlist)
     {
-        col_ia = column.ia;
-        i = matr_ia->value;
-        buf_sum = 0; // буфер для суммы произведений элементов столбца и строки
-        column_index = 0;
+        imstart = imend;
+        imend = mlist->value;
+        clist = column.ia;
+        buf = 0;
+        im = imstart;
+        while(clist)
+        {   
+            icstart = icend;
+            imstart++;
+            icend = clist->value;
 
-        while (i < matr_ia->next->value && col_ia->next)
-        {
-            // если оба соотвествуюших элемента ненулевые, то увеличиваем элемент новой матрицы
-            // на произведение элемента вектора-столбца и элемента матрицы
-            if (col_ia->value != col_ia->next->value && column_index == matrix.ja[i])
-            {
-                buf_sum += column.a[col_ia->value] * matrix.a[i];
-                ++i;
-                col_ia = col_ia->next;
-                column_index++;
-            }
-            if (col_ia->next && i < matrix.a_size)
-            {
-                // берем следующий индекс вектора-стобца, если текущий нулевой или меньше
-                // текущего индекса строки матрицы
-                if (col_ia->value == col_ia->next->value || column_index < matrix.ja[i])
-                {
-                    col_ia = col_ia->next;
-                    ++column_index;
-                }
-
-                // берем следущий индекс вектора-столбца, если текущий меньше
-                // текущего индекса строки матрицы
-                if (column_index > matrix.ja[i])
-                    ++i;
-            }
+            if (icstart < icend)
+                
+            
+            clist = clist->next;
         }
 
-        if (buf_sum != 0)
-            s_matr_add_elem(res, 1, 0, buf_sum, 1);
-        // слеудующая строка матрицы
-        matr_ia = matr_ia->next;
+        mlist = mlist->next; 
     }
-    if (!(res->ia = list_push_back(res->ia, column.a_size + 1))) // добавление в конец матрицы количества
-        return EXIT_FAILURE;                                     // ненулевых элементов
-    if (s_matr_resize(res) == EXIT_FAILURE)
-        return EXIT_FAILURE;
-    return EXIT_SUCCESS;
-}
-
-int s_matr_resize(s_matr *m)
-{
-    int *new_a = (int *)realloc(m->a, m->a_size * sizeof(int));
-    size_t *new_ja = (size_t *)realloc(m->ja, m->a_size * sizeof(size_t));
-
-    if (!(new_a && new_ja))
-        return EXIT_FAILURE;
-    m->a = new_a;
-    m->ja = new_ja;
-    return OK;
+    return s_matr_resize(res);
 }
 
 // особенность - вектор-столбец хранится в строке матрицы
 int s_matr_matrix_column_production(s_matr matrix, s_matr vector, s_matr *res)
 {
-    list_t matr_ia;
-    int vector_index, row_index = 0;
-    int buf_sum;
+    list_t mlist = matrix.ia;
+    int istart, iend; 
+    int buf, row = 0;
     if (matrix.columns != vector.columns && vector.ia->next && vector.ia->next->next && !vector.ia->next->next->next)
         return EXIT_FAILURE;
+
+    s_matr_init(res);
     res->rows = matrix.rows;
     res->columns = 1;
-    matr_ia = matrix.ia;
-    while (matr_ia->next)
-    {
-        buf_sum = 0; 
-        vector_index = 0;
-        row_index = matr_ia->value;
-        while (vector_index < vector.ia->next->value)
-        {
-            if (vector_index = )
-        }
-    }
-    return EXIT_SUCCESS;
-}
-
-int s_matr_resize(s_matr *m)
-{
-    int *new_a = (int *)realloc(m->a, m->a_size * sizeof(int));
-    size_t *new_ja = (size_t *)realloc(m->ja, m->a_size * sizeof(size_t));
-
-    if (!(new_a && new_ja))
+    if (s_matr_alloc(res) == EXIT_FAILURE)
         return EXIT_FAILURE;
-    m->a = new_a;
-    m->ja = new_ja;
-    return OK;
+    
+    iend = mlist->value;
+    mlist = mlist->next;
+
+    while (mlist)
+    {
+        buf = 0;
+        istart = iend;
+        iend = mlist->value;
+        for (int i = 0; i < vector.a_size && istart < iend; ++i)
+        {
+            if (vector.ja[i] == matrix.ja[istart])
+                buf += vector.a[i] * matrix.ja[istart];
+        }
+        if (buf != 0 && s_matr_add_elem(res, row, 0, buf, 1) == EXIT_FAILURE)
+            return EXIT_FAILURE;
+
+        mlist = mlist->next;
+    }
+    return s_matr_resize(res);
 }
 
 int s_matr_input(s_matr *m)

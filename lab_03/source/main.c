@@ -75,64 +75,33 @@ void matrix_test()
 
 /*
 matrix
-1 2 3 4 
-1 2 2 0 
-0 2 3 4 
-
-column
-1 1 1 
-0 0 0 
-0 1 2 3 
-
-result
-3 3 4 5
-0 0 0 0
-0 1 2 3 5
-*/
-
-/*
+1 2 3
+0 0 0
 1 2 0
-0 0 3
-4 0 0 
 
-1 
-0
-1
-1 1
+smatrix
+1 2 3 1 2 
+0 1 2 0 1 
+0 3 3 5
+
+column_vector 
+1 0 1
+
+svector
+1 1 
+0 2 
+0 2
+
+svector normal
+1 1 
 0 0 
 0 1 1 2 
 
-3
-3
-4
-
+result
+4 1
+0 2 
+0 2
 */
-
-void smatrix_test()
-{
-    s_matr m1, m2, res;
-    s_matr_init(&m1);
-    s_matr_init(&m2);
-    s_matr_init(&res);
-
-    s_matr_input(&m1);
-    s_matr_input(&m2);
-
-    puts("Matrix: ");
-    s_matr_output(&m1);
-    putchar('\n');
-    puts("Column vector");
-    s_matr_output(&m2);
-    putchar('\n');
-
-    s_matr_matrix_column_production(m1, m2, &res);
-    puts("Result: ");
-    s_matr_output(&res);
-
-    s_matr_delete(&m1);
-    s_matr_delete(&m2);
-    s_matr_delete(&res);
-}
 
 void list_test()
 {
