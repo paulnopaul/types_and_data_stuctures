@@ -15,6 +15,5 @@
 
 int main()
 {
-    puts("Main");
     return 0;
 }
