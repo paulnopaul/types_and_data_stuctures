@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "queue": "c",
+        "istream": "c",
+        "streambuf": "c",
+        "dtree.h": "c"
+    }
+}
