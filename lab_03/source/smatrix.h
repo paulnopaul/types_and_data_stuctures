@@ -20,9 +20,9 @@ typedef struct s_matr
     int columns;
 
     // rare matrix params
-    size_t a_size; // a size is equal to ja size 
+    int a_size; // a size is equal to ja size 
     int *a;
-    size_t *ja;
+    int *ja;
     list_t ia;
 
 } s_matr;
@@ -33,23 +33,10 @@ void s_matr_init(s_matr *m);
 // s_matr *s_matr_alloc(size_t rows, size_t columns);
 int s_matr_alloc(s_matr *m);
 
-// ввод матрицы
-int s_matr_matrix_input(s_matr * m);
-
-// добавление элемента в разреженную матрицу (в конец)
-int s_matr_add_elem(s_matr * m, int row, int column, int elem, int new_row);
-
 // сокращение матрицы
 int s_matr_resize(s_matr * m);
 
-// произведение матрицы на вектор-столбец
-int s_matr_matrix_column_production(s_matr matrix, s_matr vector, s_matr *res);
-
-// долго писал, удалять жалко(((((
 int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res);
-
-// полный ввод матрицы
-int s_matr_input(s_matr *m);
 
 // вывод матрицы
 int s_matr_output(s_matr *m);

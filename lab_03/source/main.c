@@ -49,6 +49,7 @@
 #include "menu.h"
 #include "matrix.h"
 #include "smatrix.h"
+#include "smatr_input.h"
 
 void matrix_test()
 {
@@ -103,21 +104,20 @@ result
 0 2
 */
 
-void list_test()
+void smatr_test()
 {
-    list_t l = NULL;
-    for(int i = 0; i < 20; ++i)
-        l = list_push_back(l, i + 10);
-    for (int i = 0; i < 5; ++i)
-        l = list_double_tail(l);
-    list_output(l);
-    l = list_delete(l);
+    s_matr m;
+    s_matr_init(&m);
+    s_matr_full_input(&m);
+    s_matr_output(&m);
+    s_matr_delete(&m);
 }
+
 int main()
 {
     // menu_mainloop();
     // matrix_test();
-    smatrix_test();
     // list_test();
+    smatr_test();
     return 0;
 }
