@@ -23,6 +23,20 @@ int s_matr_full_input(s_matr *m)
     return 0;
 }
 
+int s_matr_column_input(s_matr *c, int rows)
+{
+    c->rows = rows;
+    c->columns = 1;
+    if (s_matr_alloc(c))
+        return 1;
+
+    printf("Введите столбец размера %d:\n", rows);
+    if (s_matr_matrix_input(c))
+        return 1;
+    s_matr_resize(c);
+    return 0;
+}
+
 /*
     Ввод разреженной матрицы
     Алгоритм:

@@ -113,6 +113,15 @@ void smatr_test()
     s_matr_delete(&m);
 }
 
+void app()
+{
+    s_matr m, c;
+    s_matr_init(&m);
+    s_matr_init(&c);
+    s_matr_full_input(&m);
+    s_matr_column_input(&c, m.columns);
+}
+
 int main()
 {
     // menu_mainloop();

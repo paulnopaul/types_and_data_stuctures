@@ -5,6 +5,7 @@
 
 #include "linked_list.h"
 #include "err.h"
+#include "smatr_input.h"
 
 void s_matr_init(s_matr *m)
 {
@@ -45,7 +46,33 @@ int s_matr_resize(s_matr *m)
 // столбец матрицы)
 int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
 {
+    int m_i, c_i, m_start, m_end, c_start, c_end, buf, row;
+    list_t m_ia = matrix.ia, c_ia = column.ia;
+    res->rows = matrix.rows;
+    res->columns = 1;
 
+    row = 0;
+    while (m_ia->next)
+    {
+        m_i = m_ia->value;
+        m_end = m_ia->next->value;
+        c_i = c_ia->value;
+        c_end = c_ia->next->value;
+        buf = 0;
+        while(m_i < m_end && c_i < c_end)
+        {
+            
+        }
+        if (buf == 0)
+            s_matr_add_line(res);
+        else 
+            s_matr_add_elem(res, buf, row, 0, 1);
+            
+        ++row;
+        m_ia = m_ia->next;
+        m_ia = m_ia->next;
+    }
+    
     return 0;
 }
 
