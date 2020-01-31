@@ -55,4 +55,8 @@ node_t *dtree_rotateright(node_t *t);
 
 node_t *dtree_rotateleft(node_t *t);
 
+node_t *dtree_insert(node_t *t, int data);
+
+node_t *node_balance(node_t *t);
+
 #endif

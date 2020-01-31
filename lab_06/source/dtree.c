@@ -196,89 +196,20 @@ int dtree_delete(dtree_t *root)
 int dtree_balance(dtree_t *root)
 {
 
-    node_t *buf = root->root;
-
-    dtree_fixheight(buf);
-    printf("%d %d\n", buf->data, dtree_bfactor(buf));
-
-    if (dtree_bfactor(buf) == 2)
-    {
-        if (dtree_bfactor(buf->right) < 0)
-            buf->right = dtree_rotateright(buf->right);
-        root->root = dtree_rotateleft(buf);
-    }
-    else if (dtree_bfactor(buf) == -2)
-    {
-        if (dtree_bfactor(buf->left) > 0)
-            buf->left = dtree_rotateleft(buf->left);
-        root->root = dtree_rotateright(buf);
-    }
+    root->root = node_balance(root->root);
     return 0;
 }
 
 int dtree_create_balanced(dtree_t *src, dtree_t *dst)
 {
-    queue_t *vertex = NULL;
-    node_t *buf = src->root;
-
-    if (!src->root)
-        return 0;
-
-    vertex = queue_push(vertex, (void *)buf);
-
-    while (vertex)
-    {
-        vertex = queue_pop(vertex, (void *)&buf);
-
-        if (buf->left)
-            vertex = queue_push(vertex, (void *)buf->left);
-        if (buf->right)
-            vertex = queue_push(vertex, (void *)buf->right);
-        dtree_add_node_balanced(dst, buf->data);
-    }
+    dtree_copy(src, dst);
+    dtree_balance(dst);
     return 0;
 }
 
 int dtree_add_node_balanced(dtree_t *root, int data)
 {
-    node_t *buf = root->root;
-    int height = 1;
-
-    if (root->root == NULL)
-    {
-        root->root = create_node(data);
-        root->root->height = height;
-        return 0;
-    }
-
-    while (data != buf->data &&
-           !((data < buf->data && !buf->left) ||
-             (data > buf->data && !buf->right)))
-    {
-        if (data > buf->data)
-            buf = buf->right;
-        else
-            buf = buf->left;
-        height++;
-    }
-
-    if (data > buf->data)
-    {
-        buf->right = create_node(data);
-        buf->height = height;
-    }
-    else if (data < buf->data)
-    {
-        buf->left = create_node(data);
-        buf->height = height;
-    }
-    // printf("%d %d\n", buf->data, buf->height);
-
-    // dtree_put(root, "tt");
-    dtree_balance(root);
-    // dtree_put(root, "t");
-    // getchar();
-    
+    root->root = dtree_insert(root->root, data);
     return 0;
 }
 
@@ -322,4 +253,33 @@ node_t *dtree_rotateleft(node_t *t)
     dtree_fixheight(t);
 
     return p;
+}
+
+node_t *dtree_insert(node_t *t, int data)
+{
+    if (!t)
+        return create_node(data);
+    if (data < t->data)
+        t->left = dtree_insert(t->left, data);
+    else
+        t->right = dtree_insert(t->right, data);
+    return node_balance(t);
+}
+
+node_t *node_balance(node_t *t)
+{
+    dtree_fixheight(t);
+    if (dtree_bfactor(t) == 2)
+    {
+        if (dtree_bfactor(t->right) < 0)
+            t->right = dtree_rotateright(t->right);
+        return dtree_rotateleft(t);
+    }
+    if (dtree_bfactor(t) == -2)
+    {
+        if (dtree_bfactor(t->left) > 0)
+            t->left = dtree_rotateleft(t->left);
+        return dtree_rotateright(t);
+    }
+    return t;
 }
