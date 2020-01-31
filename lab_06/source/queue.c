@@ -25,4 +25,3 @@ queue_t* queue_pop(queue_t *q, void **data)
     free(q);
     return new;
 }
-

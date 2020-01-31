@@ -4,6 +4,7 @@ CFLAGS := -g3 -Wall -Werror
 SOURCEDIR := .
 BUILDDIR := ../bin
 MAINTARGET := app
+CACHEDIR := ../cache
 
 SOURCES := $(wildcard $(SOURCEDIR)/*.c)
 OBJECTS := $(patsubst $(SOURCEDIR)/%.o,$(BUILDDIR)/%.o,$(SOURCES:.c=.o))

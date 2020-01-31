@@ -6,25 +6,27 @@ def main():
     dot = Digraph(comment='Binary Search Tree')
     null_count = 0
 
-    if len(sys.argv) != 2:
+    if len(sys.argv) != 3:
         return 1
     
     treefile = open(sys.argv[1], "r")
+    # print(sys.argv[1])
 
     for line in treefile:
         if (line[0] == 'E'):
             dot.node("Empty")
             break
-            
+           
         source, dest = line.split()
+        # print(source, dest)
 
         dot.node(source)
 
         if dest == "NULL":
             dest += str(null_count)
             null_count += 1
-            dot.node(dest, "NULL")
-            print(dest)
+            dot.node(dest, "NULL", shape="point")
+            # print(dest)
         else:
             dot.node(dest)
 
@@ -32,14 +34,15 @@ def main():
 
     treefile.close()
 
-    outfile = open("../cache/testtree.gv", "w")
+    # print(sys.argv[1], sys.argv[2])
+    outfile = open(sys.argv[2], "w")
     
     # print(dot.source)
     outfile.write(dot.source)
 
     outfile.close()
 
-    dot.render("../cache/testtree.gv", view=True)
+    dot.render(sys.argv[2], view=True)
 
     return 0
 

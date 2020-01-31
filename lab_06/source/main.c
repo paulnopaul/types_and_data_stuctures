@@ -26,28 +26,91 @@
 */
 
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "../include/dtree.h"
+#include "../include/hashtable.h"
 
-void dtree_test()
+void file_add(const char* filename, int to_add);
+
+int main(int argc, char **argv)
 {
-    puts("Dtree test");
-    dtree_t t;
-    dtree_init(&t);
+    dtree_t raw, balanced;
+    hashtable ht;
+    // int to_add;
 
-    if (!dtree_get(&t, "../examples/testfile.txt"))
+    // timers
+    // clock_t bstt, bbstt, hasht, filet;
+
+    dtree_init(&raw);
+    dtree_init(&balanced);
+    hashtable_init(&ht, 1000);
+
+    if (argc != 2)
     {
-        puts("Input ok");
-        dtree_put(&t, "../examples/treetest.txt");
-        system("python3 ../scripts/draw_tree.py ../examples/treetest.txt");
+        puts("Wrong arg");
+        return 1;
     }
-    else 
-        puts("Input failed");
+
+    // getting tree
+    if (dtree_get(&raw, argv[1]))
+    {
+        puts("File input error");
+        return 1;
+    }
+
+    dtree_put(&raw, "raw1");
+
+    // balancing tree
+    dtree_create_balanced(&raw, &balanced);  
+    dtree_put(&balanced, "balanced1");
+
+    // getting hashtable
+    hashtable_get(&ht, argv[1]);
+    hashtable_put(&ht);
+
+    
+    // ************** Adding elements **************
+    /*
+    printf("Input number: ");
+    while (scanf("%d", &to_add) != 1)
+        puts("Error, try again");
+
+    bstt = clock();
+    dtree_add_node(&raw, to_add);
+    bstt = clock() - bstt;
+    dtree_put(&raw, "raw2");
+    
+    bbstt = clock();
+    dtree_add_node_balanced(&raw, to_add); 
+    bbstt = clock() - bbstt;
+    dtree_put(&balanced, "balanced2");
+
+    hasht = clock();
+    hashtable_add(&ht, to_add); 
+    hasht = clock() - hasht;
+    hashtable_put(&ht);
+
+    filet = clock();
+    file_add(argv[1], to_add);
+    filet = clock() - filet;  
+
+
+    printf("BST adding time: %lf\n", (double)bstt / CLOCKS_PER_SEC);
+    printf("Balanced BST adding time: %lf\n", (double)bbstt / CLOCKS_PER_SEC);
+    printf("Hash table adding time: %lf\n", (double)hasht / CLOCKS_PER_SEC);
+    printf("File adding time: %lf\n", (double)filet / CLOCKS_PER_SEC);
+    */
+    dtree_delete(&raw);
+    dtree_delete(&balanced);
+    hashtable_delete(&ht);
+    // system("rm -f ../cache/*");
+    return 0;
 }
 
-int main()
+
+void file_add(const char* filename, int to_add)
 {
-    puts("Main");
-    dtree_test();
-    return 0;
+    return;
 }

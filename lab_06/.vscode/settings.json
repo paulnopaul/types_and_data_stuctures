@@ -3,6 +3,19 @@
         "queue": "c",
         "istream": "c",
         "streambuf": "c",
-        "dtree.h": "c"
+        "dtree.h": "c",
+        "__hash_table": "cpp",
+        "__split_buffer": "cpp",
+        "array": "cpp",
+        "bitset": "cpp",
+        "deque": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "iterator": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "utility": "cpp",
+        "vector": "cpp",
+        "hashtable": "cpp"
     }
 }
