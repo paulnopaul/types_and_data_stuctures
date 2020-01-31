@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 
-int s_full_matr_input(s_matr *m)
+int s_matr_full_input(s_matr *m)
 {
     int r, c;
     printf("Введите размеры матрицы: ");
@@ -47,8 +47,7 @@ int s_matr_matrix_input(s_matr *m)
                 return 1;
 
             if (buf !=  0)
-            {   
-
+            {  
                 s_matr_add_elem(m, buf, i, j, zero_line); 
                 zero_line = 0;
             }
@@ -67,6 +66,24 @@ int s_matr_add_elem(s_matr *m, int buf, int row, int column, int new_line)
 
     if (new_line)
         m->ia = list_push_back(m->ia, m->a_size);
+    
+    ++(m->a_size);
 
+    return 0;
+}
+
+int s_matr_add_line(s_matr *m)
+{
+    if (m->a_size == 0)
+        m->ia = list_push_back(m->ia, 0);
+    else 
+        m->ia = list_double_tail(m->ia);;
+    return 0;
+}
+
+int s_matr_close(s_matr *m)
+{
+    if (m->a_size > 0)
+        m->ia = list_push_back(m->ia, m->a_size);
     return 0;
 }

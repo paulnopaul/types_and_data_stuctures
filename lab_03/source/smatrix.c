@@ -36,7 +36,8 @@ int s_matr_resize(s_matr *m)
     if (!new_a || !new_ja)
         return 1;
 
-    
+    m->a = new_a;
+    m->ja = new_ja;
     return 0;
 }
 
