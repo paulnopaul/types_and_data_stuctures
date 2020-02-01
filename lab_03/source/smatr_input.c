@@ -51,7 +51,7 @@ int s_matr_column_input(s_matr *c, int rows)
  */
 int s_matr_matrix_input(s_matr *m)
 {
-    int buf, zero_line;
+    int buf, zero_line, prev_zero_line = 0;
     for (int i = 0; i < m->rows; ++i)
     {
         zero_line = 1;
@@ -66,10 +66,17 @@ int s_matr_matrix_input(s_matr *m)
                 zero_line = 0;
             }
         }
-        if (zero_line)
+
+        for (; prev_zero_line; --prev_zero_line)
             s_matr_add_line(m);
+        
+         if (zero_line)
+            prev_zero_line++;
     }
     s_matr_close(m);
+    for (; prev_zero_line; --prev_zero_line)
+            s_matr_add_line(m);
+    
     return 0; 
 }
 

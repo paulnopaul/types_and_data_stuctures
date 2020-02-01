@@ -115,18 +115,38 @@ void smatr_test()
 
 void app()
 {
-    s_matr m, c;
+    s_matr m, c, p;
     s_matr_init(&m);
     s_matr_init(&c);
+    s_matr_init(&p);
+
     s_matr_full_input(&m);
     s_matr_column_input(&c, m.columns);
+
+    puts("Matrix");
+    s_matr_output(&m);
+    puts("Column");
+    s_matr_output(&c);
+
+    s_matr_column_prod(m, c, &p);
+
+    puts("Production");
+    s_matr_output(&p);
+
+    s_matr_delete(&m);
+    s_matr_delete(&c);
+    s_matr_delete(&c);
 }
+
 
 int main()
 {
+    // fclose(stdin);
+    // stdin = fopen("test.txt", "r");
     // menu_mainloop();
     // matrix_test();
     // list_test();
-    smatr_test();
+    app();
+    // fclose(stdin);
     return 0;
 }

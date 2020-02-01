@@ -5,7 +5,7 @@
 
 int s_matr_full_input(s_matr *m);
 
-int s_matr_column_input(s_matr *c, int rows);
+int s_matr_column_input(s_matr *c, int rows );
 
 int s_matr_matrix_input(s_matr *m);
 

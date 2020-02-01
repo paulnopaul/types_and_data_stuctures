@@ -42,14 +42,15 @@ int s_matr_resize(s_matr *m)
     return 0;
 }
 
-// умножение матрицы на вектор-стобец (вектор-стобец хрнавится как вертикальный
-// столбец матрицы)
+// умножение матрицы на вектор-стобец 
+// вектор-столбец хранится как строка
 int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
 {
-    int m_i, c_i, m_start, m_end, c_start, c_end, buf, row;
+    int m_i, c_i, m_end, c_end, buf, row;
     list_t m_ia = matrix.ia, c_ia = column.ia;
     res->rows = matrix.rows;
     res->columns = 1;
+    s_matr_alloc(res);
 
     row = 0;
     while (m_ia->next)
@@ -59,19 +60,27 @@ int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
         c_i = c_ia->value;
         c_end = c_ia->next->value;
         buf = 0;
+
         while(m_i < m_end && c_i < c_end)
         {
+            if (matrix.ja[m_i] < column.ja[c_i])
+                m_i++;
+            else if (matrix.ja[m_i] > column.ja[c_i])
+                c_i++;
             
+            if (matrix.ja[m_i] == column.ja[c_i])
+                buf += matrix.a[matrix.ja[m_i++]] * column.a[column.ja[c_i++]];
         }
         if (buf == 0)
             s_matr_add_line(res);
         else 
             s_matr_add_elem(res, buf, row, 0, 1);
-            
+
         ++row;
         m_ia = m_ia->next;
-        m_ia = m_ia->next;
     }
+    s_matr_close(res);
+    s_matr_resize(res);
     
     return 0;
 }
