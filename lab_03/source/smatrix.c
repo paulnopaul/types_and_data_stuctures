@@ -60,6 +60,7 @@ int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
         c_i = c_ia->value;
         c_end = c_ia->next->value;
         buf = 0;
+        // printf("%d %d\n", c_i, c_end);
 
         while(m_i < m_end && c_i < c_end)
         {
@@ -85,16 +86,19 @@ int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
     return 0;
 }
 
-int s_matr_output(s_matr *m)
+int s_matr_soutput(s_matr *m)
 {
+    printf("A:  ");
     for (size_t i = 0; i < m->a_size; ++i)
         printf("%d ", m->a[i]);
     putchar('\n');
 
+    printf("JA: ");
     for (size_t i = 0; i < m->a_size; ++i)
         printf("%d ", m->ja[i]);
     putchar('\n');
 
+    printf("IA: ");
     list_output(m->ia);
 
     return OK;
@@ -106,4 +110,58 @@ void s_matr_delete(s_matr *m)
     free(m->ja);
     list_delete(m->ia);
     s_matr_init(m);
+}
+
+int s_matr_to_matrix(s_matr sm, matr *m)
+{
+    int ja_i, ja_end;
+    list_t ia = sm.ia;
+    m->rows = sm.rows;
+    m->columns = sm.columns;
+    if (matr_allocate(m))
+        return 1;
+    
+
+    for (int i = 0; i < sm.rows; ++i, ia = ia->next)
+    {
+        ja_i = ia->value;
+        ja_end = ia->next->value;
+        for (int j = 0; j < sm.columns; ++j)
+        {
+            if (sm.ja[ja_i] < j && ja_i < ja_end)
+                ++ja_i;
+            if (sm.ja[ja_i] == j && ja_i < ja_end)
+                m->matr[i][j] = sm.a[ja_i];
+            else 
+                m->matr[i][j] = 0;
+        }
+    }
+    return 0;
+}
+
+int s_matr_col_to_matrix(s_matr sm, matr *m)
+{
+    int ja_i, ja_end;
+    list_t ia = sm.ia;
+    m->rows = sm.rows;
+    m->columns = sm.columns;
+    if (matr_allocate(m))
+        return 1;
+    
+
+    for (int i = 0; i < sm.rows; ++i, ia = ia->next)
+    {
+        ja_i = ia->value;
+        ja_end = ia->next->value;
+        for (int j = 0; j < sm.columns; ++j)
+        {
+            if (sm.ja[ja_i] < j && ja_i < ja_end)
+                ++ja_i;
+            if (sm.ja[ja_i] == j && ja_i < ja_end)
+                m->matr[j][i] = sm.a[ja_i];
+            else 
+                m->matr[j][i] = 0;
+        }
+    }
+    return 0;
 }

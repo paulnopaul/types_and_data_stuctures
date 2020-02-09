@@ -51,66 +51,38 @@
 #include "smatrix.h"
 #include "smatr_input.h"
 
-void matrix_test()
-{
-    matrix m1, m2, res;
-    matrix_init(&m1);
-    matrix_init(&m2);
-    matrix_init(&res);
-
-    puts("m1");
-    matrix_input(&m1);
-    puts("m2");
-    matrix_input(&m2);
-
-    matrix_output(m1);
-    matrix_output(m2);
-
-    matrix_product(m1, m2, &res);
-    matrix_output(res);
-
-    matrix_delete(&m1);
-    matrix_delete(&m2);
-    matrix_delete(&res);
-}
-
-/*
-matrix
-1 2 3
-0 0 0
-1 2 0
-
-smatrix
-1 2 3 1 2 
-0 1 2 0 1 
-0 3 3 5
-
-column_vector 
-1 0 1
-
-svector
-1 1 
-0 2 
-0 2
-
-svector normal
-1 1 
-0 0 
-0 1 1 2 
-
-result
-4 1
-0 2 
-0 2
-*/
-
 void smatr_test()
 {
-    s_matr m;
-    s_matr_init(&m);
-    s_matr_full_input(&m);
-    s_matr_output(&m);
-    s_matr_delete(&m);
+    s_matr sm, col;
+    matr m, c;
+
+    matr_init(&m);
+    matr_init(&c);
+    s_matr_init(&sm);
+    s_matr_init(&col);
+
+    s_matr_full_input(&sm);
+    s_matr_column_input(&col, sm.columns);
+
+    puts("Matrix: ");
+    s_matr_noutput(sm);
+
+    puts("Column: ");
+    s_matr_noutput(col);
+
+    s_matr_to_matrix(sm, &m);
+    s_matr_col_to_matrix(col, &c);
+
+    puts("Matrix (normal): ");
+    matr_output(m);
+
+    puts("Column (normal): ");
+    matr_output(c);
+
+    matr_delete(&m);
+    matr_delete(&c);
+    s_matr_delete(&sm);
+    s_matr_delete(&col);
 }
 
 void app()
@@ -123,15 +95,22 @@ void app()
     s_matr_full_input(&m);
     s_matr_column_input(&c, m.columns);
 
-    puts("Matrix");
-    s_matr_output(&m);
-    puts("Column");
-    s_matr_output(&c);
+    puts("Spersed matr:");
+    s_matr_soutput(&m);
+    puts("\nFull matr:");
+    s_matr_noutput(m);
+
+    puts("\n\nSparsed column vector: ");
+    s_matr_soutput(&c);
+    puts("\nFull column vector");
+    s_matr_noutput(c);
 
     s_matr_column_prod(m, c, &p);
 
-    puts("Production");
-    s_matr_output(&p);
+    puts("\n\nSparsed result matr: ");
+    s_matr_soutput(&p);
+    puts("\nFull result matr: ");
+    s_matr_noutput(p);
 
     s_matr_delete(&m);
     s_matr_delete(&c);
@@ -141,12 +120,10 @@ void app()
 
 int main()
 {
-    // fclose(stdin);
-    // stdin = fopen("test.txt", "r");
-    // menu_mainloop();
-    // matrix_test();
-    // list_test();
-    app();
-    // fclose(stdin);
+    fclose(stdin);
+    stdin = fopen("test.txt", "r");
+    smatr_test();
+    // app();
+    fclose(stdin);
     return 0;
 }

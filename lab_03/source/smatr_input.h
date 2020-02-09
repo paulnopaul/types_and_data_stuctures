@@ -15,4 +15,6 @@ int s_matr_add_line(s_matr *m);
 
 int s_matr_close(s_matr *m);
 
+void s_matr_noutput(s_matr m);
+
 #endif

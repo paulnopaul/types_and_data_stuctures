@@ -1,25 +1,27 @@
-#ifndef _DTREE_H_
-#define _DTREE_H_
+#ifndef __DTREE_H__
+#define __DTREE_H__
 
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct node_t
+#include "btree.h"
+
+typedef struct tree_node_t
 {
-    struct node_t *left;
-    struct node_t *right;
+    struct tree_node_t *left;
+    struct tree_node_t *right;
 
     int data;
     int height;
-} node_t;
+} tree_node_t;
 
 typedef struct dtree_t
 {
-    node_t *root;
+    tree_node_t *root;
 } dtree_t;
 
 
-node_t* create_node(int data);
+tree_node_t* create_node(int data);
 
 int dtree_add_node(dtree_t *root, int data);
 
@@ -39,24 +41,6 @@ int dtree_delete(dtree_t *root);
 
 int dtree_copy(dtree_t *root, dtree_t *new);
 
-int dtree_balance(dtree_t *root);
-
-int dtree_create_balanced(dtree_t *src, dtree_t *dst);
-
-int dtree_add_node_balanced(dtree_t *root, int data);
-
-int dtree_height(node_t *t);
-
-int dtree_bfactor(node_t *t);
-
-int dtree_fixheight(node_t *t);
-
-node_t *dtree_rotateright(node_t *t);
-
-node_t *dtree_rotateleft(node_t *t);
-
-node_t *dtree_insert(node_t *t, int data);
-
-node_t *node_balance(node_t *t);
+int dtree_create_balanced(dtree_t *root, dtree_t *broot);
 
 #endif

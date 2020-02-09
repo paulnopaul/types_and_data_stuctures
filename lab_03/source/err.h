@@ -16,9 +16,9 @@
 #define CALLOC_ERROR 3
 #define REALLOC_ERROR 4
 
-// smatrix errors
-#define MATRIX_SIZE_INPUT 5
-#define MATRIX_INPUT 6
+// smatr errors
+#define matr_SIZE_INPUT 5
+#define matr_INPUT 6
 #define ALLOCATION_ERROR 7
 
 // menu

@@ -7,7 +7,7 @@
 int s_matr_full_input(s_matr *m)
 {
     int r, c;
-    printf("Введите размеры матрицы: ");
+    printf("Input rows and columns count: ");
     if (!(scanf("%d%d", &r, &c) == 2 && r > 0 && c > 0))
         return 1;
     
@@ -16,7 +16,7 @@ int s_matr_full_input(s_matr *m)
     if (s_matr_alloc(m))
         return 1;
     
-    puts("Введите матрицу построчно, элементы - целые числа:");
+    puts("Input matrix, elements are integers:");
     if (s_matr_matrix_input(m))
         return 1;
     s_matr_resize(m);
@@ -25,12 +25,12 @@ int s_matr_full_input(s_matr *m)
 
 int s_matr_column_input(s_matr *c, int rows)
 {
-    c->rows = rows;
-    c->columns = 1;
+    c->rows = 1;
+    c->columns = rows;
     if (s_matr_alloc(c))
         return 1;
 
-    printf("Введите столбец размера %d:\n", rows);
+    printf("Input vector with size %d:\n", rows);
     if (s_matr_matrix_input(c))
         return 1;
     s_matr_resize(c);
@@ -107,4 +107,26 @@ int s_matr_close(s_matr *m)
     if (m->a_size > 0)
         m->ia = list_push_back(m->ia, m->a_size);
     return 0;
+}
+
+void s_matr_noutput(s_matr m)
+{
+    int ja_i, ja_end;
+    list_t ia = m.ia;
+    for (int i = 0; i < m.rows; ++i, ia = ia->next)
+    {
+        ja_i = ia->value;
+        ja_end = ia->next->value;
+        for (int j = 0; j < m.columns; ++j)
+        {
+            if (m.ja[ja_i] < j && ja_i < ja_end)
+                ++ja_i;
+
+            if (m.ja[ja_i] == j && ja_i < ja_end)
+                printf("%3d ", m.a[ja_i]);
+            else 
+                printf("%3d ", 0);
+        }
+        putchar('\n');
+    }
 }

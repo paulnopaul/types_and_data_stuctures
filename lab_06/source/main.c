@@ -30,13 +30,15 @@
 #include <time.h>
 
 #include "../include/dtree.h"
+#include "../include/btree.h"
 #include "../include/hashtable.h"
 
 void file_add(const char* filename, int to_add);
 
 int main(int argc, char **argv)
 {
-    dtree_t raw, balanced;
+    dtree_t raw;
+    dtree_t balanced;
     hashtable ht;
     // int to_add;
 
@@ -44,7 +46,7 @@ int main(int argc, char **argv)
     // clock_t bstt, bbstt, hasht, filet;
 
     dtree_init(&raw);
-    dtree_init(&balanced);
+    btree_init(&balanced);
     hashtable_init(&ht, 1000);
 
     if (argc != 2)

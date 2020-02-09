@@ -19,11 +19,11 @@ void err_output(int err)
         case REALLOC_ERROR:
             puts("Realloc error");
             break;
-        case MATRIX_SIZE_INPUT:
-            puts("Matrix size input error");
+        case matr_SIZE_INPUT:
+            puts("matr size input error");
             break;
-        case MATRIX_INPUT:
-            puts("Matrix input error");
+        case matr_INPUT:
+            puts("matr input error");
             break;
     }
 }

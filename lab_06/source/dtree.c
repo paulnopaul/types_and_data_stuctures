@@ -6,9 +6,9 @@
 
 #include "../include/queue.h"
 
-node_t *create_node(int data)
+tree_node_t *create_node(int data)
 {
-    node_t *new = (node_t *)malloc(sizeof(node_t));
+    tree_node_t *new = (tree_node_t *)malloc(sizeof(tree_node_t));
     new->data = data;
     new->left = NULL;
     new->right = NULL;
@@ -17,7 +17,7 @@ node_t *create_node(int data)
 
 int dtree_add_node(dtree_t *root, int data)
 {
-    node_t *buf = root->root;
+    tree_node_t *buf = root->root;
     int height = 1;
 
     if (root->root == NULL)
@@ -109,7 +109,7 @@ int dtree_put(dtree_t *root, const char *filename)
 int dtree_output(dtree_t *root, FILE *stream)
 {
     queue_t *vertex = NULL;
-    node_t *buf = root->root;
+    tree_node_t *buf = root->root;
 
     if (!root->root)
     {
@@ -142,10 +142,35 @@ int dtree_output(dtree_t *root, FILE *stream)
     return 0;
 }
 
+int dtree_delete(dtree_t *root)
+{
+    queue_t *vertex = NULL;
+    tree_node_t *buf = root->root;
+
+    if (!root->root)
+    {
+        return 0;
+    }
+
+    vertex = queue_push(vertex, (void *)buf);
+
+    while (vertex)
+    {
+        vertex = queue_pop(vertex, (void *)&buf);
+
+        if (buf->left)
+            vertex = queue_push(vertex, (void *)buf->left);
+        if (buf->right)
+            vertex = queue_push(vertex, (void *)buf->right);
+        free(buf);
+    }
+    return 0;
+}
+
 int dtree_copy(dtree_t *root, dtree_t *new)
 {
     queue_t *vertex = NULL;
-    node_t *buf = root->root;
+    tree_node_t *buf = root->root;
 
     if (!root->root)
     {
@@ -168,18 +193,15 @@ int dtree_copy(dtree_t *root, dtree_t *new)
     return 0;
 }
 
-int dtree_delete(dtree_t *root)
+int dtree_create_balanced(dtree_t *root, dtree_t *broot)
 {
     queue_t *vertex = NULL;
-    node_t *buf = root->root;
+    tree_node_t *buf = root->root;
 
     if (!root->root)
-    {
         return 0;
-    }
 
     vertex = queue_push(vertex, (void *)buf);
-
     while (vertex)
     {
         vertex = queue_pop(vertex, (void *)&buf);
@@ -188,98 +210,7 @@ int dtree_delete(dtree_t *root)
             vertex = queue_push(vertex, (void *)buf->left);
         if (buf->right)
             vertex = queue_push(vertex, (void *)buf->right);
-        free(buf);
+        broot->root = btree_insert(broot->root, buf->data);
     }
     return 0;
-}
-
-int dtree_balance(dtree_t *root)
-{
-
-    root->root = node_balance(root->root);
-    return 0;
-}
-
-int dtree_create_balanced(dtree_t *src, dtree_t *dst)
-{
-    dtree_copy(src, dst);
-    dtree_balance(dst);
-    return 0;
-}
-
-int dtree_add_node_balanced(dtree_t *root, int data)
-{
-    root->root = dtree_insert(root->root, data);
-    return 0;
-}
-
-int dtree_height(node_t *t)
-{
-    return t ? t->height : 0;
-}
-
-int dtree_bfactor(node_t *t)
-{
-    return dtree_height(t->right) - dtree_height(t->left);
-}
-
-int dtree_fixheight(node_t *t)
-{
-    int hl, hr;
-    hl = dtree_height(t->left);
-    hr = dtree_height(t->right);
-    return ((hl > hr) ? hl : hr) + 1;
-}
-
-node_t *dtree_rotateright(node_t *t)
-{
-    node_t *p = t->left;
-    t->left = p->right;
-    p->right = t;
-
-    dtree_fixheight(p);
-    dtree_fixheight(t);
-
-    return p;
-}
-
-node_t *dtree_rotateleft(node_t *t)
-{
-    node_t *p = t->right;
-    t->right = p->left;
-    p->left = t;
-
-    dtree_fixheight(p);
-    dtree_fixheight(t);
-
-    return p;
-}
-
-node_t *dtree_insert(node_t *t, int data)
-{
-    if (!t)
-        return create_node(data);
-    if (data < t->data)
-        t->left = dtree_insert(t->left, data);
-    else
-        t->right = dtree_insert(t->right, data);
-    return node_balance(t);
-}
-
-node_t *node_balance(node_t *t)
-{
-    dtree_fixheight(t);
-    if (dtree_bfactor(t) == 2)
-    {
-        if (dtree_bfactor(t->right) < 0)
-            t->right = dtree_rotateright(t->right);
-        return dtree_rotateleft(t);
-    }
-    if (dtree_bfactor(t) == -2)
-    {
-        if (dtree_bfactor(t->left) > 0)
-            t->left = dtree_rotateleft(t->left);
-        return dtree_rotateright(t);
-    }
-    return t;
 }

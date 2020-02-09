@@ -11,7 +11,9 @@
 #define _SMATRIX_H_
 
 #include <stdio.h>
+
 #include "linked_list.h"
+#include "matrix.h"
 
 typedef struct s_matr
 {
@@ -20,7 +22,7 @@ typedef struct s_matr
     int columns;
 
     // rare matrix params
-    int a_size; // a size is equal to ja size 
+    int a_size; // a size is equal to ja size
     int *a;
     int *ja;
     list_t ia;
@@ -34,15 +36,19 @@ void s_matr_init(s_matr *m);
 int s_matr_alloc(s_matr *m);
 
 // сокращение матрицы
-int s_matr_resize(s_matr * m);
+int s_matr_resize(s_matr *m);
 
 int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res);
 
+// преобразование к обычной матрице
+
+int s_matr_to_matrix(s_matr sm, matr *m);
+
+int s_matr_col_to_matrix(s_matr sm, matr *m);
+
 // вывод матрицы
-int s_matr_output(s_matr *m);
+int s_matr_soutput(s_matr *m);
 
 void s_matr_delete(s_matr *m);
-
-
 
 #endif

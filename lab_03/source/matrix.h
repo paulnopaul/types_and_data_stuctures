@@ -2,28 +2,29 @@
 // Created by Павел Чеклин on 12.10.2019.
 //
 
-#ifndef _MATRIX_H_
-#define _MATRIX_H_
+#ifndef _matr_H_
+#define _matr_H_
 
 typedef struct
 {
     int rows;
     int columns;
-    int **matrix;
-} matrix;
+int **matr;
+} matr;
 
-int matrix_init(matrix *m);
+int matr_init(matr *m);
 
-int matrix_allocate(matrix *m);
+int matr_allocate(matr *m);
 
-int matrix_input(matrix *m);
+int matr_input(matr *m);
 
-void matrix_output(matrix m);
+void matr_output(matr m);
 
-int matrix_matrix_input(matrix *m);
+int matr_matr_input(matr *m);
 
-int matrix_product(matrix m1, matrix m2, matrix *res);
+int matr_product(matr m1, matr m2, matr *res);
 
-int matrix_delete(matrix *m);
+int matr_delete(matr *m);
 
-#endif //LAB_03_MATRIX_H
+
+#endif //LAB_03_matr_H
