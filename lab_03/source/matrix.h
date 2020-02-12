@@ -9,7 +9,7 @@ typedef struct
 {
     int rows;
     int columns;
-int **matr;
+    int **matr;
 } matr;
 
 int matr_init(matr *m);

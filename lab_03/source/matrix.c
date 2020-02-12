@@ -18,10 +18,10 @@ int matr_init(matr *m)
 
 int matr_allocate(matr *m)
 {
-    m->matr = malloc(m->rows * sizeof(int *));
+    m->matr = (int **)malloc((m->rows) * sizeof(int *));
     if (!m->matr)
         return EXIT_FAILURE;
-    for (int i = 0; i < m->columns; ++i)
+    for (int i = 0; i < m->rows; ++i)
         if (!(m->matr[i] = calloc(m->columns, sizeof(int))))
             return EXIT_FAILURE;
     return EXIT_SUCCESS;
@@ -39,6 +39,7 @@ void matr_output(matr m)
 
 int matr_product(matr m1, matr m2, matr *res)
 {
+    int actions = 0;
     if (m1.columns != m2.rows)
         return EXIT_FAILURE;
     
@@ -50,8 +51,10 @@ int matr_product(matr m1, matr m2, matr *res)
     
     for (int i1 = 0; i1 < m1.rows; ++i1)
         for (int i2 = 0; i2 < m2.columns; ++i2)
-            for (int i3 = 0; i3 < m1.columns; ++i3)
+            for (int i3 = 0; i3 < m1.columns; ++i3, ++actions)
                 res->matr[i1][i2] += m1.matr[i1][i3] * m2.matr[i3][i2];
+    printf("%d ACTIONS NORMALLY\n", actions);
+            
 
     return EXIT_SUCCESS;
 }

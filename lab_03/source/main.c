@@ -37,7 +37,8 @@
 
 Следует также протестировать программу при полной загрузке системы, то есть
 при полном заполнении матриц. Программа должна адекватно реагировать на
-неверный ввод, пустой ввод и выход за границы матрицы или вектора. Необходимо тщательно следить за освобождением динамической памяти при окончании программы.
+неверный ввод, пустой ввод и выход за границы матрицы или вектора. Необходимо 
+тщательно следить за освобождением динамической памяти при окончании программы.
 
  */
 
@@ -84,48 +85,104 @@ void smatr_test()
     matr_delete(&c);
     s_matr_delete(&sm);
     s_matr_delete(&col);
-    
 }
 
-void app()
+int app()
 {
     s_matr m, c, p;
+    matr mat, col, res;
+
+    clock_t sparsed_time, normal_time;
+
+    matr_init(&mat);
+    matr_init(&col);
+    matr_init(&res);
+
     s_matr_init(&m);
     s_matr_init(&c);
     s_matr_init(&p);
 
-    s_matr_full_input(&m);
-    s_matr_column_input(&c, m.columns);
+    if (s_matr_full_input(&m))
+    {
+        puts("Ошибка ввода");
+        return 1;
+    }
 
-    puts("Spersed matr:");
+    if (s_matr_column_input(&c, m.columns))
+    {
+        puts("Ошибка ввода");
+        s_matr_delete(&m);
+        return 1;
+    }
+
+    s_matr_to_matrix(m, &mat);
+    s_matr_col_to_matrix(c, &col);
+
+    res.columns = col.columns;
+    res.rows = col.rows;
+    matr_allocate(&res);
+
+    puts("Разреженная матрица:\n");
     s_matr_soutput(&m);
-    puts("\nFull matr:");
+    puts("\nМатрица:\n");
     s_matr_noutput(m);
 
-    puts("\n\nSparsed column vector: ");
+    puts("\n\nРазреженный вектор-столбец:\n");
     s_matr_soutput(&c);
-    puts("\nFull column vector");
+    puts("\nВектор-стобец:\n");
     s_matr_noutput(c);
 
+    sparsed_time = clock();
     s_matr_column_prod(m, c, &p);
+    sparsed_time = clock() - sparsed_time;
 
-    puts("\n\nSparsed result matr: ");
+    normal_time = clock();
+    matr_product(mat, col, &res);
+    normal_time = clock() - normal_time;
+
+    puts("\n\nРезультат произведения в сжатом виде: ");
     s_matr_soutput(&p);
-    puts("\nFull result matr: ");
+    puts("\nРезультат произведения: ");
     s_matr_noutput(p);
+
+    printf("Время произвдения в разреженном виде: %lf\n", (double)sparsed_time / CLOCKS_PER_SEC);
+    printf("Время произведения в обычном виде: %lf\n", (double)normal_time / CLOCKS_PER_SEC);
 
     s_matr_delete(&m);
     s_matr_delete(&c);
-    s_matr_delete(&c);
+    s_matr_delete(&p);
+
+    // matr_output(res);
+
+    matr_delete(&mat);
+    matr_delete(&col);
+    matr_delete(&res);
+
+    return 0;
 }
 
-
-int main()
+int main(int argc, char **argv)
 {
+    FILE *istream;
+    if (argc == 2)
+    {
+        istream = fopen(argv[1], "r");
+        if (!istream)
+        {
+            puts("Ошибка - невозможно ввести файл");
+            return 1;
+        }
+        fclose(stdin);
+        stdin = istream;
+    }
+
+    puts("Программа, выполняющая произведение матрицы на вектор столбец в двух преставлениях:");
+    puts("Обычном и разреженном и производящая сравнение эффективности выполнения данных алгоритмов");
+    puts("Матрица и вектор-столбец состоят из целочисленных элементов");
+    puts("При запуске программы без аргументов предлагается ввести матрицу вручную");
+    puts("При запуске программы с аргументов в виде имени файла, ввод производится из файла");
+    puts("В первой строке файла находятся размеры матрицы, в последующих - элементы матрицы и стообца");
+    int res = app();
     fclose(stdin);
-    stdin = fopen("test.txt", "r");
-    smatr_test();
-    // app();
-    fclose(stdin);
-    return 0;
+    return res;
 }
