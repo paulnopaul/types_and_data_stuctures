@@ -210,7 +210,7 @@ int dtree_create_balanced(dtree_t *root, dtree_t *broot)
             vertex = queue_push(vertex, (void *)buf->left);
         if (buf->right)
             vertex = queue_push(vertex, (void *)buf->right);
-        broot->root = btree_insert(broot->root, buf->data);
+        broot->root = btree_node_insert(broot->root, buf->data);
     }
     return 0;
 }

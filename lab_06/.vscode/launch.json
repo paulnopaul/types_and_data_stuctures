@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/bin/app",
-            "args": [],
+            // "args": ["../examples/testfile.txt"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/source",
             "environment": [],
@@ -18,4 +18,4 @@
             "preLaunchTask": "Build C"
         }
     ]
-}
+}2ч

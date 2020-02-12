@@ -53,7 +53,7 @@ tree_node_t* btree_rotateleft(tree_node_t *node)
 {
     tree_node_t *new = node->right;
     node->right = new->left;
-    new->right = node;
+    new->left = node;
     btree_fixheight(node);
     btree_fixheight(new);
     return new;
@@ -77,15 +77,22 @@ tree_node_t* btree_balance(tree_node_t *node)
     return node;
 }
 
-tree_node_t* btree_insert(tree_node_t *root, int data)
+tree_node_t* btree_node_insert(tree_node_t *root, int data)
 {
+    
     if (!root)
         return btree_create_node(data);
     if (data < root->data)
-        root->left = btree_insert(root->left, data);
+        root->left = btree_node_insert(root->left, data);
+    else if (data == root->data)
+        return root;
     else 
-        root->right = btree_insert(root->right, data);
+        root->right = btree_node_insert(root->right, data);
     return btree_balance(root);
 }
 
-
+int btree_insert(dtree_t *root, int data)
+{
+    root->root = btree_node_insert(root->root, data);
+    return 0;
+}
