@@ -6,9 +6,9 @@
 
 int s_matr_full_input(s_matr *m)
 {
-    int r, c;
+    int r = 0, c = 0;
     printf("Input rows and columns count: ");
-    if (!(scanf("%d%d", &r, &c) == 2 && r > 0 && c > 0))
+    if (!(scanf("%d%d", &r, &c) == 2) && (r > 0) && (c > 0))
         return 1;
     
     m->rows = r;

@@ -53,6 +53,7 @@
 
 void smatr_test()
 {
+
     s_matr sm, col;
     matr m, c;
 
@@ -83,6 +84,7 @@ void smatr_test()
     matr_delete(&c);
     s_matr_delete(&sm);
     s_matr_delete(&col);
+    
 }
 
 void app()
