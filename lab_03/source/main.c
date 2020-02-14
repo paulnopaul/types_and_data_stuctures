@@ -50,42 +50,38 @@
 #include "menu.h"
 #include "matrix.h"
 #include "smatrix.h"
+#include "mgen.h"
 #include "smatr_input.h"
 
-void smatr_test()
+int matrix_test()
 {
+    s_matr sm;
 
-    s_matr sm, col;
-    matr m, c;
-
-    matr_init(&m);
-    matr_init(&c);
     s_matr_init(&sm);
-    s_matr_init(&col);
 
     s_matr_full_input(&sm);
-    s_matr_column_input(&col, sm.columns);
 
+    s_matr_soutput(&sm);
     puts("Matrix: ");
     s_matr_noutput(sm);
 
-    puts("Column: ");
-    s_matr_noutput(col);
-
-    s_matr_to_matrix(sm, &m);
-    s_matr_col_to_matrix(col, &c);
-
-    puts("Matrix (normal): ");
-    matr_output(m);
-
-    puts("Column (normal): ");
-    matr_output(c);
-
-    matr_delete(&m);
-    matr_delete(&c);
     s_matr_delete(&sm);
-    s_matr_delete(&col);
+    return 0;
 }
+
+// old sparsed adding time: 0.000070
+// new sparsed adding time: 0.000038
+// new new sparsed time
+
+/*
+simple input example
+4 4 
+1 0 0 2 
+0 3 0 4
+0 0 5 0
+0 0 0 6
+
+*/
 
 int app()
 {
@@ -122,15 +118,18 @@ int app()
     res.rows = col.rows;
     matr_allocate(&res);
 
-    puts("Разреженная матрица:\n");
-    s_matr_soutput(&m);
-    puts("\nМатрица:\n");
-    s_matr_noutput(m);
+    if (m.rows < 30)
+    {
+        puts("Разреженная матрица:\n");
+        s_matr_soutput(&m);
+        puts("\nМатрица:\n");
+        s_matr_noutput(m); 
 
-    puts("\n\nРазреженный вектор-столбец:\n");
-    s_matr_soutput(&c);
-    puts("\nВектор-стобец:\n");
-    s_matr_noutput(c);
+        puts("\n\nРазреженный вектор-столбец:\n");
+        s_matr_soutput(&c);
+        puts("\nВектор-стобец:\n");
+        s_matr_noutput(c);
+    }
 
     sparsed_time = clock();
     s_matr_column_prod(m, c, &p);
@@ -140,13 +139,16 @@ int app()
     matr_product(mat, col, &res);
     normal_time = clock() - normal_time;
 
-    puts("\n\nРезультат произведения в сжатом виде: ");
-    s_matr_soutput(&p);
-    puts("\nРезультат произведения: ");
-    s_matr_noutput(p);
+    if (p.rows < 30)
+    {
+        puts("\n\nРезультат произведения в сжатом виде: ");
+        s_matr_soutput(&p);
+        puts("\nРезультат произведения: ");
+        s_matr_noutput(p);
+    }
 
     printf("Время произвдения в разреженном виде: %lf\n", (double)sparsed_time / CLOCKS_PER_SEC);
-    printf("Время произведения в обычном виде: %lf\n", (double)normal_time / CLOCKS_PER_SEC);
+    printf("Время произведения в обычном виде:    %lf\n", (double)normal_time / CLOCKS_PER_SEC);
 
     s_matr_delete(&m);
     s_matr_delete(&c);
@@ -169,18 +171,31 @@ int main(int argc, char **argv)
         istream = fopen(argv[1], "r");
         if (!istream)
         {
-            puts("Ошибка - невозможно ввести файл");
+            puts("Ошибка - невозможно открыть файл");
+            return 1;
+        }
+        fclose(stdin);
+        stdin = istream;
+    }
+    else if (argc == 1)
+    {
+        filegen_menu();
+        istream = fopen(CACHE_MATRIX_FILENAME, "r");
+        if (!istream)
+        {
+            puts("Ошибка - невозможно открыть файл");
             return 1;
         }
         fclose(stdin);
         stdin = istream;
     }
 
+
     puts("Программа, выполняющая произведение матрицы на вектор столбец в двух преставлениях:");
     puts("Обычном и разреженном и производящая сравнение эффективности выполнения данных алгоритмов");
     puts("Матрица и вектор-столбец состоят из целочисленных элементов");
-    puts("При запуске программы без аргументов предлагается ввести матрицу вручную");
-    puts("При запуске программы с аргументов в виде имени файла, ввод производится из файла");
+    puts("При запуске программы без аргументов предлагается сгенерировать матрицу");
+    puts("При запуске программы с аргументом в виде имени файла, ввод производится из файла");
     puts("В первой строке файла находятся размеры матрицы, в последующих - элементы матрицы и стообца");
     int res = app();
     fclose(stdin);

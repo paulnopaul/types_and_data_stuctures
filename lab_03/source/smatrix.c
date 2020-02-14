@@ -43,7 +43,7 @@ int s_matr_resize(s_matr *m)
 }
 
 // умножение матрицы на вектор-стобец 
-// вектор-столбец хранится как строка
+// столбец транспорнирован
 int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
 {
     int actions = 0;
@@ -51,8 +51,12 @@ int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
     list_t m_ia = matrix.ia;
     res->rows = matrix.rows;
     res->columns = 1;
+    if (!matrix.a_size && !column.a_size)
+    {
+        res->a_size = 0;
+        return 0;
+    }
     s_matr_alloc(res);
-
 
     row = 0;
     while (m_ia->next)
@@ -67,7 +71,7 @@ int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
 
         while(m_i < m_end && c_i < c_end)
         {
-            actions++;
+            actions += 3;
             if (matrix.ja[m_i] < column.ja[c_i])
             {
                 m_i++;
@@ -95,24 +99,28 @@ int s_matr_column_prod(s_matr matrix, s_matr column, s_matr *res)
     if (buf == 0)
         s_matr_add_line(res);
     s_matr_resize(res);
-    printf("%d ACTIONS SPARSED\n", actions);
+    // printf("%d ACTIONS SPARSED\n", actions);
     return 0;
 }
 
 int s_matr_soutput(s_matr *m)
 {
-    printf("A:  ");
-    for (size_t i = 0; i < m->a_size; ++i)
-        printf("%d ", m->a[i]);
-    putchar('\n');
+    if (m->a_size)
+    {
+        printf("A:  ");
+        for (size_t i = 0; i < m->a_size; ++i)
+            printf("%d ", m->a[i]);
+        putchar('\n');
 
-    printf("JA: ");
-    for (size_t i = 0; i < m->a_size; ++i)
-        printf("%d ", m->ja[i]);
-    putchar('\n');
+        printf("JA: ");
+        for (size_t i = 0; i < m->a_size; ++i)
+            printf("%d ", m->ja[i]);
+        putchar('\n');
 
-    printf("IA: ");
-    list_output(m->ia);
+        printf("IA: ");
+        list_output(m->ia);
+    }
+    puts("Empty");
 
     return OK;
 }
@@ -134,41 +142,45 @@ int s_matr_to_matrix(s_matr sm, matr *m)
     if (matr_allocate(m))
         return 1;
     
-
-    for (int i = 0; i < sm.rows; ++i, ia = ia->next)
-    {
-        ja_i = ia->value;
-        ja_end = ia->next->value;
-        for (int j = 0; j < sm.columns; ++j)
+    if (sm.a_size)
+        for (int i = 0; i < sm.rows; ++i, ia = ia->next)
         {
-            if (sm.ja[ja_i] < j && ja_i < ja_end)
-                ++ja_i;
-            if (sm.ja[ja_i] == j && ja_i < ja_end)
-                m->matr[i][j] = sm.a[ja_i];
-            else 
-                m->matr[i][j] = 0;
+            ja_i = ia->value;
+            ja_end = ia->next->value;
+            for (int j = 0; j < sm.columns; ++j)
+            {
+                if (sm.ja[ja_i] < j && ja_i < ja_end)
+                    ++ja_i;
+                if (sm.ja[ja_i] == j && ja_i < ja_end)
+                    m->matr[i][j] = sm.a[ja_i];
+                else 
+                    m->matr[i][j] = 0;
+            }
         }
-    }
     return 0;
 }
 
 int s_matr_col_to_matrix(s_matr sm, matr *m)
 {
-    int col_i = 0, size = (sm.ia->next)->value;    
+    int col_i = 0, size;    
 
     m->rows = sm.columns;
     m->columns = sm.rows;
 
     if (matr_allocate(m))
         return 1;
-    for (int i = 0; i < m->rows; ++i)
-        if (col_i < size && sm.ja[col_i] == i)
-        {
-            m->matr[i][0] = sm.a[col_i];
-            ++col_i;
-        }
-        else 
-            m->matr[i][0] = 0;
+    if (sm.a_size)
+    {
+        size = (sm.ia->next)->value; 
+        for (int i = 0; i < m->rows; ++i)
+            if (col_i < size && sm.ja[col_i] == i)
+            {
+                m->matr[i][0] = sm.a[col_i];
+                ++col_i;
+            }
+            else 
+                m->matr[i][0] = 0;
+    }
     
     return 0;
 }

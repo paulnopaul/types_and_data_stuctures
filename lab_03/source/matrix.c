@@ -53,7 +53,7 @@ int matr_product(matr m1, matr m2, matr *res)
         for (int i2 = 0; i2 < m2.columns; ++i2)
             for (int i3 = 0; i3 < m1.columns; ++i3, ++actions)
                 res->matr[i1][i2] += m1.matr[i1][i3] * m2.matr[i3][i2];
-    printf("%d ACTIONS NORMALLY\n", actions);
+    // printf("%d ACTIONS NORMALLY\n", actions);
             
 
     return EXIT_SUCCESS;

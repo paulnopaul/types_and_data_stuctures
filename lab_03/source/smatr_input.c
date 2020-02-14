@@ -84,7 +84,7 @@ int s_matr_add_elem(s_matr *m, int buf, int row, int column, int new_line)
 {
     m->a[m->a_size] = buf;
     m->ja[m->a_size] = column;
-
+    
     if (new_line)
         m->ia = list_push_back(m->ia, m->a_size);
     
@@ -113,20 +113,30 @@ void s_matr_noutput(s_matr m)
 {
     int ja_i, ja_end;
     list_t ia = m.ia;
-    for (int i = 0; i < m.rows; ++i, ia = ia->next)
+    if (m.a_size)
     {
-        ja_i = ia->value;
-        ja_end = ia->next->value;
-        for (int j = 0; j < m.columns; ++j)
+        for (int i = 0; i < m.rows; ++i, ia = ia->next)
         {
-            if (m.ja[ja_i] < j && ja_i < ja_end)
-                ++ja_i;
+            ja_i = ia->value;
+            ja_end = ia->next->value;
+            for (int j = 0; j < m.columns; ++j)
+            {
+                if (m.ja[ja_i] < j && ja_i < ja_end)
+                    ++ja_i;
 
-            if (m.ja[ja_i] == j && ja_i < ja_end)
-                printf("%3d ", m.a[ja_i]);
-            else 
-                printf("%3d ", 0);
+                if (m.ja[ja_i] == j && ja_i < ja_end)
+                    printf("%3d ", m.a[ja_i]);
+                else 
+                    printf("%3d ", 0);
+            }
+            putchar('\n');
         }
-        putchar('\n');
     }
+    else
+        for (int i = 0; i < m.rows; ++i)
+        {
+            for (int j = 0; j < m.columns; ++j)
+                printf("%3d", 0);
+            putchar('\n');
+        }
 }

@@ -18,17 +18,33 @@ list_t list_create(size_t elem)
     return new_list;
 }
 
-list_t list_push_back(list_t list, size_t val)
+list_t list_push_back(list_t head, size_t val)
 {
-    // printf("Adding %ld, list: \n", val);
-    // list_output(list);
-    list_t buf;
+    
     list_t new_node = list_create(val);
-    if (!list)
+    if (!head)
+        return new_node;
+    
+    if (!head->prev)
+    {
+        head->prev = new_node;
+        head->next = new_node;
+        new_node->prev = head;
+    }
+    else
+    {
+        new_node->prev = head->prev;
+        head->prev->next = new_node;
+        head->prev = new_node;
+    }
+    
+    /*
+    list_t buf;
+    if (!head)
         return new_node;
 
     // puts("Start Going to end");
-    buf = list;
+    buf = head;
     while (buf->next)
         buf = buf->next;
     // puts("End going to end");
@@ -36,7 +52,10 @@ list_t list_push_back(list_t list, size_t val)
     buf->next = new_node;
     if (new_node)
         new_node->prev = buf;
-    return list;
+    */
+    
+    return head;
+
 }
 
 void list_output(list_t list)
@@ -57,14 +76,21 @@ void list_output(list_t list)
     //printf("%p %p %p: %ld\n", buf, buf->prev, buf->next, buf->value);
 }
 
-list_t list_double_tail(list_t list)
+list_t list_double_tail(list_t head)
 {
+    if (!head)
+        head = list_push_back(head, 0);
+    else if (!head->prev)
+        head = list_push_back(head, head->value);
+    else
+        head = list_push_back(head, head->prev->value);
+    /*
     list_t buf;
     list_t new_node;
-    if (!list)
+    if (!head)
         return list_create(0);
 
-    buf = list;
+    buf = head;
     while (buf->next)
         buf = buf->next;
 
@@ -74,7 +100,8 @@ list_t list_double_tail(list_t list)
     if (new_node)
         new_node->prev = buf;
 
-    return list;
+    */
+    return head;
 }
 
 list_t list_delete(list_t list)

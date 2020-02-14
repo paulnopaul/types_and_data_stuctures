@@ -2,6 +2,11 @@
 
 #include <time.h>
 
+static void stub()
+{
+    return;
+}
+
 int aqueue_line()
 {
     clock_t a1, a2; 
@@ -26,8 +31,10 @@ int aqueue_line()
     aqueue_print(q1);
     puts("\n\nSTART\n\n");
 
+
     aqueue_pop(&q1, &q1_request);
     a1 = full_time = clock();
+    
     while ((second_requests < SECOND_REQUEST_COUNT) && (a1_handling || a2_handling))
     {
         // проверка времени выполняется только в случае работы автомата
@@ -155,14 +162,17 @@ int lqueue_line()
     clock_t a1, a2; 
     clock_t full_time;
     clock_t current_a2_downtime;
+
     double a2_downtime = 0;
     double a1_time = generate_time(0, 6), a2_time = generate_time(1, 8); // a1 from 0 to 6, a2 from 1 to 8
+
     lqueue q1, q2;
+
     // srand(time(NULL)); // TODO когда заработает
+
     int err = SUCCESS;
     int q1_request, q2_request;
     int a1_handling = 1, a2_handling = 0; // флаг работы обрабатывающих автоматов
-
 
     int q1_size = 99, q2_size = 0;
     double q1_mid_size = 99, q2_mid_size = 0;
@@ -171,9 +181,7 @@ int lqueue_line()
 
     lqueue_line_start(&q1, &q2);
 
-    puts("Array queue test");
-    puts("Source queue");
-    lqueue_print(q1);
+    puts("Array queue");
     puts("\n\nSTART\n\n");
 
     lqueue_pop(&q1, &q1_request);
@@ -315,6 +323,123 @@ int lqueue_line()
     return err;
 }
 
+int main_line()
+{
+    clock_t work_time;
+
+
+    clock_t a1, a2;
+
+    lqueue lq1, lq2;
+    aqueue aq1, aq2;
+
+    double a1_time = generate_time(0, 6), a2_time = generate_time(1, 8);
+    int second_requests = 0;
+    int a1_handling = 1, a2_handling = 0;
+    int q1_size = REQUEST_COUNT - 1, q2_size = 0;
+    int q1_request, q2_request;
+
+
+    lqueue_line_start(&lq1, &lq2);
+    aqueue_line_start(&aq1, &aq2);
+
+    aqueue_print(aq1);
+    lqueue_print(lq1);
+    aqueue_print(aq2);
+    lqueue_print(lq2);
+
+    work_time = clock();
+
+    aqueue_pop(&aq1, &q1_request);
+    lqueue_pop(&lq1, &q1_request);
+    a1 = clock();
+
+    while ((second_requests < SECOND_REQUEST_COUNT) && (a1_handling || a2_handling))
+    {
+        if (a1_handling && (double)(clock() - a1) / CLOCKS_PER_SEC > a1_time)
+        {
+            a1_handling = 0;
+
+            switch(direction_choice(0.3, 0.7))
+            {
+                case 1:
+                    lqueue_push(&lq2, q1_request);
+                    aqueue_push(&aq1, q1_request);
+                    ++q2_size;
+
+                    if (!a2_handling && q2_size == 1) // CHECK
+                    {
+                        lqueue_pop(&lq2, &q2_request);
+                        aqueue_pop(&aq2, &q2_request);
+                        --q2_size;
+
+                        a2_handling = 1; 
+                        a2_time = generate_time(1, 8);
+                        a2 = clock();
+                    }
+
+                    break;
+                case 2:
+                    lqueue_push(&lq1, q1_request);
+                    aqueue_push(&aq1, q1_request);
+                    ++q1_size;
+
+                    break;
+            }
+
+            if (q1_size > 0)
+            {
+                a1_time = generate_time(0, 6);
+
+                lqueue_pop(&lq1, &q1_request);
+                aqueue_pop(&aq1, &q1_request);
+                --q1_size;
+
+                a1_handling = 1;
+                a1 = clock();
+            }
+        }
+
+        if (a2_handling && (double)(clock() - a2) / CLOCKS_PER_SEC > a2_time)
+        {
+            a2_handling = 0;
+            ++second_requests;
+
+            lqueue_push(&lq1, q2_request);
+            aqueue_push(&aq1, q2_request);
+            ++q1_size;
+
+            if (second_requests % SECOND_REQUEST_STEP == 0)
+            {
+                aqueue_print(aq1);
+                lqueue_print(lq1);
+                aqueue_print(aq2);
+                lqueue_print(lq2);
+
+                print_info(q2_request, q1_size, 0, q2_size, 0);
+            }
+
+            if (q2_size > 0)
+            {
+                a2_time = generate_time(0, 6);
+
+                lqueue_pop(&lq1, &q1_request);
+                aqueue_pop(&aq1, &q1_request);
+                --q1_size;
+
+                a2_handling = 1;
+                a2 = clock();
+            }
+        }
+    }
+
+    work_time = clock() - work_time;
+
+    print_end(work_time, 0, 0, 0);
+
+    return 1;
+}
+
 int lqueue_line_start(lqueue_t q1, lqueue_t q2)
 {
     lqueue_init(q1);
@@ -358,4 +483,22 @@ void lqueue_expected_time()
 void aqueue_expected_time()
 {
     puts("Array queue expected work time is"); // TODO
+}
+
+void print_info(int requests, int q1_size, double q1_mid_size, int q2_size, double q2_mid_size)
+{
+    printf("%d requests passed out of second queue\n", requests);
+    printf("First queue size: %d\n", q1_size);
+    printf("First queue mean size: %lf\n", q1_mid_size);
+    printf("Second queue size: %d\n", q2_size);
+    printf("Second queue mean size: %lf\n\n", q2_mid_size);
+}
+
+void print_end(double work_time, double down_time, double mid_q1_size, double mid_q2_size)
+{
+    stub();
+    printf("Real modelling time: %lf\n", work_time);
+    printf("Down time: %lf\n", down_time);
+    printf("Mean first queue size: %lf\n", mid_q1_size);
+    printf("Mean second queue size: %lf\n", mid_q2_size);
 }

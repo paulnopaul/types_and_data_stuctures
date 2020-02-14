@@ -111,7 +111,7 @@ void rand_test()
 
 int main()
 {
-    lqueue_line();
+    main_line();
     // menu_mainloop();
     return 0;
 }
