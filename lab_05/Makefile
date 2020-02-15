@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -g3 -Wall
+CFLAGS := -g3 -Wall -Werror
 SOURCEDIR := ./source
 BUILDDIR := ./bin
 MAINTARGET := app.exe
@@ -13,4 +13,4 @@ $(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
 	$(CC) $< $(CFLAGS) -c -o $@
 
 clean:
-	rm -f $(BUILDDIR)/$(MAINTARGET) $(OBJECTS)
+	rm -rf $(BUILDDIR)/*
