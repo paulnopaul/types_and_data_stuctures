@@ -41,7 +41,7 @@ int main(int argc, char **argv)
     dtree_t raw;
     dtree_t balanced;
     hashtable ht;
-    int to_add;
+    int to_add, maxcol;
 
     // timers
     clock_t bstt, bbstt, hasht, filet;
@@ -56,11 +56,20 @@ int main(int argc, char **argv)
     }
 
     printf("Введите размер хеш таблицы, рекомендуется простое число, например 977: ");
-    if (scanf("%d", &ht.size) == 1 && ht.size > 0 && ht.size < 10000)
-        hashtable_init(&ht, ht.size);
+    if (scanf("%d", &ht.size) == 1 && ht.size > 0 && ht.size < 1000)
+        puts("");
     else 
     {
         puts("Hashtable size input error: ");
+        return 1;
+    }
+
+    printf("Введите максимальное число коллизий: ");
+    if (scanf("%d", &maxcol) == 1 && maxcol >= 0 && maxcol <= 10000)
+        hashtable_init(&ht, ht.size);
+    else 
+    {
+        puts("Input error");
         return 1;
     }
 
@@ -78,8 +87,34 @@ int main(int argc, char **argv)
     dtree_put(&balanced, "balanced1");
 
     // getting hashtable
-    hashtable_get(&ht, argv[1]);
+    if (hashtable_get(&ht, argv[1]))
+    {
+        dtree_delete(&raw);
+        dtree_delete(&balanced);
+        hashtable_delete(&ht);
+        return 1;
+    }
+
+    if (ht.max_collisions > maxcol)
+    {
+        printf("Для метода вычисления остатка превышено максимальное число коллизий (%d), попытка использования метода умножения\n", ht.max_collisions);
+        hashtable_put(ht);
+
+        hashtable_delete(&ht);
+        hashtable_init(&ht, ht.size);
+
+        ht.hashfunc = hash_prod;
+        if (hashtable_get(&ht, argv[1]))
+        {
+            dtree_delete(&raw);
+            dtree_delete(&balanced);
+            hashtable_delete(&ht);
+            return 1;
+        }
+    }
+
     hashtable_put(ht);
+
 
     // ************** Adding elements **************
 
@@ -98,7 +133,13 @@ int main(int argc, char **argv)
     dtree_put(&balanced, "balanced2");
 
     hasht = clock();
-    hashtable_add(&ht, to_add);
+    if (hashtable_add(&ht, to_add))
+    {
+        dtree_delete(&raw);
+        dtree_delete(&balanced);
+        hashtable_delete(&ht);
+        return 1;
+    }
     hasht = clock() - hasht;
     hashtable_put(ht);
 
@@ -106,10 +147,10 @@ int main(int argc, char **argv)
     file_add(argv[1], to_add);
     filet = clock() - filet;
 
-    printf("BST adding time: %lf\n", (double)bstt / CLOCKS_PER_SEC);
+    printf("BST adding time:          %lf\n", (double)bstt / CLOCKS_PER_SEC);
     printf("Balanced BST adding time: %lf\n", (double)bbstt / CLOCKS_PER_SEC);
-    printf("Hash table adding time: %lf\n", (double)hasht / CLOCKS_PER_SEC);
-    printf("File adding time: %lf\n", (double)filet / CLOCKS_PER_SEC);
+    printf("Hash table adding time:   %lf\n", (double)hasht / CLOCKS_PER_SEC);
+    printf("File adding time:         %lf\n", (double)filet / CLOCKS_PER_SEC);
 
     dtree_delete(&raw);
     dtree_delete(&balanced);

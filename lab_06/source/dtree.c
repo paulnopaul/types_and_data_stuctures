@@ -48,6 +48,8 @@ int dtree_add_node(dtree_t *root, int data)
         buf->left = create_node(data);
         buf->height = height;
     }
+    else 
+        printf("%d is alreary inserted in bst\n", data);
 
     return 0;
 }

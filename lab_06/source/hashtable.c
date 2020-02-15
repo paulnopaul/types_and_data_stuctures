@@ -14,6 +14,7 @@ int hashtable_init(hashtable *ht, int size)
     ht->size = size;
     ht->max_collisions = 0;
     ht->hashfunc = hash_mod;
+    ht->hashmov = hash_sqmov;
     return 0;
 }
 
@@ -22,7 +23,12 @@ int hashtable_add(hashtable *ht, int elem)
     int i = 0, j;
     do 
     {
-        j = hash_sqmov(elem, i, ht->size);
+        j = ht->hashmov(ht->hashfunc(elem, ht->size), i, ht->size);
+        if (ht->array[j] == elem)
+        {
+            printf("%d is already inserted in hashtable\n", elem);
+            return 0;
+        }
         if (ht->array[j] == __INT_MIN)
         {
             ht->array[j] = elem;
@@ -32,6 +38,7 @@ int hashtable_add(hashtable *ht, int elem)
         }
         ++i;
     } while (i != ht->size);
+    printf("Overfilling!\n");
     return 1; // переполнение 
 }
 
@@ -66,6 +73,7 @@ int hashtable_put(hashtable ht)
     for (int i = 0; i < ht.size; ++i)
         if (ht.array[i] != __INT_MIN)
             printf("%d %d\n", i, ht.array[i]);
+    printf("Maximal collisions count: %d\n", ht.max_collisions);
     return 0;
 }
 
@@ -88,9 +96,5 @@ int hash_sqmov(int val, int i, int max)
 int hashtable_delete(hashtable *ht)
 {
     free(ht->array);
-    ht->size = 0;
-    ht->max_collisions = 0;
-    ht->hashfunc = NULL;
-    ht->hashmov = NULL;
     return 0;
 }

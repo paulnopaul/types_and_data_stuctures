@@ -1,8 +1,10 @@
 import sys
-import graphviz as gph
+from graphviz import Source
 
+f = open("../cache/" + sys.argv[1], "r")
+text = f.read()
+f.close()
 
-print("View graph")
-a = gph.Graph(filename="../cache/" + sys.argv[2])
+a = Source(text)
 
-a.render("graph", "../cache")
+a.view()

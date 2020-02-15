@@ -85,7 +85,10 @@ tree_node_t* btree_node_insert(tree_node_t *root, int data)
     if (data < root->data)
         root->left = btree_node_insert(root->left, data);
     else if (data == root->data)
+    {   
+        printf("%d is already inserted into balanced (avl) tree\n", data);
         return root;
+    }
     else 
         root->right = btree_node_insert(root->right, data);
     return btree_balance(root);
