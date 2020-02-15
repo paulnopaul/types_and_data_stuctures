@@ -1,7 +1,7 @@
 CC := gcc
 CFLAGS := -g3 -Wall
-SOURCEDIR := .
-BUILDDIR := ../bin
+SOURCEDIR := ./source
+BUILDDIR := ./bin
 MAINTARGET := app.exe
 SOURCES := $(wildcard $(SOURCEDIR)/*.c)
 OBJECTS := $(patsubst $(SOURCEDIR)/%.o,$(BUILDDIR)/%.o,$(SOURCES:.c=.o))
@@ -13,4 +13,4 @@ $(BUILDDIR)/%.o: $(SOURCEDIR)/%.c
 	$(CC) $< $(CFLAGS) -c -o $@
 
 clean:
-	rm $(BUILDDIR)/$(MAINTARGET) $(OBJECTS)
+	rm -f $(BUILDDIR)/$(MAINTARGET) $(OBJECTS)

@@ -4,7 +4,7 @@
         {
             "label": "Make and run C",
             "type": "shell",
-            "command": "bash source/build.sh",
+            "command": "bash .vscode/build.sh",
             "problemMatcher": [
                 "$gcc"
             ],
