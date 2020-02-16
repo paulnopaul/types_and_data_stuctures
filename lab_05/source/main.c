@@ -40,10 +40,8 @@
 
 */
 
-
-
-
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "../include/aqueue.h"
@@ -56,14 +54,25 @@ void lqueue_test();
 
 void task_test();
 
+void lapp();
 
 int main()
 {
     puts("Main");
+    system("clear");
     // aqueue_test();
     // lqueue_test();
-    task_test();
+    // task_test();
+    lapp();
     return 0;
+}
+
+void lapp()
+{
+    tqueue_t t;
+    t.sys.state = 'a';
+    task_init(&t);
+    task_task(&t);
 }
 
 void aqueue_test()
@@ -76,7 +85,7 @@ void aqueue_test()
     {
         if (aqueue_push(&q, i + 1) == 0)
             aqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 
@@ -86,14 +95,14 @@ void aqueue_test()
         {
             aqueue_print(&q);
         }
-        else 
+        else
             puts("OVERFILLED");
     }
     for (int i = 0; i < 5; ++i)
     {
         if (aqueue_push(&q, i + 1) == 0)
             aqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 
@@ -103,14 +112,14 @@ void aqueue_test()
         {
             aqueue_print(&q);
         }
-        else 
+        else
             puts("OVERFILLED");
     }
     for (int i = 0; i < 3; ++i)
     {
         if (aqueue_push(&q, i + 1) == 0)
             aqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 
@@ -120,14 +129,14 @@ void aqueue_test()
         {
             aqueue_print(&q);
         }
-        else 
+        else
             puts("OVERFILLED");
     }
     for (int i = 0; i < 4; ++i)
     {
         if (aqueue_push(&q, i + 1) == 0)
             aqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 }
@@ -142,7 +151,7 @@ void lqueue_test()
     {
         if (lqueue_push(&q, i + 1) == 0)
             lqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 
@@ -152,14 +161,14 @@ void lqueue_test()
         {
             lqueue_print(&q);
         }
-        else 
+        else
             puts("OVERFILLED");
     }
     for (int i = 0; i < 5; ++i)
     {
         if (lqueue_push(&q, i + 1) == 0)
             lqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 
@@ -169,14 +178,14 @@ void lqueue_test()
         {
             lqueue_print(&q);
         }
-        else 
+        else
             puts("OVERFILLED");
     }
     for (int i = 0; i < 3; ++i)
     {
         if (lqueue_push(&q, i + 1) == 0)
             lqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
 
@@ -186,23 +195,15 @@ void lqueue_test()
         {
             lqueue_print(&q);
         }
-        else 
+        else
             puts("OVERFILLED");
     }
     for (int i = 0; i < 4; ++i)
     {
         if (lqueue_push(&q, i + 1) == 0)
             lqueue_print(&q);
-        else 
+        else
             puts("OVERFILLED");
     }
     lqueue_delete(&q);
-}
-
-void task_test()
-{
-    tqueue_t t;
-    task_init(&t);
-    printf("%lf\n%lf\n%lf\n%lf\n", t.aq_mean_push_time, t.lq_mean_push_time, 
-    t.aq_mean_pop_time, t.lq_mean_pop_time);
 }

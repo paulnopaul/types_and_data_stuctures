@@ -5,25 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "gcc build and debug active file",
+            "name": "(lldb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${fileDirname}/../bin/app.exe",
+            "program": "${workspaceFolder}/bin/app.exe",
             "args": [],
             "stopAtEntry": false,
-            "cwd": "${cwd}",
+            "cwd": "${workspaceFolder}",
             "environment": [],
             "externalConsole": false,
-            "MIMode": "gdb",
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
-            "preLaunchTask": "Build C",
-            "miDebuggerPath": "/usr/bin/gdb"
+            "MIMode": "lldb"
         }
     ]
 }

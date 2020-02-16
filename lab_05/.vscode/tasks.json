@@ -16,7 +16,7 @@
         {
             "label": "Build C",
             "type": "shell",
-            "command": "cd source; make clean; make;"
+            "command": "make clean && make"
         }
     ]
 }

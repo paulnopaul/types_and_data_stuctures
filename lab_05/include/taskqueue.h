@@ -10,14 +10,13 @@
 #define SECOND_PASS 1000
 #define SECOND_STEP 100
 #define QUEUE_SIZE 100
-#define TIME_UNIT 10 // ticks
+#define TIME_UNIT 100 // ticks
 #define SECOND_PROB 30 // percent
 
 typedef struct system_t
 {
-    lqueue_t lq;
-    aqueue_t aq; 
-
+    lqueue_t flq, slq;
+    aqueue_t faq, saq;
     char state; // 'a' or 'l'
     int fa_buf, sa_buf;
 
@@ -32,6 +31,8 @@ typedef struct system_t
 
     clock_t fstart, sstart;
     clock_t ftime, stime;
+
+    double mean_fsize, mean_ssize;
     
 } system_t;
 
@@ -40,41 +41,34 @@ typedef struct tqueue_t
 
     system_t sys;
 
-    aqueue_t *aq;
-    lqueue_t *lq;
+    aqueue_t aq;
+    lqueue_t lq;
 
-    double second_gate_probability;
+    int aq_size, lq_size;
 
-    double aq_mean_push_time;
-    double lq_mean_push_time;
 
-    double aq_mean_pop_time;
-    double lq_mean_pop_time;
+    double mean_push_time;
+
+    double mean_pop_time;
 
     double predicted_time;
 
-    long aq_size; 
-    long lq_size;
+    long size; 
 
     // after task
-    double lq_downtime;
-    double lq_main_time;
+    double downtime;
+    double main_time;
 
-    double aq_main_time;
-    double aq_downtime;
+    int first_passed;
 
-    int aq_first_passed;
-    int lq_first_passed;
+    double f_meansize, s_meansize;
+    int f_meansize_m, s_meansize_m;
 
 } tqueue_t;
 
 void system_init(system_t *sys);
 
 void task_init(tqueue_t *t);
-
-int task_lqpush(tqueue_t *t, const int elem);
-
-int task_aqpush(tqueue_t *t, const int elem);
 
 
 
@@ -98,8 +92,9 @@ int go_to_second_prob();
 
 clock_t wait_time(int start, int end);
 
-
 int task_task(tqueue_t *t);
+
+void task_print_result(tqueue_t *t);
 
 
 #endif

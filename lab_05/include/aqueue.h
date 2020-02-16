@@ -1,7 +1,7 @@
 #ifndef __AQUEUE_H__
 #define __AQUEUE_H__
 
-#define AQUEUE_LEN 10000
+#define AQUEUE_LEN 100
 
 typedef struct aqueue_t
 {
