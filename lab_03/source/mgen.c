@@ -50,7 +50,7 @@ int filegen(const char *filename, int rows, int columns, int elems, int row_elem
                 fprintf(f, "%d ", 0);
             else
             {
-                fprintf(f, "%d ", rand() % 100);
+                fprintf(f, "%d ", rand() % 100 + 1);
                 ++count;
             }
         }
