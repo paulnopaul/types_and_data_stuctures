@@ -27,13 +27,13 @@ int graph_input(graph_t *g, const char *filename)
 int graph_get(graph_t *g, FILE *f)
 {
     int buf;
-    if (!(scanf("%d", &g->n) == 1 && g->n > 0))
+    if (!(fscanf(f, "%d", &g->n) == 1 && g->n > 0))
         return 1;
     
     graph_allocate(g);
     for (int i = 0; i < g->n; ++i)
         for (int j = 0; j < g->n; ++j)
-            if (scanf("%d", &buf) == 1 && buf >= -1)
+            if (fscanf(f, "%d", &buf) == 1 && buf >= -1 && buf != 0)
                 g->g[i][j] = buf;
             else 
             {
@@ -63,7 +63,12 @@ int graph_delete(graph_t *g)
 
 int graph_output(graph_t *g)
 {
-
+    /*for (int i = 0; i < g->n; ++i)
+    {
+        for (int j = 0; j < g->n; ++j)
+            printf("%d ", g->g[i][j]);
+        printf("\n");
+    }*/
     dot_print_graph(g);
     return 0;
 } // using python function

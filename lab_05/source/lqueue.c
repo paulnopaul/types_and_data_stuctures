@@ -57,7 +57,7 @@ void lqueue_print(lqueue_t *q)
         printf("Empty");
     else 
         for (struct list_node_t *buf = q->head; buf; buf = buf->next)
-            printf("%d ", buf->data);
+            printf("%p %d\n", (void *)buf, buf->data);
     putchar('\n');
 }
 

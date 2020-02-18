@@ -24,7 +24,6 @@ tscheklin@gmail.com
 #include "astack.h"
 
 #include "pointer_array.h"
-
 #include <string.h>
 #include <stdio.h>
 #include <stdlib.h>

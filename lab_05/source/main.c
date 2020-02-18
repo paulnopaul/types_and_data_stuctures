@@ -47,6 +47,7 @@
 #include "../include/aqueue.h"
 #include "../include/lqueue.h"
 #include "../include/taskqueue.h"
+#include "../include/menu.h"
 
 void aqueue_test();
 
@@ -63,7 +64,8 @@ int main()
     // aqueue_test();
     // lqueue_test();
     // task_test();
-    lapp();
+    // lapp();
+    app();
     return 0;
 }
 
@@ -72,6 +74,8 @@ void lapp()
     tqueue_t t;
     t.sys.state = 'a';
     task_init(&t);
+    task_task(&t);
+    t.sys.state = 'l';
     task_task(&t);
 }
 

@@ -11,7 +11,7 @@
 #define SECOND_STEP 100
 #define QUEUE_SIZE 100
 #define TIME_UNIT 100 // ticks
-#define SECOND_PROB 30 // percent
+#define SECOND_PROB 50 // percent
 
 typedef struct system_t
 {
@@ -57,7 +57,8 @@ typedef struct tqueue_t
 
     // after task
     double downtime;
-    double main_time;
+    double a_main_time;
+    double l_main_time;
 
     int first_passed;
 

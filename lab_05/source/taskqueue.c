@@ -112,9 +112,12 @@ int task_task(tqueue_t *t)
     task_init(t);
     system_init(s);
     task_fill_first(t);
-    aqueue_print(&s->faq);
+    // aqueue_print(&s->faq);
+    if (t->sys.state == 'a')
+        t->a_main_time = t->sys.current_downtime = clock();
+    else 
+        t->l_main_time = t->sys.current_downtime = clock();
 
-    t->main_time = t->sys.current_downtime = clock();
 
     task_first_to_a(t);
     while (t->sys.second_passed < SECOND_PASS)
@@ -130,12 +133,20 @@ int task_task(tqueue_t *t)
         if (t->sys.second_working && (clock() - t->sys.sstart) > t->sys.stime)
         {
             task_second_to_first(t);
-            if (t->sys.second_passed % SECOND_STEP == 0)
+            if (t->sys.second_passed % SECOND_STEP == 0 && t->sys.state == 'a')
                 task_print_info(t);
         }
     }
-    t->main_time = clock() - t->main_time;
-    task_print_result(t);
+    if (t->sys.state == 'a')
+        t->a_main_time = clock() - t->a_main_time;
+    else
+        t->l_main_time = clock() - t->a_main_time;
+    
+    // printf("LETTER %c\n", t->sys.state);
+    if (t->sys.state == 'l')
+    {
+        task_print_result(t);
+    }
     return 1;
 }
 
@@ -241,7 +252,11 @@ void task_second_to_a(tqueue_t *t)
         aqueue_pop(&t->sys.saq, &t->sys.sa_buf);
     else
         lqueue_pop(&t->sys.slq, &t->sys.sa_buf);
-    t->downtime += clock() - t->sys.current_downtime;
+    if (t->sys.current_downtime)
+    {
+        t->downtime += (clock() - t->sys.current_downtime);
+        t->sys.current_downtime = 0;
+    }
 
 
     // printf("%d отправляется из второй очереди в автомат\n", t->sys.sa_buf);
@@ -299,14 +314,18 @@ void task_fill_first(tqueue_t *t)
 
 void task_print_result(tqueue_t *t)
 {
-    printf("Ожидаемое время моделирования: %.3lf сек.\n", (double)t->predicted_time / CLOCKS_PER_SEC);
-    printf("Время моделирования: %.3lf сек.\n", (double)t->main_time / CLOCKS_PER_SEC);
-    printf("Погрешность: %.2lf%%\n", 100 * fabs(t->predicted_time - t->main_time) / t->predicted_time);
-    printf("Средний размер первой очереди: %.3lf\n", t->f_meansize);
-    printf("Средний размер второй очереди: %.3lf\n" , t->s_meansize);
+    printf("Ожидаемое время моделирования: %.1lf .\n", t->predicted_time / TIME_UNIT);
+    printf("Время моделирования: %.1lf .\n", t->a_main_time / TIME_UNIT);
+    printf("Погрешность: %.2lf%%\n", 100 * fabs(t->predicted_time - t->a_main_time) / t->predicted_time);
+    printf("Средний размер первой очереди: %.0lf\n", t->f_meansize);
+    printf("Средний размер второй очереди: %.0lf\n" , t->s_meansize);
     printf("Через первый автомат прошло %d заявок\n", t->first_passed);
+    printf("Время простоя второго: %.0lf\n", t->downtime / TIME_UNIT);
 
     printf("Очередь, реализованная массивом занимает %d байт памяти\n", t->aq_size);
     printf("Очередь, реализованная списком занимает %d байт памяти\n", t->lq_size);
+
+    printf("Время моделирования для массива: %.3lf сек\n", (double)t->a_main_time / CLOCKS_PER_SEC);
+    printf("Время моделирования для очереди: %.3lf сек\n", (double)t->l_main_time / CLOCKS_PER_SEC);
 }
 

@@ -10,12 +10,16 @@
 */
 
 #include "../include/graph.h"
+#include "../include/task.h"
 
 void graph_test();
 
-int main()
+int main(int argc, char **argv)
 {
-    graph_test();
+    if (argc == 2)
+        task_main(argv[1]);
+    else 
+        printf("app.exe <filename>\n");
     return 0;
 }
 
@@ -23,7 +27,7 @@ void graph_test()
 {
     graph_t g;
     graph_init(&g);
-    graph_input(&g, "../example/graph1.txt");
+    graph_input(&g, "./example/graph1.txt");
     graph_output(&g);
     graph_delete(&g);
 }

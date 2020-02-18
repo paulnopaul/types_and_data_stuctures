@@ -1,15 +1,16 @@
 #include "../include/dot_print.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void dot_init(FILE *f)
 {
     fprintf(f, "graph {\n");
 }
 
-void dot_write_road(FILE *f, int city1, int city2, double len)
+void dot_write_road(FILE *f, int city1, int city2, int len)
 {
-    fprintf(f, "%d -- %d [label=\"%.2lf\", weight=\"%.2lf\"\n", city1, city2, len, len);
+    fprintf(f, "%d -- %d [label=\"%d\", weight=\"%d\"]\n", city1, city2, len, len);
 }
 
 void dot_write_city(FILE *f, int city)
@@ -38,6 +39,6 @@ int dot_print_graph(graph_t *g)
     
     dot_close(f);
     fclose(f);
-    
+    system("python3 ./source/viewdot.py graph.a");
     return 0;
 }

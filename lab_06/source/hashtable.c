@@ -26,7 +26,7 @@ int hashtable_add(hashtable *ht, int elem)
         j = ht->hashmov(ht->hashfunc(elem, ht->size), i, ht->size);
         if (ht->array[j] == elem)
         {
-            printf("%d is already inserted in hashtable\n", elem);
+            printf("%d уже введено\n", elem);
             return 0;
         }
         if (ht->array[j] == __INT_MIN)
@@ -73,7 +73,7 @@ int hashtable_put(hashtable ht)
     for (int i = 0; i < ht.size; ++i)
         if (ht.array[i] != __INT_MIN)
             printf("%d %d\n", i, ht.array[i]);
-    printf("Maximal collisions count: %d\n", ht.max_collisions);
+    printf("Максимальное число коллизий: %d\n", ht.max_collisions); 
     return 0;
 }
 

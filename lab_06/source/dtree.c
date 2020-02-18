@@ -2,6 +2,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <string.h>
 
 #include "../include/queue.h"
@@ -48,9 +49,10 @@ int dtree_add_node(dtree_t *root, int data)
         buf->left = create_node(data);
         buf->height = height;
     }
-    else 
-        printf("%d is alreary inserted in bst\n", data);
+    else
+        printf("%d уже добавлено в обычное дерево\n", data);
 
+    printf("Количество сравнений при добавлении в обычное дерево: %d\n", buf->height);
     return 0;
 }
 
@@ -199,6 +201,7 @@ int dtree_create_balanced(dtree_t *root, dtree_t *broot)
 {
     queue_t *vertex = NULL;
     tree_node_t *buf = root->root;
+    int c = 0;
 
     if (!root->root)
         return 0;
@@ -212,7 +215,7 @@ int dtree_create_balanced(dtree_t *root, dtree_t *broot)
             vertex = queue_push(vertex, (void *)buf->left);
         if (buf->right)
             vertex = queue_push(vertex, (void *)buf->right);
-        broot->root = btree_node_insert(broot->root, buf->data);
+        broot->root = btree_node_insert(broot->root, buf->data, &c);
     }
     return 0;
 }

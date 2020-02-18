@@ -39,6 +39,7 @@ void file_add(const char *filename, int to_add);
 int main(int argc, char **argv)
 {
     dtree_t raw;
+    int err = 0;
     dtree_t balanced;
     hashtable ht;
     int to_add, maxcol;
@@ -94,23 +95,26 @@ int main(int argc, char **argv)
         hashtable_delete(&ht);
         return 1;
     }
-
+    system("clear");
     if (ht.max_collisions > maxcol)
     {
-        printf("Для метода вычисления остатка превышено максимальное число коллизий (%d), попытка использования метода умножения\n", ht.max_collisions);
+        printf("Для метода вычисления остатка превышено максимальное число коллизий (%d), будет использован метод умножения\n", ht.max_collisions);
+        puts("Старая таблица: ");
         hashtable_put(ht);
 
         hashtable_delete(&ht);
         hashtable_init(&ht, ht.size);
 
         ht.hashfunc = hash_prod;
-        if (hashtable_get(&ht, argv[1]))
+        err = hashtable_get(&ht, argv[1]);
+        if (err)
         {
             dtree_delete(&raw);
             dtree_delete(&balanced);
             hashtable_delete(&ht);
             return 1;
         }
+        puts("Новая таблица");
     }
 
     hashtable_put(ht);
@@ -133,24 +137,25 @@ int main(int argc, char **argv)
     dtree_put(&balanced, "balanced2");
 
     hasht = clock();
-    if (hashtable_add(&ht, to_add))
+    err = hashtable_add(&ht, to_add);
+    hasht = clock() - hasht;
+    if (err)
     {
         dtree_delete(&raw);
         dtree_delete(&balanced);
         hashtable_delete(&ht);
         return 1;
     }
-    hasht = clock() - hasht;
     hashtable_put(ht);
 
     filet = clock();
     file_add(argv[1], to_add);
     filet = clock() - filet;
 
-    printf("BST adding time:          %lf\n", (double)bstt / CLOCKS_PER_SEC);
-    printf("Balanced BST adding time: %lf\n", (double)bbstt / CLOCKS_PER_SEC);
-    printf("Hash table adding time:   %lf\n", (double)hasht / CLOCKS_PER_SEC);
-    printf("File adding time:         %lf\n", (double)filet / CLOCKS_PER_SEC);
+    printf("Время добавления в обычное дерево:          %ld\n", bstt);
+    printf("Время добавления в сбалансированное дерево: %ld\n", bbstt);
+    printf("Время добавления в хэш таблицу:             %ld\n", hasht);
+    printf("Время добавления в файл:                    %ld\n", filet);
 
     dtree_delete(&raw);
     dtree_delete(&balanced);

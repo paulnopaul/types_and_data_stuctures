@@ -26,7 +26,9 @@ tree_node_t* btree_rotateleft(tree_node_t *node);
 
 tree_node_t* btree_balance(tree_node_t *node);
 
-tree_node_t* btree_node_insert(tree_node_t *root, int data);
+tree_node_t* btree_node_insert(tree_node_t *root, int data, int *cmp);
+
+int btree_search(tree_node_t *root, int elem, int *cmp);
 
 int btree_insert(dtree_t *root, int data);
 

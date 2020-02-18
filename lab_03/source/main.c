@@ -59,7 +59,7 @@ int matrix_test()
 
     s_matr_init(&sm);
 
-    s_matr_full_input(&sm);
+    // s_matr_full_input(&sm);
 
     s_matr_soutput(&sm);
     puts("Matrix: ");
@@ -83,7 +83,7 @@ simple input example
 
 */
 
-int app()
+int app(int x)
 {
     s_matr m, c, p;
     matr mat, col, res;
@@ -98,7 +98,7 @@ int app()
     s_matr_init(&c);
     s_matr_init(&p);
 
-    if (s_matr_full_input(&m))
+    if (s_matr_full_input(&m, stdin))
     {
         puts("Ошибка ввода");
         return 1;
@@ -118,18 +118,19 @@ int app()
     res.rows = col.rows;
     matr_allocate(&res);
 
-    if (m.rows < 30)
+    if (m.rows <= 30)
     {
         puts("Разреженная матрица:\n");
         s_matr_soutput(&m);
-        puts("\nМатрица:\n");
-        s_matr_noutput(m); 
 
         puts("\n\nРазреженный вектор-столбец:\n");
         s_matr_soutput(&c);
-        puts("\nВектор-стобец:\n");
-        s_matr_noutput(c);
     }
+    else 
+    {
+        puts("Матрицы не выводятся, так как их размер слишком большой");
+    }
+    
 
     sparsed_time = clock();
     s_matr_column_prod(m, c, &p);
@@ -139,7 +140,7 @@ int app()
     matr_product(mat, col, &res);
     normal_time = clock() - normal_time;
 
-    if (p.rows < 30)
+    if (p.rows <= 30)
     {
         puts("\n\nРезультат произведения в сжатом виде: ");
         s_matr_soutput(&p);
@@ -147,8 +148,8 @@ int app()
         s_matr_noutput(p);
     }
 
-    printf("Время произвдения в разреженном виде: %lf\n", (double)sparsed_time / CLOCKS_PER_SEC);
-    printf("Время произведения в обычном виде:    %lf\n", (double)normal_time / CLOCKS_PER_SEC);
+    printf("Время произвдения в разреженном виде: %ld тиков\n", sparsed_time);
+    printf("Время произведения в обычном виде:    %ld тиков\n", normal_time);
 
     s_matr_delete(&m);
     s_matr_delete(&c);
@@ -189,6 +190,19 @@ int main(int argc, char **argv)
         fclose(stdin);
         stdin = istream;
     }
+    else 
+    {
+        if (s_matr_input_my())
+            return 1;
+        istream = fopen("../examples/abc", "r");
+        if (!istream)
+        {
+            puts("Ошибка - невозможно открыть файл");
+            return 1;
+        }
+        fclose(stdin);
+        stdin = istream;
+    }
 
 
     puts("Программа, выполняющая произведение матрицы на вектор столбец в двух преставлениях:");
@@ -197,7 +211,7 @@ int main(int argc, char **argv)
     puts("При запуске программы без аргументов предлагается сгенерировать матрицу");
     puts("При запуске программы с аргументом в виде имени файла, ввод производится из файла");
     puts("В первой строке файла находятся размеры матрицы, в последующих - элементы матрицы и стообца");
-    int res = app();
+    int res = app(argc);
     fclose(stdin);
     return res;
 }

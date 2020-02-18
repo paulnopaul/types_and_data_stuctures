@@ -9,7 +9,7 @@ int dot_print_graph(graph_t *g);
 
 void dot_init(FILE *f);
 
-void dot_write_road(FILE *f, int city1, int city2, double len);
+void dot_write_road(FILE *f, int city1, int city2, int len);
 
 void dot_write_city(FILE *f, int city);
 

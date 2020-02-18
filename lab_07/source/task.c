@@ -2,9 +2,10 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <limits.h>
 
 #include "../include/graph.h"
-
+#include "../include/dijkstra.h"
 
 /*
 
@@ -26,9 +27,12 @@ int task_main(const char *filename)
         puts("Ошибка при вводе графа");
         return 1;
     }
-    void print_info();
 
-    printf("Введите город-столицу: ");
+    print_info();
+
+    graph_output(&g);
+
+    printf("Введите город-столицу (от 0 до %d): ", g.n - 1);
 
     if (!(scanf("%d", &t.capital) == 1 && t.capital >= 0 && t.capital < g.n))
     {
@@ -45,15 +49,39 @@ int task_main(const char *filename)
 
     task_task(g, &t);
 
-    int graph_delete(graph_t *g);
+    int graph_delete(graph_t * g);
+    free(t.cities);
 
     return 0;
 }
 
 int task_task(graph_t g, task_t *t)
 {
+    int empty = 1;
     t->cities = (int *)malloc(g.n * sizeof(int));
+    dijkstra(g, t->capital, t->cities);
 
-    
+    for (int i = 0; i < g.n && empty; ++i)
+        if (t->cities[i] != INT_MAX && t->cities[i] != 0 &&
+            t->cities[i] > t->t)
+            empty = 0;
+
+    if (!empty)
+    {
+        printf("Город Расстояние\n");
+        for (int i = 0; i < g.n; ++i)
+            if (t->cities[i] != INT_MAX && t->cities[i] != 0 &&
+                t->cities[i] > t->t)
+                printf("%d     %d\n", i, t->cities[i]);
+    }
+    else
+        puts("Таких городов не существует");
+
     return 0;
+}
+
+void print_info()
+{
+    printf("Задана система двухсторонних дорог");
+    
 }
