@@ -13,6 +13,8 @@ int graph_input(graph_t *g, const char *filename);
 
 int graph_get(graph_t *g, FILE *f);
 
+int graph_get_for_silantyeva(graph_t *g, FILE *f);
+
 int graph_init(graph_t *g);
 
 int graph_allocate(graph_t *g);

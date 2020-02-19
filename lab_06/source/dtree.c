@@ -52,8 +52,8 @@ int dtree_add_node(dtree_t *root, int data)
     else
         printf("%d уже добавлено в обычное дерево\n", data);
 
-    printf("Количество сравнений при добавлении в обычное дерево: %d\n", buf->height);
-    return 0;
+    // printf("Количество сравнений при добавлении в обычное дерево: %d\n", buf->height);
+    return buf->height;
 }
 
 void dtree_init(dtree_t *root)

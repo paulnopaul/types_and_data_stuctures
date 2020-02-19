@@ -115,8 +115,10 @@ int btree_insert(dtree_t *root, int data)
 {
     int cmp = 0;
     root->root = btree_node_insert(root->root, data, &cmp);
-    printf("Количество сравнений при в сбалансированное дерево: %d\n", cmp);
-    return 0;
+    // printf("Количество сравнений при в сбалансированное дерево: %d\n", cmp);
+    // return 0;
+
+    return cmp;
 }
 
 

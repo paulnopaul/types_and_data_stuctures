@@ -2,5 +2,6 @@
     "files.associations": {
         "aqueue.h": "c",
         "stdio.h": "c"
-    }
+    },
+    "clockify.tracking.workspaceId": "5df6a5197597692991954f36"
 }

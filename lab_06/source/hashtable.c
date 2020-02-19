@@ -28,13 +28,15 @@ int hashtable_add(hashtable *ht, int elem)
         {
             printf("%d уже введено\n", elem);
             return 0;
+            // return i;
         }
         if (ht->array[j] == __INT_MIN)
         {
             ht->array[j] = elem;
             if (i > ht->max_collisions)
                 ht->max_collisions = i;
-            return 0;
+            // return 0;
+            return i;
         }
         ++i;
     } while (i != ht->size);

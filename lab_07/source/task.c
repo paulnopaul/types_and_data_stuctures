@@ -30,7 +30,9 @@ int task_main(const char *filename)
 
     print_info();
 
+    puts("\na");
     graph_output(&g);
+    puts("b");
 
     printf("Введите город-столицу (от 0 до %d): ", g.n - 1);
 

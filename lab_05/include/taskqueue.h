@@ -11,7 +11,7 @@
 #define SECOND_STEP 100
 #define QUEUE_SIZE 100
 #define TIME_UNIT 100 // ticks
-#define SECOND_PROB 50 // percent
+#define SECOND_PROB 70 // percent
 
 typedef struct system_t
 {
@@ -94,6 +94,8 @@ int go_to_second_prob();
 clock_t wait_time(int start, int end);
 
 int task_task(tqueue_t *t);
+
+int task_real();
 
 void task_print_result(tqueue_t *t);
 

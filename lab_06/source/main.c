@@ -33,10 +33,25 @@
 #include "../include/btree.h"
 #include "../include/hashtable.h"
 
-
 void file_add(const char *filename, int to_add);
 
-int main(int argc, char **argv)
+int btree_etest();
+
+int dtree_etest();
+
+int hash_etest();
+
+int file_etest();
+
+int btree_atest();
+
+int dtree_atest();
+
+int hash_atest();
+
+int file_atest();
+
+int sain(int argc, char **argv)
 {
     dtree_t raw;
     int err = 0;
@@ -49,7 +64,7 @@ int main(int argc, char **argv)
 
     dtree_init(&raw);
     btree_init(&balanced);
-    
+
     if (argc != 2)
     {
         puts("Wrong arg");
@@ -59,7 +74,7 @@ int main(int argc, char **argv)
     printf("Введите размер хеш таблицы, рекомендуется простое число, например 977: ");
     if (scanf("%d", &ht.size) == 1 && ht.size > 0 && ht.size < 1000)
         puts("");
-    else 
+    else
     {
         puts("Hashtable size input error: ");
         return 1;
@@ -68,7 +83,7 @@ int main(int argc, char **argv)
     printf("Введите максимальное число коллизий: ");
     if (scanf("%d", &maxcol) == 1 && maxcol >= 0 && maxcol <= 10000)
         hashtable_init(&ht, ht.size);
-    else 
+    else
     {
         puts("Input error");
         return 1;
@@ -119,12 +134,11 @@ int main(int argc, char **argv)
 
     hashtable_put(ht);
 
-
     // ************** Adding elements **************
 
     printf("Введите число: ");
     while (scanf("%d", &to_add) != 1)
-        printf ("Ошибка, попробуйте еще раз: ");
+        printf("Ошибка, попробуйте еще раз: ");
 
     bstt = clock();
     dtree_add_node(&raw, to_add);
@@ -205,4 +219,351 @@ void file_add(const char *filename, int to_add)
         fclose(f);
     }
     return;
+}
+
+int btree_etest()
+{
+    dtree_t balanced;
+    int n;
+    clock_t start;
+
+    dtree_init(&balanced);
+    n = 10;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        btree_insert(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_put(&balanced, "test1");
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 100;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        btree_insert(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 500;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        btree_insert(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 1000;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        btree_insert(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_delete(&balanced);
+    return 0;
+}
+
+int dtree_etest()
+{
+    dtree_t balanced;
+    int n;
+    clock_t start;
+
+    dtree_init(&balanced);
+    n = 10;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        dtree_add_node(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_put(&balanced, "test1");
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 100;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        dtree_add_node(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 500;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        dtree_add_node(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 1000;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        dtree_add_node(&balanced, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    dtree_delete(&balanced);
+    return 0;
+}
+
+int hash_etest()
+{
+    hashtable ht;
+    ht.size = 1009; // простое число
+    int n;
+    clock_t start;
+    start = clock();
+    hashtable_init(&ht, ht.size);
+    hashtable_delete(&ht);
+    start = clock() - start;
+
+    n = 11;
+    hashtable_init(&ht, ht.size);
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        hashtable_add(&ht, random());
+    start = clock() - start;
+    // printf("Время добавления %d элементов %ld\n", n, start);
+    hashtable_delete(&ht);
+
+    n = 10;
+    hashtable_init(&ht, ht.size);
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        hashtable_add(&ht, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    hashtable_delete(&ht);
+
+    n = 100;
+    hashtable_init(&ht, ht.size);
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        hashtable_add(&ht, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    // hashtable_put(ht);
+    hashtable_delete(&ht);
+
+    n = 1000;
+    hashtable_init(&ht, ht.size);
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        hashtable_add(&ht, random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    // hashtable_put(ht);
+    hashtable_delete(&ht);
+
+    return 0;
+}
+
+int file_etest()
+{
+    FILE *f;
+    clock_t start; 
+    int n;
+
+    f = fopen("../cache/testfile", "w");
+    n = 10;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    // printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+
+
+    f = fopen("../cache/testfile", "w");
+    n = 10;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+
+    f = fopen("../cache/testfile", "w");
+    n = 100;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+
+    f = fopen("../cache/testfile", "w");
+    n = 1000;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+    return 0;
+}
+
+
+int btree_atest()
+{
+    dtree_t balanced;
+    int n;
+    int x;
+
+    dtree_init(&balanced);
+    n = 10;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += btree_insert(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 100;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += btree_insert(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 1000;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += btree_insert(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+
+    return 0;
+}
+
+int dtree_atest()
+{
+    dtree_t balanced;
+    int n, x;
+
+    dtree_init(&balanced);
+    n = 10;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += dtree_add_node(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 100;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += dtree_add_node(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 1000;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += dtree_add_node(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+
+    dtree_init(&balanced);
+    n = 1000;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += dtree_add_node(&balanced, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    dtree_delete(&balanced);
+    return 0;
+}
+
+int main()
+{
+    hashtable ht;
+    ht.size = 1009; // простое число
+    int n, x;
+
+    hashtable_init(&ht, ht.size);
+    n = 10;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += hashtable_add(&ht, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    // printf("Время добавления %d элементов %ld\n", n, start);
+    hashtable_delete(&ht);
+
+    hashtable_init(&ht, ht.size);
+    n = 100;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+        x += hashtable_add(&ht, random());
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    // printf("Время добавления %d элементов %ld\n", n, start);
+    hashtable_delete(&ht);
+
+    int b;
+    hashtable_init(&ht, ht.size);
+    n = 1000;
+    x = 0;
+    for (int i = 0; i < n; ++i)
+    {
+        b = hashtable_add(&ht, random());
+        printf("%d\n", b);
+        x += b;
+    }
+    printf("Среднее количество сравнений при добавлении %d элементов %.2lf\n", n, (double)x / n);
+    // printf("Время добавления %d элементов %ld\n", n, start);
+    hashtable_delete(&ht);
+
+
+    return 0;
+}
+
+int file_atest()
+{
+    FILE *f;
+    clock_t start; 
+    int n;
+
+    f = fopen("../cache/testfile", "w");
+    n = 10;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    // printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+
+
+    f = fopen("../cache/testfile", "w");
+    n = 10;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+
+    f = fopen("../cache/testfile", "w");
+    n = 100;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+
+    f = fopen("../cache/testfile", "w");
+    n = 1000;
+    start = clock();
+    for (int i = 0; i < n; ++i)
+        fprintf(f, "%ld\n", random());
+    start = clock() - start;
+    printf("Время добавления %d элементов %ld\n", n, start);
+    fclose(f);
+    return 0;
 }

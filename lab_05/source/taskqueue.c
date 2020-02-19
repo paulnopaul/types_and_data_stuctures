@@ -62,7 +62,7 @@ void task_init(tqueue_t *t)
         t->mean_pop_time = ((double)time) / AQUEUE_LEN;
     }
     // MEMORY INIT
-    
+
     t->lq_size = (int)(sizeof(lqueue_t) + sizeof(struct list_node_t) * QUEUE_SIZE);
     t->aq_size = (int)(sizeof(aqueue_t));
     // PREDICTION
@@ -115,9 +115,8 @@ int task_task(tqueue_t *t)
     // aqueue_print(&s->faq);
     if (t->sys.state == 'a')
         t->a_main_time = t->sys.current_downtime = clock();
-    else 
+    else
         t->l_main_time = t->sys.current_downtime = clock();
-
 
     task_first_to_a(t);
     while (t->sys.second_passed < SECOND_PASS)
@@ -141,7 +140,7 @@ int task_task(tqueue_t *t)
         t->a_main_time = clock() - t->a_main_time;
     else
         t->l_main_time = clock() - t->a_main_time;
-    
+
     // printf("LETTER %c\n", t->sys.state);
     if (t->sys.state == 'l')
     {
@@ -156,10 +155,9 @@ void task_first_to_first(tqueue_t *t)
         aqueue_push(&t->sys.faq, t->sys.fa_buf);
     else
         lqueue_push(&t->sys.flq, t->sys.fa_buf);
-    
+
     // printf("Из первого автомата в первую очередь направляется %d\n", t->sys.fa_buf);
     //aqueue_print(&t->sys.faq);
-
 
     ++(t->sys.first_size);
     t->f_meansize = (double)((t->f_meansize * t->f_meansize_m) + t->sys.first_size) / (++t->f_meansize_m);
@@ -188,7 +186,7 @@ void task_first_to_second(tqueue_t *t)
 
     t->sys.first_working = 0;
 
-    t->sys.fa_buf = -1; // debug
+    // t->sys.fa_buf = -1; // debug
 
     if (t->sys.first_size)
         task_first_to_a(t);
@@ -202,7 +200,7 @@ void task_second_to_first(tqueue_t *t)
         aqueue_push(&t->sys.faq, t->sys.sa_buf);
     else
         lqueue_push(&t->sys.flq, t->sys.sa_buf);
-    
+
     // printf("Из второго автомата в первую очередь направляется %d\n", t->sys.sa_buf);
     // aqueue_print(&t->sys.faq);
 
@@ -231,7 +229,7 @@ void task_first_to_a(tqueue_t *t)
         aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
     else
         lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
-    
+
     // printf("%d отправляется из первой очереди в автомат\n", t->sys.fa_buf);
     // aqueue_print(&t->sys.faq);
 
@@ -258,10 +256,8 @@ void task_second_to_a(tqueue_t *t)
         t->sys.current_downtime = 0;
     }
 
-
     // printf("%d отправляется из второй очереди в автомат\n", t->sys.sa_buf);
     // aqueue_print(&t->sys.saq);
-
 
     --(t->sys.second_size);
     t->s_meansize = (double)((t->s_meansize * t->s_meansize_m) + t->sys.second_size) / (++t->s_meansize_m);
@@ -280,7 +276,7 @@ void task_print_info(tqueue_t *t)
            t->sys.first_size, t->sys.second_size);
 
     printf("Средний размер первой очереди: %.3lf\n", t->f_meansize);
-    printf("Средний размер второй очереди: %.3lf\n" , t->s_meansize);
+    printf("Средний размер второй очереди: %.3lf\n", t->s_meansize);
 
     /*
     printf("Первая очередь: ");
@@ -289,7 +285,7 @@ void task_print_info(tqueue_t *t)
     aqueue_print(&t->sys.saq);
     printf("Элементы в автоматах: %d %d\n", t->sys.fa_buf, t->sys.sa_buf);
     */
-   printf("\n");
+    printf("\n");
 }
 
 void task_fill_first(tqueue_t *t)
@@ -318,14 +314,211 @@ void task_print_result(tqueue_t *t)
     printf("Время моделирования: %.1lf .\n", t->a_main_time / TIME_UNIT);
     printf("Погрешность: %.2lf%%\n", 100 * fabs(t->predicted_time - t->a_main_time) / t->predicted_time);
     printf("Средний размер первой очереди: %.0lf\n", t->f_meansize);
-    printf("Средний размер второй очереди: %.0lf\n" , t->s_meansize);
+    printf("Средний размер второй очереди: %.0lf\n", t->s_meansize);
     printf("Через первый автомат прошло %d заявок\n", t->first_passed);
     printf("Время простоя второго: %.0lf\n", t->downtime / TIME_UNIT);
 
     printf("Очередь, реализованная массивом занимает %d байт памяти\n", t->aq_size);
     printf("Очередь, реализованная списком занимает %d байт памяти\n", t->lq_size);
-
-    printf("Время моделирования для массива: %.3lf сек\n", (double)t->a_main_time / CLOCKS_PER_SEC);
-    printf("Время моделирования для очереди: %.3lf сек\n", (double)t->l_main_time / CLOCKS_PER_SEC);
 }
 
+int task_real()
+{
+    tqueue_t *t = (tqueue_t *)malloc(sizeof(tqueue_t));
+    t->sys.state = 'a';
+
+    srand(time(NULL));
+
+    system_t *s = &t->sys;
+
+    task_init(t);
+    system_init(s);
+    task_fill_first(t);
+    // aqueue_print(&s->faq);
+
+    t->a_main_time = t->sys.current_downtime = clock();
+
+    aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+    --(t->sys.first_size);
+    t->sys.ftime = wait_time(0, 6);
+    t->sys.first_working = 1;
+    t->sys.fstart = clock();
+    while (t->sys.second_passed < SECOND_PASS)
+    {
+        if (t->sys.first_working && (clock() - t->sys.fstart) > t->sys.ftime)
+        {
+
+            if (go_to_second_prob())
+            {
+                aqueue_push(&t->sys.saq, t->sys.fa_buf);
+                ++(t->sys.second_size);
+                t->sys.first_working = 0;
+
+                if (t->sys.first_size)
+                {
+                    aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+                    --(t->sys.first_size);
+                    t->sys.ftime = wait_time(0, 6);
+                    t->sys.first_working = 1;
+                    t->sys.fstart = clock();
+                    // task_first_to_a(t);
+                }
+                if (t->sys.second_size == 1 && !t->sys.second_working)
+                {
+                    aqueue_pop(&t->sys.saq, &t->sys.sa_buf);
+                    --(t->sys.second_size);
+                    t->sys.second_working = 1;
+                    t->sys.stime = wait_time(1, 8);
+                    t->sys.sstart = clock();
+                    // task_second_to_a(t);
+                }
+                // task_first_to_second(t);
+            }
+            else
+            {
+                aqueue_push(&t->sys.faq, t->sys.fa_buf);
+                ++(t->sys.first_size);
+                t->sys.first_working = 0;
+                if (t->sys.first_size)
+                {
+                    aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+                    --(t->sys.first_size);
+                    t->sys.ftime = wait_time(0, 6);
+                    t->sys.first_working = 1;
+                    t->sys.fstart = clock();
+                    // task_first_to_a(t);
+                }
+                // task_first_to_first(t);
+            }
+        }
+        if (t->sys.second_working && (clock() - t->sys.sstart) > t->sys.stime)
+        {
+            aqueue_push(&t->sys.faq, t->sys.sa_buf);
+            ++(t->sys.first_size);
+            t->sys.second_working = 0;
+
+            if (t->sys.first_size == 1)
+            {
+                aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+                --(t->sys.first_size);
+                t->sys.ftime = wait_time(0, 6);
+                t->sys.first_working = 1;
+                t->sys.fstart = clock();
+                task_first_to_a(t);
+            }
+
+            if (t->sys.second_size)
+            {
+                aqueue_pop(&t->sys.saq, &t->sys.sa_buf);
+                --(t->sys.second_size);
+                t->sys.second_working = 1;
+                t->sys.stime = wait_time(1, 8);
+                t->sys.sstart = clock();
+                //task_second_to_a(t);
+            }
+            ++(t->sys.second_passed);
+            // task_second_to_first(t);
+        }
+    }
+    t->a_main_time = clock() - t->a_main_time;
+
+    // ---------------------------------------------------------------
+
+    t->sys.state = 'l';
+
+    srand(time(NULL));
+
+    s = &t->sys;
+
+    task_init(t);
+    system_init(s);
+    task_fill_first(t);
+    // aqueue_print(&s->faq);
+
+    t->l_main_time = t->sys.current_downtime = clock();
+
+    task_first_to_a(t);
+    while (t->sys.second_passed < SECOND_PASS)
+    {
+        if (t->sys.first_working && (clock() - t->sys.fstart) > t->sys.ftime)
+        {
+
+            if (go_to_second_prob())
+            {
+                lqueue_push(&t->sys.slq, t->sys.fa_buf);
+                ++(t->sys.second_size);
+                t->sys.first_working = 0;
+
+                if (t->sys.first_size)
+                {
+                    lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+                    --(t->sys.first_size);
+                    t->sys.ftime = wait_time(0, 6);
+                    t->sys.first_working = 1;
+                    t->sys.fstart = clock();
+                    // task_first_to_a(t);
+                }
+                if (t->sys.second_size == 1 && !t->sys.second_working)
+                {
+                    lqueue_pop(&t->sys.slq, &t->sys.sa_buf);
+                    --(t->sys.second_size);
+                    t->sys.second_working = 1;
+                    t->sys.stime = wait_time(1, 8);
+                    t->sys.sstart = clock();
+                    // task_second_to_a(t);
+                }
+                // task_first_to_second(t);
+            }
+            else
+            {
+                lqueue_push(&t->sys.flq, t->sys.fa_buf);
+                ++(t->sys.first_size);
+                t->sys.first_working = 0;
+                if (t->sys.first_size)
+                {
+                    lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+                    --(t->sys.first_size);
+                    t->sys.ftime = wait_time(0, 6);
+                    t->sys.first_working = 1;
+                    t->sys.fstart = clock();
+                    // task_first_to_a(t);
+                }
+                // task_first_to_first(t);
+            }
+        }
+        if (t->sys.second_working && (clock() - t->sys.sstart) > t->sys.stime)
+        {
+            lqueue_push(&t->sys.flq, t->sys.sa_buf);
+            ++(t->sys.first_size);
+            t->sys.second_working = 0;
+
+            if (t->sys.first_size == 1)
+            {
+                lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+                --(t->sys.first_size);
+                t->sys.ftime = wait_time(0, 6);
+                t->sys.first_working = 1;
+                t->sys.fstart = clock();
+                // task_first_to_a(t);
+            }
+
+            if (t->sys.second_size)
+            {
+                lqueue_pop(&t->sys.slq, &t->sys.sa_buf);
+                --(t->sys.second_size);
+                t->sys.second_working = 1;
+                t->sys.stime = wait_time(1, 8);
+                t->sys.sstart = clock();
+                //task_second_to_a(t);
+            }
+            ++(t->sys.second_passed);
+            // task_second_to_first(t);
+        }
+    }
+    t->l_main_time = clock() - t->l_main_time;
+    printf("Единица времени равна %lf секунд\n\n", (double)TIME_UNIT / CLOCKS_PER_SEC);
+    printf("Время выполнения с очередью массивом %lf сек\n", (double)t->a_main_time / CLOCKS_PER_SEC);
+    printf("Время выполнения с очередью cписком  %lf сек\n", (double)t->l_main_time / CLOCKS_PER_SEC);
+    free(t);
+    return 1;
+}
