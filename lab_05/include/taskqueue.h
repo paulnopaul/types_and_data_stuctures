@@ -11,7 +11,7 @@
 #define SECOND_STEP 100
 #define QUEUE_SIZE 100
 #define TIME_UNIT 100 // ticks
-#define SECOND_PROB 70 // percent
+#define SECOND_PROB 30 // percent
 
 typedef struct system_t
 {

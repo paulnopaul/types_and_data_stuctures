@@ -51,7 +51,7 @@ int hash_atest();
 
 int file_atest();
 
-int sain(int argc, char **argv)
+int main(int argc, char **argv)
 {
     dtree_t raw;
     int err = 0;
@@ -481,7 +481,7 @@ int dtree_atest()
     return 0;
 }
 
-int main()
+int eee()
 {
     hashtable ht;
     ht.size = 1009; // простое число

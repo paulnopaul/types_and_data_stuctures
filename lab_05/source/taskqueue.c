@@ -327,7 +327,7 @@ int task_real()
     tqueue_t *t = (tqueue_t *)malloc(sizeof(tqueue_t));
     t->sys.state = 'a';
 
-    srand(time(NULL));
+    srand(140);
 
     system_t *s = &t->sys;
 
@@ -335,95 +335,149 @@ int task_real()
     system_init(s);
     task_fill_first(t);
     // aqueue_print(&s->faq);
+    clock_t buf;
 
-    t->a_main_time = t->sys.current_downtime = clock();
-
+    buf = clock();
     aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+    buf = clock() - buf;
+
     --(t->sys.first_size);
-    t->sys.ftime = wait_time(0, 6);
+    t->sys.ftime = t->a_main_time = wait_time(0, 6);
+    t->a_main_time += buf;
+    printf("%lf\n", t->a_main_time);
     t->sys.first_working = 1;
-    t->sys.fstart = clock();
     while (t->sys.second_passed < SECOND_PASS)
     {
-        if (t->sys.first_working && (clock() - t->sys.fstart) > t->sys.ftime)
+        if (t->sys.first_working && !t->sys.ftime) // && (clock() - t->sys.fstart) > t->sys.ftime)
         {
-
             if (go_to_second_prob())
             {
+                buf = clock();
                 aqueue_push(&t->sys.saq, t->sys.fa_buf);
+                buf = clock() - buf;
+                t->a_main_time += buf;
+
                 ++(t->sys.second_size);
                 t->sys.first_working = 0;
 
                 if (t->sys.first_size)
                 {
+                    buf = clock();
                     aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+                    buf = clock() - buf;
+                    t->a_main_time += buf;
+
                     --(t->sys.first_size);
+
                     t->sys.ftime = wait_time(0, 6);
+                    t->a_main_time += t->sys.ftime;
+                    printf("%lf\n", t->a_main_time);
+
                     t->sys.first_working = 1;
-                    t->sys.fstart = clock();
+                    // t->sys.fstart = clock();
                     // task_first_to_a(t);
                 }
                 if (t->sys.second_size == 1 && !t->sys.second_working)
                 {
+                    buf = clock();
                     aqueue_pop(&t->sys.saq, &t->sys.sa_buf);
+                    buf = clock() - buf;
+                    t->a_main_time += buf;
+
                     --(t->sys.second_size);
                     t->sys.second_working = 1;
+
                     t->sys.stime = wait_time(1, 8);
-                    t->sys.sstart = clock();
+                    t->a_main_time += t->sys.stime;
+                    printf("%lf\n", t->a_main_time);
+                    // t->sys.sstart = clock();
                     // task_second_to_a(t);
                 }
                 // task_first_to_second(t);
             }
             else
             {
+                buf = clock();
                 aqueue_push(&t->sys.faq, t->sys.fa_buf);
+                buf = clock() - buf;
+                t->a_main_time += buf;
+
                 ++(t->sys.first_size);
                 t->sys.first_working = 0;
                 if (t->sys.first_size)
                 {
+                    buf = clock();
                     aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+                    buf = clock() - buf;
+                    t->a_main_time += buf;
+
                     --(t->sys.first_size);
+
                     t->sys.ftime = wait_time(0, 6);
+                    t->a_main_time += t->sys.ftime;
+                    printf("%lf\n", t->a_main_time);
+
                     t->sys.first_working = 1;
-                    t->sys.fstart = clock();
+                    // t->sys.fstart = clock();
                     // task_first_to_a(t);
                 }
                 // task_first_to_first(t);
             }
         }
-        if (t->sys.second_working && (clock() - t->sys.sstart) > t->sys.stime)
+        if (t->sys.second_working && !t->sys.stime) //  && (clock() - t->sys.sstart) > t->sys.stime)
         {
+            buf = clock();
             aqueue_push(&t->sys.faq, t->sys.sa_buf);
+            buf = clock() - buf;
+            t->a_main_time += buf;
+
             ++(t->sys.first_size);
             t->sys.second_working = 0;
 
             if (t->sys.first_size == 1)
             {
+                buf = clock();
                 aqueue_pop(&t->sys.faq, &t->sys.fa_buf);
+                buf = clock() - buf;
+                t->a_main_time += buf;
+
                 --(t->sys.first_size);
+
                 t->sys.ftime = wait_time(0, 6);
+                t->a_main_time += t->sys.ftime;
+                printf("%lf\n", t->a_main_time);
+
                 t->sys.first_working = 1;
-                t->sys.fstart = clock();
-                task_first_to_a(t);
+                // t->sys.fstart = clock();
+                // task_first_to_a(t);
             }
 
             if (t->sys.second_size)
             {
+                buf = clock();
                 aqueue_pop(&t->sys.saq, &t->sys.sa_buf);
+                buf = clock() - buf;
+                t->a_main_time += buf;
+
                 --(t->sys.second_size);
                 t->sys.second_working = 1;
+
                 t->sys.stime = wait_time(1, 8);
-                t->sys.sstart = clock();
+                t->a_main_time += t->sys.stime;
+                printf("%lf\n", t->a_main_time);
+                // t->sys.sstart = clock();
                 //task_second_to_a(t);
             }
             ++(t->sys.second_passed);
             // task_second_to_first(t);
         }
+        if (t->sys.ftime)
+            t->sys.ftime--;
+        if (t->sys.stime)
+            t->sys.stime--;
     }
-    t->a_main_time = clock() - t->a_main_time;
 
-    // ---------------------------------------------------------------
-
+    // ----------------------------------------------------------------------------------------
     t->sys.state = 'l';
 
     srand(time(NULL));
@@ -435,89 +489,148 @@ int task_real()
     task_fill_first(t);
     // aqueue_print(&s->faq);
 
-    t->l_main_time = t->sys.current_downtime = clock();
+    buf = clock();
+    lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+    buf = clock() - buf;
 
-    task_first_to_a(t);
+    --(t->sys.first_size);
+    t->sys.ftime = t->l_main_time = wait_time(0, 6);
+    t->l_main_time += buf;
+    printf("%lf\n", t->l_main_time);
+    t->sys.first_working = 1;
     while (t->sys.second_passed < SECOND_PASS)
     {
-        if (t->sys.first_working && (clock() - t->sys.fstart) > t->sys.ftime)
+        if (t->sys.first_working && !t->sys.ftime) // && (clock() - t->sys.fstart) > t->sys.ftime)
         {
-
             if (go_to_second_prob())
             {
+                buf = clock();
                 lqueue_push(&t->sys.slq, t->sys.fa_buf);
+                buf = clock() - buf;
+                t->l_main_time += buf;
+
                 ++(t->sys.second_size);
                 t->sys.first_working = 0;
 
                 if (t->sys.first_size)
                 {
+                    buf = clock();
                     lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+                    buf = clock() - buf;
+                    t->l_main_time += buf;
+
                     --(t->sys.first_size);
+
                     t->sys.ftime = wait_time(0, 6);
+                    t->l_main_time += t->sys.ftime;
+                    printf("%lf\n", t->l_main_time);
+
                     t->sys.first_working = 1;
-                    t->sys.fstart = clock();
+                    // t->sys.fstart = clock();
                     // task_first_to_a(t);
                 }
                 if (t->sys.second_size == 1 && !t->sys.second_working)
                 {
+                    buf = clock();
                     lqueue_pop(&t->sys.slq, &t->sys.sa_buf);
+                    buf = clock() - buf;
+                    t->l_main_time += buf;
+
                     --(t->sys.second_size);
                     t->sys.second_working = 1;
+
                     t->sys.stime = wait_time(1, 8);
-                    t->sys.sstart = clock();
+                    t->l_main_time += t->sys.stime;
+                    printf("%lf\n", t->l_main_time);
+                    // t->sys.sstart = clock();
                     // task_second_to_a(t);
                 }
                 // task_first_to_second(t);
             }
             else
             {
+                buf = clock();
                 lqueue_push(&t->sys.flq, t->sys.fa_buf);
+                buf = clock() - buf;
+                t->l_main_time += buf;
+
                 ++(t->sys.first_size);
                 t->sys.first_working = 0;
                 if (t->sys.first_size)
                 {
+                    buf = clock();
                     lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+                    buf = clock() - buf;
+                    t->l_main_time += buf;
+
                     --(t->sys.first_size);
+
                     t->sys.ftime = wait_time(0, 6);
+                    t->l_main_time += t->sys.ftime;
+                    printf("%lf\n", t->l_main_time);
+
                     t->sys.first_working = 1;
-                    t->sys.fstart = clock();
+                    // t->sys.fstart = clock();
                     // task_first_to_a(t);
                 }
                 // task_first_to_first(t);
             }
         }
-        if (t->sys.second_working && (clock() - t->sys.sstart) > t->sys.stime)
+        if (t->sys.second_working && !t->sys.stime) //  && (clock() - t->sys.sstart) > t->sys.stime)
         {
+            buf = clock();
             lqueue_push(&t->sys.flq, t->sys.sa_buf);
+            buf = clock() - buf;
+            t->l_main_time += buf;
+
             ++(t->sys.first_size);
             t->sys.second_working = 0;
 
             if (t->sys.first_size == 1)
             {
+                buf = clock();
                 lqueue_pop(&t->sys.flq, &t->sys.fa_buf);
+                buf = clock() - buf;
+                t->l_main_time += buf;
+
                 --(t->sys.first_size);
+
                 t->sys.ftime = wait_time(0, 6);
+                t->l_main_time += t->sys.ftime;
+                printf("%lf\n", t->l_main_time);
+
                 t->sys.first_working = 1;
-                t->sys.fstart = clock();
+                // t->sys.fstart = clock();
                 // task_first_to_a(t);
             }
 
             if (t->sys.second_size)
             {
+                buf = clock();
                 lqueue_pop(&t->sys.slq, &t->sys.sa_buf);
+                buf = clock() - buf;
+                t->l_main_time += buf;
+
                 --(t->sys.second_size);
                 t->sys.second_working = 1;
+
                 t->sys.stime = wait_time(1, 8);
-                t->sys.sstart = clock();
+                t->l_main_time += t->sys.stime;
+                printf("%lf\n", t->l_main_time);
+                // t->sys.sstart = clock();
                 //task_second_to_a(t);
             }
             ++(t->sys.second_passed);
             // task_second_to_first(t);
         }
+        if (t->sys.ftime)
+            t->sys.ftime--;
+        if (t->sys.stime)
+            t->sys.stime--;
     }
-    t->l_main_time = clock() - t->l_main_time;
+
     printf("Единица времени равна %lf секунд\n\n", (double)TIME_UNIT / CLOCKS_PER_SEC);
-    printf("Время выполнения с очередью массивом %lf сек\n", (double)t->a_main_time / CLOCKS_PER_SEC);
+    printf("Время выполнения с очередью массивом %lf сек\n", t->a_main_time / CLOCKS_PER_SEC);
     printf("Время выполнения с очередью cписком  %lf сек\n", (double)t->l_main_time / CLOCKS_PER_SEC);
     free(t);
     return 1;

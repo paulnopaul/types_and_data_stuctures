@@ -52,8 +52,8 @@ int dtree_add_node(dtree_t *root, int data)
     else
         printf("%d уже добавлено в обычное дерево\n", data);
 
-    // printf("Количество сравнений при добавлении в обычное дерево: %d\n", buf->height);
-    return buf->height;
+    printf("Количество сравнений при добавлении в обычное дерево: %d\n", buf->height);
+    return 0;
 }
 
 void dtree_init(dtree_t *root)
@@ -65,9 +65,13 @@ int dtree_get(dtree_t *root, const char *filename)
 {
     FILE *f = fopen(filename, "r");
     if (!f)
+    {
+        puts("Cant open");
         return 1;
+    }
     if (dtree_input(root, f))
     {
+        puts("cant input");
         fclose(f);
         return 1;
     }
@@ -80,7 +84,10 @@ int dtree_input(dtree_t *root, FILE *stream)
     int buf;
     while (fscanf(stream, "%d", &buf) == 1)
         if (dtree_add_node(root, buf))
+        {
+            puts("cant add");
             return 1;
+        }
     return 0;
 }
 

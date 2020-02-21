@@ -35,8 +35,8 @@ int hashtable_add(hashtable *ht, int elem)
             ht->array[j] = elem;
             if (i > ht->max_collisions)
                 ht->max_collisions = i;
-            // return 0;
-            return i;
+            return 0;
+            // return i;
         }
         ++i;
     } while (i != ht->size);
